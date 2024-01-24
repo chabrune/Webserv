@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2024-01-24T15:38:46.441Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:121.0) Gecko/20100101 Firefox/121.0" etag="uK3Bzpq7bRVxUFokeZnF" version="23.0.1" type="github">
+<mxfile host="app.diagrams.net" modified="2024-01-24T18:09:19.041Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0" etag="rVpzQ0oz-_6J00bHIpBX" version="23.0.1" type="github">
   <diagram name="Page-1" id="gFfrrCDwq1luvMO310fa">
-    <mxGraphModel dx="3813" dy="2677" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1371" dy="1369" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -217,9 +217,9 @@
         <mxCell id="v8xIJGH0j38B9Ldcb0zA-35" value="&lt;div style=&quot;font-size: 6px;&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Now we need to identify the http method (GET, POST,...) /&lt;/div&gt;&lt;div style=&quot;font-size: 6px;&quot;&gt;the asked file (html, jpeg, python, ...) or CGI&lt;/div&gt;&lt;div style=&quot;font-size: 6px;&quot;&gt;To know what to do next&lt;br style=&quot;font-size: 6px;&quot;&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=6;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;spacingLeft=-17;" parent="1" vertex="1">
           <mxGeometry x="465.63" y="675" width="170" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="XAOY03fFF0m3N8WbAAhT-12" value="&lt;b&gt;Full Example of conf file&lt;/b&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;strokeColor=#d79b00;fontSize=7;rounded=0;fillColor=#ffe6cc;" parent="1" vertex="1">
+        <mxCell id="XAOY03fFF0m3N8WbAAhT-12" value="&lt;b&gt;Example of conf file&lt;/b&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;strokeColor=#d79b00;fontSize=7;rounded=0;fillColor=#ffe6cc;" parent="1" vertex="1">
           <mxGeometry x="830" y="128.76" width="250" height="370" as="geometry">
-            <mxRectangle x="830" y="128.76" width="120" height="30" as="alternateBounds" />
+            <mxRectangle x="830" y="128.76" width="250" height="30" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
         <mxCell id="XAOY03fFF0m3N8WbAAhT-14" value="server {&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; listen 8002;&lt;br&gt;&amp;nbsp;&amp;nbsp; &amp;nbsp;server_name localhost;&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; host 127.0.0.1;&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; root fusion_web/;&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; # client_max_body_size 3000000;&lt;br&gt;&amp;nbsp;&amp;nbsp; &amp;nbsp;index index.html;&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; error_page 404 error_pages/404.html;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; #error_code relative_path&lt;br&gt;&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; location / {&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; allow_methods&amp;nbsp; DELETE POST GET;&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; autoindex off;&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; }&lt;br&gt;&amp;nbsp;&amp;nbsp; &amp;nbsp;&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; location /tours {&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; autoindex on;&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; index tours1.html;&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; allow_methods GET POST PUT HEAD;&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; }&lt;br&gt;&lt;br&gt;&amp;nbsp;&amp;nbsp; &amp;nbsp;location /red {&lt;br&gt;&amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; return /tours;&lt;br&gt;&amp;nbsp;&amp;nbsp; &amp;nbsp;}&lt;br&gt;&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; location /cgi-bin {&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; # root /Users/anastasiianifantova/Desktop/ft-server;&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; allow_methods GET POST DELETE;&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; index time.py;&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; cgi_path /usr/bin/python3 /bin/bash;&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; cgi_ext .py .sh;&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; }&lt;br&gt;}" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontSize=7;" parent="XAOY03fFF0m3N8WbAAhT-12" vertex="1">
@@ -344,7 +344,7 @@
         <mxCell id="jFGwqKGNPb5m_xWZ789x-15" value="&lt;font color=&quot;#3399ff&quot; style=&quot;font-size: 5px;&quot;&gt;&lt;u&gt;First step is to identify the method&lt;br&gt;&lt;/u&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="284.78999999999996" y="715" width="148.43" height="15" as="geometry" />
         </mxCell>
-        <mxCell id="qfNJko3WRY2PtSl4KLDo-2" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.526;exitY=0.996;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="jFGwqKGNPb5m_xWZ789x-9" target="qfNJko3WRY2PtSl4KLDo-3">
+        <mxCell id="qfNJko3WRY2PtSl4KLDo-2" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.526;exitY=0.996;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="jFGwqKGNPb5m_xWZ789x-9" target="qfNJko3WRY2PtSl4KLDo-3" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="380" y="840" as="sourcePoint" />
             <mxPoint x="260" y="840" as="targetPoint" />
@@ -355,13 +355,13 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="qfNJko3WRY2PtSl4KLDo-3" value="&lt;div align=&quot;left&quot;&gt;&lt;b&gt;Return the demanded ressource.&lt;/b&gt;&lt;/div&gt;&lt;div align=&quot;left&quot;&gt;- Can return pure text (html, css, js,...)&lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/div&gt;&lt;div align=&quot;left&quot;&gt;- Can return binary file (png, pdf, mp4...)&lt;/div&gt;&lt;div align=&quot;left&quot;&gt;- &lt;u&gt;Can return code response (CGI)&lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/u&gt;&lt;/div&gt;&lt;div align=&quot;left&quot;&gt;&lt;u&gt;- Can return API/Webservices (json, xml,..)&lt;/u&gt;&lt;/div&gt;&lt;div align=&quot;left&quot;&gt;- Can do a redirection&lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/div&gt;&lt;div align=&quot;left&quot;&gt;- Can return errors&lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=6;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;align=left;" vertex="1" parent="1">
+        <mxCell id="qfNJko3WRY2PtSl4KLDo-3" value="&lt;div align=&quot;left&quot;&gt;&lt;b&gt;Return the demanded ressource.&lt;/b&gt;&lt;/div&gt;&lt;div align=&quot;left&quot;&gt;- Can return pure text (html, css, js,...)&lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/div&gt;&lt;div align=&quot;left&quot;&gt;- Can return binary file (png, pdf, mp4...)&lt;/div&gt;&lt;div align=&quot;left&quot;&gt;- &lt;u&gt;Can return code response (CGI)&lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/u&gt;&lt;/div&gt;&lt;div align=&quot;left&quot;&gt;&lt;u&gt;- Can return API/Webservices (json, xml,..)&lt;/u&gt;&lt;/div&gt;&lt;div align=&quot;left&quot;&gt;- Can do a redirection&lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/div&gt;&lt;div align=&quot;left&quot;&gt;- Can return errors&lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=6;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;align=left;" parent="1" vertex="1">
           <mxGeometry x="150" y="840" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="qfNJko3WRY2PtSl4KLDo-4" value="&lt;div&gt;CGI refer to a norm that permit server to executes extern programs like python, js, or c++. Then the server return the result of the script executions&lt;br&gt;&lt;/div&gt;" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;base=15;fillColor=#ffcc99;strokeColor=#36393d;fontSize=6;position2=0.51;" vertex="1" parent="1">
+        <mxCell id="qfNJko3WRY2PtSl4KLDo-4" value="&lt;div&gt;CGI refer to a norm that permit server to executes extern programs like python, js, or c++. Then the server return the result of the script executions&lt;br&gt;&lt;/div&gt;" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;base=15;fillColor=#ffcc99;strokeColor=#36393d;fontSize=6;position2=0.51;" parent="1" vertex="1">
           <mxGeometry y="770" width="97.14" height="70" as="geometry" />
         </mxCell>
-        <mxCell id="qfNJko3WRY2PtSl4KLDo-8" value="" style="curved=1;endArrow=classic;html=1;rounded=0;fontColor=#FF8000;fillColor=#ffcc99;strokeColor=#36393d;" edge="1" parent="1">
+        <mxCell id="qfNJko3WRY2PtSl4KLDo-8" value="" style="curved=1;endArrow=classic;html=1;rounded=0;fontColor=#FF8000;fillColor=#ffcc99;strokeColor=#36393d;" parent="1" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="150" y="870" as="sourcePoint" />
             <mxPoint x="100" y="790" as="targetPoint" />
@@ -371,79 +371,79 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="qfNJko3WRY2PtSl4KLDo-10" value="https://fr.wikipedia.org/wiki/Common_Gateway_Interface" style="dashed=0;html=1;fillColor=#F0F2F5;strokeColor=none;align=center;rounded=1;arcSize=10;fontColor=#3384FF;fontStyle=1;fontSize=6;shadow=0" vertex="1" parent="1">
+        <mxCell id="qfNJko3WRY2PtSl4KLDo-10" value="https://fr.wikipedia.org/wiki/Common_Gateway_Interface" style="dashed=0;html=1;fillColor=#F0F2F5;strokeColor=none;align=center;rounded=1;arcSize=10;fontColor=#3384FF;fontStyle=1;fontSize=6;shadow=0" parent="1" vertex="1">
           <mxGeometry y="750" width="170" height="10" as="geometry" />
         </mxCell>
-        <mxCell id="qfNJko3WRY2PtSl4KLDo-11" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;DB&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=9.10169491525403;" vertex="1" parent="1">
+        <mxCell id="qfNJko3WRY2PtSl4KLDo-11" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;DB&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=9.10169491525403;" parent="1" vertex="1">
           <mxGeometry x="-80" y="730" width="37.5" height="35" as="geometry" />
         </mxCell>
-        <mxCell id="qfNJko3WRY2PtSl4KLDo-12" value="&lt;font style=&quot;font-size: 7px;&quot;&gt;CGI Program&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="qfNJko3WRY2PtSl4KLDo-12" value="&lt;font style=&quot;font-size: 7px;&quot;&gt;CGI Program&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="-86.25" y="810" width="50" height="20" as="geometry" />
         </mxCell>
-        <mxCell id="qfNJko3WRY2PtSl4KLDo-14" value="&lt;font style=&quot;font-size: 7px;&quot;&gt;CGI Program&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="qfNJko3WRY2PtSl4KLDo-14" value="&lt;font style=&quot;font-size: 7px;&quot;&gt;CGI Program&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="-190.97" y="810" width="50" height="20" as="geometry" />
         </mxCell>
-        <mxCell id="qfNJko3WRY2PtSl4KLDo-15" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;Client&lt;/font&gt;" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="qfNJko3WRY2PtSl4KLDo-15" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;Client&lt;/font&gt;" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="-195.97" y="720" width="60" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="qfNJko3WRY2PtSl4KLDo-16" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.314;exitY=0.83;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.276;entryY=-0.016;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="qfNJko3WRY2PtSl4KLDo-15" target="qfNJko3WRY2PtSl4KLDo-14">
+        <mxCell id="qfNJko3WRY2PtSl4KLDo-16" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.314;exitY=0.83;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.276;entryY=-0.016;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="qfNJko3WRY2PtSl4KLDo-15" target="qfNJko3WRY2PtSl4KLDo-14" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="-110" y="830" as="sourcePoint" />
             <mxPoint x="-60" y="780" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="qfNJko3WRY2PtSl4KLDo-17" value="&lt;font style=&quot;font-size: 4px;&quot;&gt;HTTP request&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=6;" vertex="1" parent="1">
+        <mxCell id="qfNJko3WRY2PtSl4KLDo-17" value="&lt;font style=&quot;font-size: 4px;&quot;&gt;HTTP request&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=6;" parent="1" vertex="1">
           <mxGeometry x="-210" y="770" width="30" height="15" as="geometry" />
         </mxCell>
-        <mxCell id="qfNJko3WRY2PtSl4KLDo-18" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.647;entryY=0.966;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.673;exitY=-0.095;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="qfNJko3WRY2PtSl4KLDo-14" target="qfNJko3WRY2PtSl4KLDo-15">
+        <mxCell id="qfNJko3WRY2PtSl4KLDo-18" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.647;entryY=0.966;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.673;exitY=-0.095;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="qfNJko3WRY2PtSl4KLDo-14" target="qfNJko3WRY2PtSl4KLDo-15" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="-110" y="830" as="sourcePoint" />
             <mxPoint x="-60" y="780" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="qfNJko3WRY2PtSl4KLDo-19" value="&lt;font style=&quot;font-size: 4px;&quot;&gt;HTTP Response&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=6;" vertex="1" parent="1">
+        <mxCell id="qfNJko3WRY2PtSl4KLDo-19" value="&lt;font style=&quot;font-size: 4px;&quot;&gt;HTTP Response&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=6;" parent="1" vertex="1">
           <mxGeometry x="-160" y="770" width="40" height="15" as="geometry" />
         </mxCell>
-        <mxCell id="qfNJko3WRY2PtSl4KLDo-20" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="qfNJko3WRY2PtSl4KLDo-14" target="qfNJko3WRY2PtSl4KLDo-12">
+        <mxCell id="qfNJko3WRY2PtSl4KLDo-20" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" parent="1" source="qfNJko3WRY2PtSl4KLDo-14" target="qfNJko3WRY2PtSl4KLDo-12" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="-80" y="840" as="sourcePoint" />
             <mxPoint x="-30" y="790" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="qfNJko3WRY2PtSl4KLDo-21" value="CGI Gateway" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=4;" vertex="1" parent="1">
+        <mxCell id="qfNJko3WRY2PtSl4KLDo-21" value="CGI Gateway" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=4;" parent="1" vertex="1">
           <mxGeometry x="-135.97" y="800" width="40" height="15" as="geometry" />
         </mxCell>
-        <mxCell id="qfNJko3WRY2PtSl4KLDo-22" value="" style="endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="qfNJko3WRY2PtSl4KLDo-12" target="qfNJko3WRY2PtSl4KLDo-14">
+        <mxCell id="qfNJko3WRY2PtSl4KLDo-22" value="" style="endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" parent="1" source="qfNJko3WRY2PtSl4KLDo-12" target="qfNJko3WRY2PtSl4KLDo-14" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="-80" y="840" as="sourcePoint" />
             <mxPoint x="-30" y="790" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="qfNJko3WRY2PtSl4KLDo-23" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.25;exitY=0;exitDx=0;exitDy=0;entryX=0.17;entryY=0.949;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="qfNJko3WRY2PtSl4KLDo-12" target="qfNJko3WRY2PtSl4KLDo-11">
+        <mxCell id="qfNJko3WRY2PtSl4KLDo-23" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.25;exitY=0;exitDx=0;exitDy=0;entryX=0.17;entryY=0.949;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="qfNJko3WRY2PtSl4KLDo-12" target="qfNJko3WRY2PtSl4KLDo-11" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="-50" y="820" as="sourcePoint" />
             <mxPoint y="770" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="qfNJko3WRY2PtSl4KLDo-24" value="Query" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=4;" vertex="1" parent="1">
+        <mxCell id="qfNJko3WRY2PtSl4KLDo-24" value="Query" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=4;" parent="1" vertex="1">
           <mxGeometry x="-95.97" y="772.5" width="20" height="15" as="geometry" />
         </mxCell>
-        <mxCell id="qfNJko3WRY2PtSl4KLDo-25" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.726;exitY=0.981;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.669;entryY=-0.037;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="qfNJko3WRY2PtSl4KLDo-11" target="qfNJko3WRY2PtSl4KLDo-12">
+        <mxCell id="qfNJko3WRY2PtSl4KLDo-25" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.726;exitY=0.981;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.669;entryY=-0.037;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="qfNJko3WRY2PtSl4KLDo-11" target="qfNJko3WRY2PtSl4KLDo-12" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="-30" y="820" as="sourcePoint" />
             <mxPoint x="20" y="770" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="qfNJko3WRY2PtSl4KLDo-26" value="Result" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=4;" vertex="1" parent="1">
+        <mxCell id="qfNJko3WRY2PtSl4KLDo-26" value="Result" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=4;" parent="1" vertex="1">
           <mxGeometry x="-50" y="772.5" width="20" height="15" as="geometry" />
         </mxCell>
-        <mxCell id="qfNJko3WRY2PtSl4KLDo-27" value="" style="shape=curlyBracket;whiteSpace=wrap;html=1;rounded=1;flipH=1;labelPosition=right;verticalLabelPosition=middle;align=left;verticalAlign=middle;size=0.5;" vertex="1" parent="1">
+        <mxCell id="qfNJko3WRY2PtSl4KLDo-27" value="" style="shape=curlyBracket;whiteSpace=wrap;html=1;rounded=1;flipH=1;labelPosition=right;verticalLabelPosition=middle;align=left;verticalAlign=middle;size=0.5;" parent="1" vertex="1">
           <mxGeometry x="-30" y="710" width="20" height="150" as="geometry" />
         </mxCell>
-        <mxCell id="qfNJko3WRY2PtSl4KLDo-28" value="&lt;div&gt;Idk if we have to do this.&lt;/div&gt;&lt;div&gt;Do not seems mandadory&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;shape=mxgraph.basic.cloud_callout;fontSize=4;" vertex="1" parent="1">
+        <mxCell id="qfNJko3WRY2PtSl4KLDo-28" value="&lt;div&gt;Idk if we have to do this.&lt;/div&gt;&lt;div&gt;Do not seems mandadory&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;shape=mxgraph.basic.cloud_callout;fontSize=4;" parent="1" vertex="1">
           <mxGeometry x="20" y="870" width="58.57" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="qfNJko3WRY2PtSl4KLDo-29" value="" style="curved=1;endArrow=classic;html=1;rounded=0;entryX=0.984;entryY=0.36;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.002;exitY=0.62;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="qfNJko3WRY2PtSl4KLDo-3" target="qfNJko3WRY2PtSl4KLDo-28">
+        <mxCell id="qfNJko3WRY2PtSl4KLDo-29" value="" style="curved=1;endArrow=classic;html=1;rounded=0;entryX=0.984;entryY=0.36;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.002;exitY=0.62;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="qfNJko3WRY2PtSl4KLDo-3" target="qfNJko3WRY2PtSl4KLDo-28" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="90" y="950" as="sourcePoint" />
             <mxPoint x="140" y="900" as="targetPoint" />
@@ -453,10 +453,10 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="qfNJko3WRY2PtSl4KLDo-30" value="&lt;b&gt;Same as GET but&lt;/b&gt; do not return any content or response but only meta-data contained in the HTTP request like &quot;Content-Lenght&quot; or &quot;Last-Modified&quot;. Mainly used to debug and test data accessibility" style="rounded=0;whiteSpace=wrap;html=1;fontSize=6;align=left;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;" vertex="1" parent="1">
+        <mxCell id="qfNJko3WRY2PtSl4KLDo-30" value="&lt;b&gt;Same as GET but&lt;/b&gt; do not return any content or response but only meta-data contained in the HTTP request like &quot;Content-Lenght&quot; or &quot;Last-Modified&quot;. Mainly used to debug and test data accessibility" style="rounded=0;whiteSpace=wrap;html=1;fontSize=6;align=left;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;" parent="1" vertex="1">
           <mxGeometry x="274" y="840" width="90" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="qfNJko3WRY2PtSl4KLDo-31" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="jFGwqKGNPb5m_xWZ789x-5" target="qfNJko3WRY2PtSl4KLDo-30">
+        <mxCell id="qfNJko3WRY2PtSl4KLDo-31" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="jFGwqKGNPb5m_xWZ789x-5" target="qfNJko3WRY2PtSl4KLDo-30" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="350" y="910" as="sourcePoint" />
             <mxPoint x="400" y="860" as="targetPoint" />
@@ -466,6 +466,14 @@
             </Array>
           </mxGeometry>
         </mxCell>
+        <mxCell id="xGdRHwUvnTMDp6sK-9FO-1" value="Full example: " style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=7;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="810" y="107.19" width="70" height="20" as="geometry" />
+        </mxCell>
+        <UserObject label="https://www.nginx.com/resources/wiki/start/topics/examples/full/" link="https://www.nginx.com/resources/wiki/start/topics/examples/full/" id="xGdRHwUvnTMDp6sK-9FO-2">
+          <mxCell style="text;html=1;strokeColor=none;fillColor=none;whiteSpace=wrap;align=center;verticalAlign=middle;fontColor=#0000EE;fontStyle=4;fontSize=7;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" vertex="1" parent="1">
+            <mxGeometry x="860" y="112.19" width="220" height="10" as="geometry" />
+          </mxCell>
+        </UserObject>
       </root>
     </mxGraphModel>
   </diagram>
