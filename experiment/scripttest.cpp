@@ -13,4 +13,3 @@ int main(int argc, char **argv, char **envp) {
         perror("execve");
     std::cout << "HELLO" << std::endl;
 }
-
