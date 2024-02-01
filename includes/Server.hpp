@@ -24,7 +24,8 @@ class Server
 {
     public:
     void inputParsing(std::string argv);
-    bool check_serv_line(std::string &line);
+    void check_serv_line(std::string &line, int& one_line);
+    void check_serv_name_line(std::string& line, int& one_line);
     Server();
     ~Server();
     Server& operator=(const Server &rhs);
