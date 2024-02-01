@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2024-01-31T16:08:21.330Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:121.0) Gecko/20100101 Firefox/121.0" etag="vT4rNAEeGYXo_DBpZ6sY" version="23.0.2" type="github">
+<mxfile host="app.diagrams.net" modified="2024-02-01T12:13:12.530Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:121.0) Gecko/20100101 Firefox/121.0" etag="sxS0ZfKFpYLczsfZ0Vmo" version="23.0.2" type="github">
   <diagram name="Page-1" id="gFfrrCDwq1luvMO310fa">
-    <mxGraphModel dx="1019" dy="1191" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1477" dy="1437" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -569,43 +569,43 @@
         <mxCell id="wk2zZ8cHhEIMUiwCAmYv-3" value="&lt;u&gt;&lt;b&gt;Classes&lt;/b&gt;&lt;/u&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
           <mxGeometry x="1210" y="112.19" width="70" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="0VqQwMlNw6_cuAi2ba52-1" value="" style="endArrow=classic;html=1;rounded=0;fillColor=#dae8fc;strokeColor=#6c8ebf;exitX=0.211;exitY=0.279;exitDx=0;exitDy=0;exitPerimeter=0;endSize=4;startSize=4;jumpSize=4;" edge="1" parent="1" source="XAOY03fFF0m3N8WbAAhT-41" target="0VqQwMlNw6_cuAi2ba52-2">
+        <mxCell id="0VqQwMlNw6_cuAi2ba52-1" value="" style="endArrow=classic;html=1;rounded=0;fillColor=#dae8fc;strokeColor=#6c8ebf;exitX=0.211;exitY=0.279;exitDx=0;exitDy=0;exitPerimeter=0;endSize=4;startSize=4;jumpSize=4;" parent="1" source="XAOY03fFF0m3N8WbAAhT-41" target="0VqQwMlNw6_cuAi2ba52-2" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="-470" y="308" as="sourcePoint" />
             <mxPoint x="-420" y="258" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="0VqQwMlNw6_cuAi2ba52-2" value="Example: /bin/bash" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=0.5;fontSize=4;" vertex="1" parent="1">
+        <mxCell id="0VqQwMlNw6_cuAi2ba52-2" value="Example: /bin/bash" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=0.5;fontSize=4;" parent="1" vertex="1">
           <mxGeometry x="-580" y="258" width="60" height="10" as="geometry" />
         </mxCell>
-        <mxCell id="0VqQwMlNw6_cuAi2ba52-3" value="" style="endArrow=classic;html=1;rounded=0;fillColor=#dae8fc;strokeColor=#6c8ebf;exitX=0.211;exitY=0.279;exitDx=0;exitDy=0;exitPerimeter=0;endSize=4;startSize=4;jumpSize=4;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" target="0VqQwMlNw6_cuAi2ba52-4">
+        <mxCell id="0VqQwMlNw6_cuAi2ba52-3" value="" style="endArrow=classic;html=1;rounded=0;fillColor=#dae8fc;strokeColor=#6c8ebf;exitX=0.211;exitY=0.279;exitDx=0;exitDy=0;exitPerimeter=0;endSize=4;startSize=4;jumpSize=4;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" target="0VqQwMlNw6_cuAi2ba52-4" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="-460" y="278" as="sourcePoint" />
             <mxPoint x="-600" y="280" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="0VqQwMlNw6_cuAi2ba52-4" value="&lt;div&gt;&lt;b&gt;Chunked request example:&lt;/b&gt;&lt;/div&gt;&lt;div&gt;POST /chemin/vers/ressource HTTP/1.1&lt;br&gt;Host: exemple.com&lt;br&gt;Content-Type: application/json&lt;br&gt;Transfer-Encoding: chunked&lt;br&gt;&lt;br&gt;5\r\n&lt;br&gt;Hello\r\n&lt;br&gt;6\r\n&lt;br&gt;&amp;nbsp;World\r\n&lt;br&gt;0\r\n&lt;br&gt;\r\n&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;&quot;5&quot; is the chunk&#39;s lenght in hexadecimal (ex: 42 = 2A)&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;&quot;\r\n&quot; is the separator in chunked request&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;&quot;Hello&quot; is the content of the chunk followed by /r/n to end the chunk&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;&quot;0\r\n\r\n&quot; is the EOF of a chunked request like &#39;\0&#39; in C&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;&lt;b&gt;Utility:&lt;/b&gt; Usefull if we don&#39;t know the size before&lt;br&gt;&lt;/i&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=6;align=left;" vertex="1" parent="1">
+        <mxCell id="0VqQwMlNw6_cuAi2ba52-4" value="&lt;div&gt;&lt;b&gt;Chunked request example:&lt;/b&gt;&lt;/div&gt;&lt;div&gt;POST /chemin/vers/ressource HTTP/1.1&lt;br&gt;Host: exemple.com&lt;br&gt;Content-Type: application/json&lt;br&gt;Transfer-Encoding: chunked&lt;br&gt;&lt;br&gt;5\r\n&lt;br&gt;Hello\r\n&lt;br&gt;6\r\n&lt;br&gt;&amp;nbsp;World\r\n&lt;br&gt;0\r\n&lt;br&gt;\r\n&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;&quot;5&quot; is the chunk&#39;s lenght in hexadecimal (ex: 42 = 2A)&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;&quot;\r\n&quot; is the separator in chunked request&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;&quot;Hello&quot; is the content of the chunk followed by /r/n to end the chunk&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;&quot;0\r\n\r\n&quot; is the EOF of a chunked request like &#39;\0&#39; in C&lt;/i&gt;&lt;/div&gt;&lt;div&gt;&lt;i&gt;&lt;b&gt;Utility:&lt;/b&gt; Usefull if we don&#39;t know the size before&lt;br&gt;&lt;/i&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=6;align=left;" parent="1" vertex="1">
           <mxGeometry x="-830" y="203" width="160" height="150" as="geometry" />
         </mxCell>
-        <mxCell id="0VqQwMlNw6_cuAi2ba52-6" value="" style="endArrow=classic;html=1;rounded=0;fillColor=#dae8fc;strokeColor=#6c8ebf;exitX=0.211;exitY=0.279;exitDx=0;exitDy=0;exitPerimeter=0;endSize=4;startSize=4;jumpSize=4;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" target="0VqQwMlNw6_cuAi2ba52-7">
+        <mxCell id="0VqQwMlNw6_cuAi2ba52-6" value="" style="endArrow=classic;html=1;rounded=0;fillColor=#dae8fc;strokeColor=#6c8ebf;exitX=0.211;exitY=0.279;exitDx=0;exitDy=0;exitPerimeter=0;endSize=4;startSize=4;jumpSize=4;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" target="0VqQwMlNw6_cuAi2ba52-7" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="-460" y="293" as="sourcePoint" />
             <mxPoint x="-540" y="300" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="0VqQwMlNw6_cuAi2ba52-7" value="Chunked request with GET" style="rounded=0;whiteSpace=wrap;html=1;fontSize=4;strokeWidth=0.5;" vertex="1" parent="1">
+        <mxCell id="0VqQwMlNw6_cuAi2ba52-7" value="Chunked request with GET" style="rounded=0;whiteSpace=wrap;html=1;fontSize=4;strokeWidth=0.5;" parent="1" vertex="1">
           <mxGeometry x="-620" y="283.75" width="60" height="16.25" as="geometry" />
         </mxCell>
-        <mxCell id="0VqQwMlNw6_cuAi2ba52-9" value="Example: /bin/bash ./script.sh" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=0.5;fontSize=4;" vertex="1" parent="1">
+        <mxCell id="0VqQwMlNw6_cuAi2ba52-9" value="Example: /bin/bash ./script.sh" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=0.5;fontSize=4;" parent="1" vertex="1">
           <mxGeometry x="-610" y="305" width="60" height="10" as="geometry" />
         </mxCell>
-        <mxCell id="0VqQwMlNw6_cuAi2ba52-8" value="" style="endArrow=classic;html=1;rounded=0;fillColor=#dae8fc;strokeColor=#6c8ebf;endSize=4;startSize=4;jumpSize=4;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" target="0VqQwMlNw6_cuAi2ba52-9">
+        <mxCell id="0VqQwMlNw6_cuAi2ba52-8" value="" style="endArrow=classic;html=1;rounded=0;fillColor=#dae8fc;strokeColor=#6c8ebf;endSize=4;startSize=4;jumpSize=4;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" target="0VqQwMlNw6_cuAi2ba52-9" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="-460" y="302.46285714285705" as="sourcePoint" />
             <mxPoint x="-510" y="297.4985714285715" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="0VqQwMlNw6_cuAi2ba52-10" value="" style="curved=1;endArrow=classic;html=1;rounded=0;fillColor=#dae8fc;strokeColor=#6c8ebf;exitX=0.263;exitY=0.435;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" target="0VqQwMlNw6_cuAi2ba52-11">
+        <mxCell id="0VqQwMlNw6_cuAi2ba52-10" value="" style="curved=1;endArrow=classic;html=1;rounded=0;fillColor=#dae8fc;strokeColor=#6c8ebf;exitX=0.263;exitY=0.435;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" target="0VqQwMlNw6_cuAi2ba52-11" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="-460.03" y="314.9992499999999" as="sourcePoint" />
             <mxPoint x="-550" y="330" as="targetPoint" />
@@ -615,38 +615,56 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="0VqQwMlNw6_cuAi2ba52-11" value="We need fork, dup and chdir before execve" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=0.5;fontSize=4;" vertex="1" parent="1">
+        <mxCell id="0VqQwMlNw6_cuAi2ba52-11" value="We need fork, dup and chdir before execve" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=0.5;fontSize=4;" parent="1" vertex="1">
           <mxGeometry x="-630" y="320" width="80" height="10" as="geometry" />
         </mxCell>
-        <mxCell id="0VqQwMlNw6_cuAi2ba52-12" value="" style="endArrow=none;html=1;rounded=0;fillColor=#f8cecc;strokeColor=#b85450;exitX=0.421;exitY=0.212;exitDx=0;exitDy=0;exitPerimeter=0;endSize=6;strokeWidth=0.5;" edge="1" parent="1">
+        <mxCell id="0VqQwMlNw6_cuAi2ba52-12" value="" style="endArrow=none;html=1;rounded=0;fillColor=#f8cecc;strokeColor=#b85450;exitX=0.421;exitY=0.212;exitDx=0;exitDy=0;exitPerimeter=0;endSize=6;strokeWidth=0.5;" parent="1" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="-460" y="244" as="sourcePoint" />
             <mxPoint x="-333" y="244" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="0VqQwMlNw6_cuAi2ba52-13" value="" style="endArrow=none;html=1;rounded=0;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=0.5;" edge="1" parent="1">
+        <mxCell id="0VqQwMlNw6_cuAi2ba52-13" value="" style="endArrow=none;html=1;rounded=0;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=0.5;" parent="1" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="-460" y="249" as="sourcePoint" />
             <mxPoint x="-430" y="249" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="0VqQwMlNw6_cuAi2ba52-14" value="&lt;div align=&quot;left&quot;&gt;if !argv[1] set default file&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=0.5;fontSize=4;" vertex="1" parent="1">
+        <mxCell id="0VqQwMlNw6_cuAi2ba52-14" value="&lt;div align=&quot;left&quot;&gt;if !argv[1] set default file&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=0.5;fontSize=4;" parent="1" vertex="1">
           <mxGeometry x="-570" y="-150" width="50" height="10" as="geometry" />
         </mxCell>
-        <mxCell id="0VqQwMlNw6_cuAi2ba52-15" value="" style="endArrow=classic;html=1;rounded=0;fillColor=#dae8fc;strokeColor=#6c8ebf;entryX=1;entryY=0.5;entryDx=0;entryDy=0;endSize=4;exitX=0.158;exitY=0.741;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="XAOY03fFF0m3N8WbAAhT-37" target="0VqQwMlNw6_cuAi2ba52-14">
+        <mxCell id="0VqQwMlNw6_cuAi2ba52-15" value="" style="endArrow=classic;html=1;rounded=0;fillColor=#dae8fc;strokeColor=#6c8ebf;entryX=1;entryY=0.5;entryDx=0;entryDy=0;endSize=4;exitX=0.158;exitY=0.741;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="XAOY03fFF0m3N8WbAAhT-37" target="0VqQwMlNw6_cuAi2ba52-14" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="-480" y="-110" as="sourcePoint" />
             <mxPoint x="-430" y="-160" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="0VqQwMlNw6_cuAi2ba52-16" value="" style="endArrow=classic;html=1;rounded=0;fillColor=#dae8fc;strokeColor=#6c8ebf;exitX=0.158;exitY=0.616;exitDx=0;exitDy=0;exitPerimeter=0;endSize=2;" edge="1" parent="1" source="XAOY03fFF0m3N8WbAAhT-39" target="0VqQwMlNw6_cuAi2ba52-17">
+        <mxCell id="0VqQwMlNw6_cuAi2ba52-16" value="" style="endArrow=classic;html=1;rounded=0;fillColor=#dae8fc;strokeColor=#6c8ebf;exitX=0.158;exitY=0.616;exitDx=0;exitDy=0;exitPerimeter=0;endSize=2;" parent="1" source="XAOY03fFF0m3N8WbAAhT-39" target="0VqQwMlNw6_cuAi2ba52-17" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="-470" y="110" as="sourcePoint" />
             <mxPoint x="-420" y="60" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="0VqQwMlNw6_cuAi2ba52-17" value="We must define a timeout" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=0.5;fontSize=4;" vertex="1" parent="1">
+        <mxCell id="0VqQwMlNw6_cuAi2ba52-17" value="We must define a timeout" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=0.5;fontSize=4;" parent="1" vertex="1">
           <mxGeometry x="-570" y="77.19" width="50" height="12.81" as="geometry" />
+        </mxCell>
+        <mxCell id="GYbqurEkqasg6aFz5JOi-1" value="" style="endArrow=classic;html=1;rounded=0;fillColor=#dae8fc;strokeColor=#6c8ebf;endSize=3;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" target="GYbqurEkqasg6aFz5JOi-2">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-470" y="-31" as="sourcePoint" />
+            <mxPoint x="-530" y="-31" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="GYbqurEkqasg6aFz5JOi-2" value="if there is more than one &lt;b&gt;server {}&lt;/b&gt; section in the .conf, its invalid" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=0.5;fontSize=4;" vertex="1" parent="1">
+          <mxGeometry x="-614.5500000000001" y="-80" width="69.1" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="GYbqurEkqasg6aFz5JOi-3" value="" style="endArrow=classic;html=1;rounded=0;fillColor=#dae8fc;strokeColor=#6c8ebf;endSize=3;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" target="GYbqurEkqasg6aFz5JOi-4">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-470" y="-24" as="sourcePoint" />
+            <mxPoint x="-550" y="-10" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="GYbqurEkqasg6aFz5JOi-4" value="Be able to receive many connections at the same time and send corrects codes, redirections or responses" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=0.5;fontSize=4;" vertex="1" parent="1">
+          <mxGeometry x="-610" y="-50" width="60" height="30" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
