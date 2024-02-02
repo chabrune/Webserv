@@ -30,15 +30,29 @@ void Server::check_serv_line(std::string& line, int& one_line)
 //p-e return int pour check a la fin de la boucle si == 0 = error
 void Server::check_serv_name_line(std::string& line, int& one_line)
 {
-    size_t i = 0;
-    for (; i < line.length() && std::isspace(static_cast<unsigned char>(line[i])); i++) {}
-    line = line.substr(i);
-    std::cout << line << std::endl;
-    if(line == "server_name localhost;\n")
-        one_line += 1;
-    if(one_line > 1 || line != "server_name localhost;")
+    one_line += 1;
+    if (one_line > 1)
         throw std::exception();
+    size_t i = 0;
+    for (; i < line.length() && std::isspace(static_cast<unsigned char>(line[i])); i++) {} // remove leading whitespaces
+    line = line.substr(i);                                                                // update line without leading whitespaces
+    i = 12;
+    while (i < line.length()) 
+    {
+        int start = i;
+        while (i < line.length() && !isspace(line[i]))
+            i++;
+        std::string server_name;
+        server_name = line.substr(start, i - start);
+        if(server_name.find(';') != std::string::npos)
+            server_name.pop_back();
+        std::cout << server_name << std::endl;
+        this->server_names.push_back(server_name);
+        while (i < line.length() && std::isspace(line[i]))
+            i++;
+    }
 }
+
 
 void Server::inputParsing(std::string argv)
 {
@@ -46,16 +60,16 @@ void Server::inputParsing(std::string argv)
     if(!file.is_open())
         std::cerr << "Error: could not open file." << std::endl;
     std::string line;
-    int one_line = 0;
-    std::cout << one_line << std::endl;
+    int one_name = 0;
+    int one_serv = 0;
     while(std::getline(file, line))
     {
-        if (line.empty())
+        if (line.empty()) // ou commentaires 
             continue;
         if(line.find("server {") != std::string::npos)
-            check_serv_line(line, one_line);
-        if(line.find("server_name localhost;") != std::string::npos)
-            check_serv_name_line(line, one_line);
+            check_serv_line(line, one_serv);
+        if(line.find("server_name") != std::string::npos)
+            check_serv_name_line(line, one_name);
     }
 
 }

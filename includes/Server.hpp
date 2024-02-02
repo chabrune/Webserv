@@ -32,7 +32,7 @@ class Server
     Server(const Server &src);
     int sock_fd;    // contain the listener socket fd
     sockaddr_in address;    // contain address and the port
-    std::map<int, std::string>  server_names;    // contain the server_name
+    std::vector<std::string> server_names;    // contain the server_name
     std::vector<std::string> indexes;    // contain indexes (if several index given, we try to load in the given order)
     std::map<int, std::string> errors_pages; // contain errors page paths
     unsigned long max_body_size;  // HTTP request's body max size (usefull for PUT and POST)

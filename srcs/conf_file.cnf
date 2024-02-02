@@ -1,6 +1,7 @@
 server {
     listen 8002;
-    server_name localhost;
+    listen 8001;
+    server_name localhost second;
     host 127.0.0.1;
     root fusion_web/;
     # client_max_body_size 3000000;
