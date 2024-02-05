@@ -6,8 +6,16 @@ int main(int argc, char **argv)
     if(argc != 2)
     {
         std::cerr << "./webserv [configuration file]" << std::endl;
-        return(1);
+        return (1);
     }
+
     Server frr;
-    frr.inputParsing(std::string(argv[1]));
+    try {
+        frr.inputParsing(std::string(argv[1]));
+    } catch (std::excpetion &e) {
+        std::cerr << e.what() << std::endl;
+        close(frr.sock_fd);
+        return (1);
+    }
+    return (0);
 }

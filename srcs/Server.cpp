@@ -73,3 +73,38 @@ void Server::inputParsing(std::string argv)
     }
 
 }
+
+void Server::setup_socket(void)
+{
+    this->sock_fd = socket(PF_INET, SOCK_STREAM, 0);
+    if (sock_fd == -1)
+        throw socketCreationError();
+    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, 1, sizeof(int)) == -1)
+        throw socketCreationError();
+    this->timeout.tv_sec = 10;
+    this->timeout.tv_usec = 0;
+    if (setsockopt(server_fd, SOL_SOCKET, SO_RCVTIMEO, (struct timeval *)&this->timeout, sizeof(this->timeout)) == -1)
+        throw socketCreationError();
+    if (setsockopt(server_fd, SOL_SOCKET, SO_SNDTIMEO, (struct timeval *)&this->timeout, sizeof(this->timeout)) == -1)
+        throw socketCreationError();
+    if (bind(this->sock_fd, (struct sockaddr *)&this->address, sizeof(this->address)) == -1)
+        throw addrBindError();
+    if (listen(this->sock_fd, 2000) == -1)
+        throw sockListeningError();
+
+    // A deplacer dans le parsing de l'addresse
+    this->addrlen = (socklen_t)(sizeof(this->address));
+
+    std::cout << GREEN << "-listener socket ready-" << RESET << std::endl;
+}
+
+void Server::run(void)
+{
+    int nclient;
+
+    this->running = true;
+    while (this->running) {
+        nclient = accept(this->sock_fd, (struct sockaddr *)&this->address, &this->addrlen);
+        getRequest(nclient);
+    }
+}
