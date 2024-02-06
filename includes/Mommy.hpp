@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Server.hpp"
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/socket.h>
@@ -21,6 +20,8 @@
 #include <ctype.h>
 #include <sys/time.h>
 
+#include "Server.hpp"
+
 # define RESET	"\033[0m"
 # define RED 	"\033[31m"
 # define GREEN  "\033[32m"
@@ -28,7 +29,23 @@
 # define YELLOW	"\033[33m"
 # define MAGENTA "\033[35m"
 
+# define CONNECTIONS_NUMBER_LIMIT 2000
+# define TIMEOUT 10 // Seconds before timeout
+
 class Mommy
 {
-    std::vector<Server> servers;
+    public:
+        fd_set lset;    // Listener sockets set
+        fd_set cset;    // Client sockets set
+        std::vector<Server *> servers;
+        timeval timeout;
+
+        void run(void);
+        int fillFdSet(void);
+
+        class selectError : public std::exception {
+            const char * what() const throw() {
+                return ("select() failure");
+            }
+        };
 };

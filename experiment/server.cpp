@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <iostream>
+#include <arpa/inet.h>
 
 #define PORT 8080
 #define BACKLOG 10
@@ -76,6 +77,7 @@ int main() {
     while (1) {
         // Acceptation d'une nouvelle connexion
         new_socket = accept(server_fd, (struct sockaddr *) &address, (socklen_t * ) & addrlen);
+        std::cout << "client: " << inet_ntoa(address.sin_addr) << " " << (int)ntohs(address.sin_port) << std::endl;
 
         // Lecture de la requête HTTP
         read(new_socket, buffer, 1024);
