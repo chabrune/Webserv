@@ -3,3 +3,4 @@ cmake-build-debug
 venv
 .vscode
 a.out
+*.o

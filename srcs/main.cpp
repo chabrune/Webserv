@@ -1,5 +1,12 @@
-#include "../includes/Location.hpp"
-#include "../includes/Server.hpp"
+#include "../includes/Mommy.hpp"
+
+//Creating a test server while parsing isn't finished
+void createTestServer(Mommy *frr) {
+    frr->servers.push_back(new Server());
+    frr->servers.back()->port = 8080;
+    frr->servers.back()->server_name = "localhost";
+    frr->servers.back()->setup();
+}
 
 int main(int argc, char **argv)
 {
@@ -11,8 +18,10 @@ int main(int argc, char **argv)
 
     Mommy frr;
     try {
-        frr.inputParsing(std::string(argv[1]));
-    } catch (std::excpetion &e) {
+        //frr.inputParsing(std::string(argv[1]));
+        createTestServer(&frr);
+        frr.run();
+    } catch (std::exception &e) {
         std::cerr << e.what() << std::endl;
         return (1);
     }

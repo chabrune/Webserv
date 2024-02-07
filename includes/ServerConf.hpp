@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Mommy.hpp"
 #include "Location.hpp"
 
 class ServerConf
@@ -18,7 +17,7 @@ class ServerConf
         std::string root; // Define the root directory
         std::string server_name;    // contain the server_name
         int port; // contain ports to listen to
-        std::map<Methods, bool> allowed_methods; // Set HTTP methods to true or false (Methods will be an enum)
+        std::map<Methods, bool> allowed_methods; // Set HTTP methods to true or false (methods will be an enum)
         std::vector<std::string> indexes;    // contain indexes (if several index given, we try to load in the given order)
         std::map<int, std::string> errors_pages; // contain errors page paths
         unsigned long max_body_size;  // HTTP request's body max size (usefull for PUT and POST)

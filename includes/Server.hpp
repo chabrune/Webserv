@@ -12,8 +12,9 @@ class Server : public ServerConf
 
         void setup();
 
-        sockaddr_in srvaddress; // Server address
         int sockfd;
+        sockaddr_in srvaddress; // Server address
+        timeval timeout;
 
         class socketCreationError : public std::exception {
             const char * what() const throw() {

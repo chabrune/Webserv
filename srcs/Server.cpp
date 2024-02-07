@@ -2,7 +2,7 @@
 
 Server::Server() {}
 
-ServerConf::~Server() {}
+Server::~Server() {}
 
 Server& Server::operator=(const Server &rhs)
 {
@@ -24,17 +24,18 @@ void Server::setup(void)
     this->sockfd = socket(PF_INET, SOCK_STREAM, 0);
     if (sockfd == -1)
         throw socketCreationError();
-    if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, 1, sizeof(int)) == -1)
+    int optval = 1;
+    if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &optval, sizeof(int)) == -1)
         throw socketConfigError();
-    this->timeout.tv_sec = 10;
+    this->timeout.tv_sec = TIMEOUT;
     this->timeout.tv_usec = 0;
     if (setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, (struct timeval *)&this->timeout, sizeof(this->timeout)) == -1)
         throw socketConfigError();
     if (setsockopt(sockfd, SOL_SOCKET, SO_SNDTIMEO, (struct timeval *)&this->timeout, sizeof(this->timeout)) == -1)
         throw socketConfigError();
-    if (bind(this->sock_fd, (struct sockaddr *)&this->srvaddress, sizeof(this->srvaddress)) == -1)
+    if (bind(this->sockfd, (struct sockaddr *)&this->srvaddress, sizeof(this->srvaddress)) == -1)
         throw addrBindError();
-    if (listen(this->sock_fd, CONNECTIONS_NUMBER_LIMIT) == -1)
+    if (listen(this->sockfd, CONNECTIONS_NUMBER_LIMIT) == -1)
         throw sockListeningError();
-    std::cout << GREEN << "-listener socket ready-" << RESET << std::endl;
+    std::cout << GREEN << "-listener socket for /" << this->server_name << ":" << this->port << "\\ ready" << RESET << std::endl;
 }
