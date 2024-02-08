@@ -19,7 +19,7 @@ int Mommy::load_LFdSet(void) {
     return (maxFd + 1);
 }
 
-void Mommy::acceptRequest(int fd) {
+void Mommy::acceptRequest(int fd, Server *server) {
     sockaddr_in cliInfo;
     memset(&cliInfo, 0, sizeof(cliInfo));
     socklen_t addrlen = sizeof(cliInfo);
@@ -27,13 +27,16 @@ void Mommy::acceptRequest(int fd) {
     if (cliFd == -1)
         throw acceptError();
     fcntl(cliFd, F_SETFL, O_NONBLOCK);
-    Client * cli = new Client(cliFd, cliInfo);
+    Client * cli = new Client(cliFd, cliInfo, server);
+    this->clients.push_back(cli);
     std::cout << YELLOW << "-new connexion from /" << inet_ntoa(cliInfo.sin_addr) << ":" << (int)ntohs(cliInfo.sin_port) << "\\ accepted" << RESET << std::endl;
+}
 
-    std::string msg = "bonjour";
-    send(cliFd, msg.c_str(), strlen(msg.c_str()), 0);
-    close(cliFd);
-    delete(cli);
+void Mommy::readRequest(Client *client) {
+    char buffer[HTTP_BUFFER_SIZE] = {0};
+    long len = recv(client->sockfd, buffer, HTTP_BUFFER_SIZE - 1, 0) ;
+    std::cout << buffer << std::endl << len << std::endl;
+    close(client->sockfd);
 }
 
 void Mommy::run(void) {
@@ -51,7 +54,10 @@ void Mommy::run(void) {
             for (std::vector<Server*>::iterator it = this->servers.begin(); it != this->servers.end(); it++) {
                 if (FD_ISSET((*it)->sockfd, &this->lset)) {
                     try {
-                        acceptRequest((*it)->sockfd);
+                        acceptRequest((*it)->sockfd, *it);
+                        Client *cli = this->clients.back();
+                        std::cout << RED << cli->server->port << std::endl;
+                        readRequest(this->clients.back());
                     } catch (std::exception &e) {
                         std::cerr << "error: connection received but failed" << std::endl;
                     }

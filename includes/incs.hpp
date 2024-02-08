@@ -22,6 +22,7 @@
 #include <sys/time.h>
 #include <arpa/inet.h>
 
+# define HTTP_BUFFER_SIZE 4096
 # define CONNECTIONS_NUMBER_LIMIT 2000
 # define TIMEOUT 10 // Seconds before timeout
 

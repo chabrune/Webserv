@@ -80,7 +80,7 @@ int main() {
         std::cout << "client: " << inet_ntoa(address.sin_addr) << " " << (int)ntohs(address.sin_port) << std::endl;
 
         // Lecture de la requête HTTP
-        read(new_socket, buffer, 1024);
+        recv(new_socket, buffer, 1024, MSG_TRUNC);
         std::cout << buffer << std::endl;
 
         // Envoi de la réponse

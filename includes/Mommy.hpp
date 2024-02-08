@@ -20,7 +20,8 @@ class Mommy
 
         void run(void);
         int load_LFdSet(void); // Loading listeners socks fd's
-        void acceptRequest(int fd);
+        void acceptRequest(int fd, Server *server);
+        void readRequest(Client *client);
 
         class selectError : public std::exception {
             const char * what() const throw() {
