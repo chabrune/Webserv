@@ -11,6 +11,7 @@ int Mommy::load_LFdSet(void) {
     int maxFd = -1;
 
     FD_ZERO(&this->lset);
+    FD_ZERO(&this->cset);
     for (std::vector<Server*>::iterator it = this->servers.begin(); it != this->servers.end(); it++) {
         FD_SET((*it)->sockfd, &this->lset);
         if ((*it)->sockfd > maxFd)
@@ -26,7 +27,7 @@ void Mommy::acceptRequest(int fd, Server *server) {
     int cliFd = accept(fd, (sockaddr*)&cliInfo, &addrlen);
     if (cliFd == -1)
         throw acceptError();
-    fcntl(cliFd, F_SETFL, O_NONBLOCK);
+    //fcntl(cliFd, F_SETFL, O_NONBLOCK);
     Client * cli = new Client(cliFd, cliInfo, server);
     this->clients.push_back(cli);
     std::cout << YELLOW << "-new connexion from /" << inet_ntoa(cliInfo.sin_addr) << ":" << (int)ntohs(cliInfo.sin_port) << "\\ accepted" << RESET << std::endl;
@@ -35,8 +36,9 @@ void Mommy::acceptRequest(int fd, Server *server) {
 void Mommy::readRequest(Client *client) {
     char buffer[HTTP_BUFFER_SIZE] = {0};
     long len = recv(client->sockfd, buffer, HTTP_BUFFER_SIZE - 1, 0) ;
-    std::cout << buffer << std::endl << len << std::endl;
-    close(client->sockfd);
+    if (len == -1)
+        perror("");
+    std::cout << BLUE << buffer << std::endl << len << RESET << std::endl;
 }
 
 void Mommy::run(void) {
@@ -56,11 +58,28 @@ void Mommy::run(void) {
                     try {
                         acceptRequest((*it)->sockfd, *it);
                         Client *cli = this->clients.back();
-                        std::cout << RED << cli->server->port << std::endl;
                         readRequest(this->clients.back());
+                        FD_SET(cli->sockfd, &this->cset);
                     } catch (std::exception &e) {
                         std::cerr << "error: connection received but failed" << std::endl;
                     }
+                }
+            }
+            for (std::vector<Client*>::iterator it = this->clients.begin(); it != this->clients.end();) {
+                if (FD_ISSET((*it)->sockfd, &this->cset)) {
+                    try {
+                        char buff[] = "bonjour";
+                        send((*it)->sockfd, buff, 7, 0);
+                        close((*it)->sockfd);
+                        FD_CLR((*it)->sockfd, &this->cset);
+                        delete *it;
+                        it = this->clients.erase(it);
+                    } catch (std::exception &e) {
+                        std::cerr << "error: connection received but failed" << std::endl;
+                        ++it;
+                    }
+                } else {
+                    ++it;
                 }
             }
         }

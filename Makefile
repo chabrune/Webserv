@@ -10,7 +10,7 @@ SRCS  = srcs/Client.cpp \
 
 OBJS  = $(SRCS:.cpp=.o)
 
-FLAGS = -std=c++98
+FLAGS = -std=c++98 -g3 -fsanitize=address
 
 .cpp.o:
 				@c++ $(FLAGS) -c $< -o $(<:.cpp=.o)

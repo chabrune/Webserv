@@ -80,7 +80,7 @@ int main() {
         std::cout << "client: " << inet_ntoa(address.sin_addr) << " " << (int)ntohs(address.sin_port) << std::endl;
 
         // Lecture de la requête HTTP
-        recv(new_socket, buffer, 1024, MSG_TRUNC);
+        recv(new_socket, buffer, 1024, 0);
         std::cout << buffer << std::endl;
 
         // Envoi de la réponse
@@ -113,7 +113,7 @@ int main() {
 
         if (isBinary) {
             // Envoi de données binaires
-            char file_buffer[1024];
+            char file_buffer[1];
             int bytes_read;
             while ((bytes_read = read(file_fd, file_buffer, sizeof(file_buffer))) > 0) {
                 send(new_socket, file_buffer, bytes_read, 0);
