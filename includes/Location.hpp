@@ -2,15 +2,6 @@
 
 #include "incs.hpp"
 
-enum Methods
-{
-    POST,
-    GET,
-    HEAD,
-    DELETE,
-    PUT
-};
-
 class Location
 {
     public:

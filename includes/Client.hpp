@@ -1,7 +1,6 @@
-
 #pragma once
 
-#include "incs.hpp"
+#include "Request.hpp"
 #include "Server.hpp"
 
 class Client {
@@ -9,9 +8,17 @@ class Client {
         Client(int fd, sockaddr_in addr, Server *server);
         ~Client();
 
-        Server *server; // Attached server
         int sockfd;
         sockaddr_in addr;
-        long requestLen; // Length of the request
-        char buff[HTTP_BUFFER_SIZE]; // buff
+        Server *server; // Attached server
+        Request req;
+
+        void readRequest();
+        void sendResponse();
+
+        class recvFailure : public std::exception {
+            const char * what() const throw() {
+                return ("failed to read request");
+            }
+        };
 };

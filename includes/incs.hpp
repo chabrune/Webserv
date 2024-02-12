@@ -26,6 +26,16 @@
 # define CONNECTIONS_NUMBER_LIMIT 2000
 # define TIMEOUT 10 // Seconds before timeout
 
+enum Methods
+{
+    POST,
+    GET,
+    HEAD,
+    DELETE,
+    PUT,
+    METHODS_END // usefull to stop an incrementation on an Enum
+};
+
 # define RESET	"\033[0m"
 # define RED 	"\033[31m"
 # define GREEN  "\033[32m"

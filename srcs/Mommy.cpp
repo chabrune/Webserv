@@ -20,7 +20,7 @@ int Mommy::load_LFdSet(void) {
     return (maxFd + 1);
 }
 
-void Mommy::acceptRequest(int fd, Server *server) {
+Client * Mommy::acceptRequest(int fd, Server *server) {
     sockaddr_in cliInfo;
     memset(&cliInfo, 0, sizeof(cliInfo));
     socklen_t addrlen = sizeof(cliInfo);
@@ -29,16 +29,9 @@ void Mommy::acceptRequest(int fd, Server *server) {
         throw acceptError();
     //fcntl(cliFd, F_SETFL, O_NONBLOCK);
     Client * cli = new Client(cliFd, cliInfo, server);
-    this->clients.push_back(cli);
+    this->clients[cliFd] = cli;
     std::cout << YELLOW << "-new connexion from /" << inet_ntoa(cliInfo.sin_addr) << ":" << (int)ntohs(cliInfo.sin_port) << "\\ accepted" << RESET << std::endl;
-}
-
-void Mommy::readRequest(Client *client) {
-    char buffer[HTTP_BUFFER_SIZE] = {0};
-    long len = recv(client->sockfd, buffer, HTTP_BUFFER_SIZE - 1, 0) ;
-    if (len == -1)
-        perror("");
-    std::cout << BLUE << buffer << std::endl << len << RESET << std::endl;
+    return cli;
 }
 
 void Mommy::run(void) {
@@ -56,31 +49,40 @@ void Mommy::run(void) {
             for (std::vector<Server*>::iterator it = this->servers.begin(); it != this->servers.end(); it++) {
                 if (FD_ISSET((*it)->sockfd, &this->lset)) {
                     try {
-                        acceptRequest((*it)->sockfd, *it);
-                        Client *cli = this->clients.back();
-                        readRequest(this->clients.back());
+                        Client * cli = acceptRequest((*it)->sockfd, *it);
+                        cli->readRequest();
+                        cli->req.parseRequest();
                         FD_SET(cli->sockfd, &this->cset);
+                    } catch (std::exception &e) {
+                        std::cerr << RED << "error: " << e.what() << RESET << std::endl;
+                    }
+                }
+            }
+            for (std::map<int, Client*>::iterator it = this->clients.begin(); it != this->clients.end(); it++) {
+                if (FD_ISSET(it->second->sockfd, &this->cset)) {
+                    try {
+                        try {
+                            it->second->sendResponse();
+                        } catch (std::exception &e) {
+                            std::cerr << RED << "error: " << e.what() << RESET << std::endl;
+                        }
+                        if (close(it->second->sockfd) == -1)
+                            std::cerr << RED << "error: failed to close fd after sending response" << RESET << std::endl;
+                        FD_CLR(it->second->sockfd, &this->cset);
+                        FD_CLR(it->second->sockfd, &this->lset);
+                        this->toDelete.push_back(it->first);
                     } catch (std::exception &e) {
                         std::cerr << "error: connection received but failed" << std::endl;
                     }
                 }
             }
-            for (std::vector<Client*>::iterator it = this->clients.begin(); it != this->clients.end();) {
-                if (FD_ISSET((*it)->sockfd, &this->cset)) {
-                    try {
-                        char buff[] = "bonjour";
-                        send((*it)->sockfd, buff, 7, 0);
-                        close((*it)->sockfd);
-                        FD_CLR((*it)->sockfd, &this->cset);
-                        delete *it;
-                        it = this->clients.erase(it);
-                    } catch (std::exception &e) {
-                        std::cerr << "error: connection received but failed" << std::endl;
-                        ++it;
-                    }
-                } else {
-                    ++it;
-                }
+            while (!this->toDelete.empty()) {
+                std::map<int, Client*>::iterator it = this->clients.find(this->toDelete.front());
+                if (it == this->clients.end())
+                    continue;
+                delete it->second;
+                this->clients.erase(it);
+                this->toDelete.erase(this->toDelete.begin());
             }
         }
     }
