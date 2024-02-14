@@ -9,11 +9,14 @@ class Mommy
         Mommy();
         ~Mommy();
 
+        fd_set sset;    // Servers sockets
         fd_set lset;    // Listener sockets set
         fd_set cset;    // Client sockets set
         std::vector<Server *> servers;
         std::map<int, Client *> clients;
         timeval timeout;
+        bool running;
+        bool canDel;
 
         std::vector<int> toDelete;
 
@@ -24,11 +27,6 @@ class Mommy
         class selectError : public std::exception {
             const char * what() const throw() {
                 return ("select() failure");
-            }
-        };
-        class acceptError : public std::exception {
-            const char * what() const throw() {
-                return ("new connexion received but failed");
             }
         };
 };

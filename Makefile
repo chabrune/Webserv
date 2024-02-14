@@ -18,6 +18,9 @@ FLAGS = -std=c++98 -g3 -fsanitize=address
 
 all:			$(NAME)
 
+run:			$(NAME)
+				./webserv D
+
 $(NAME):		$(OBJS)
 				@c++ $(FLAGS) $(OBJS) -o $(NAME)
 				@printf "\033[32m Done ✓ \033[0m\n"

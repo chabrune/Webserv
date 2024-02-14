@@ -21,4 +21,9 @@ class Client {
                 return ("failed to read request");
             }
         };
+        class emptyBuffer : public std::exception {
+            const char *what() const throw() {
+                return ("empty request received");
+            }
+    };
 };

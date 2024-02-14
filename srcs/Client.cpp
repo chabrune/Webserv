@@ -8,17 +8,19 @@ Client::~Client() {}
 void Client::readRequest() {
     std::vector<char> buffer(HTTP_BUFFER_SIZE);
     this->req.len = recv(this->sockfd, &(buffer[0]), HTTP_BUFFER_SIZE, 0);
-    std::cout << "len: " << this->req.len << std::endl;
+    //std::cout << "len: " << this->req.len << std::endl;
     if (this->req.len == -1)
         throw recvFailure();
     else if (this->req.len > HTTP_BUFFER_SIZE) {
-//        sendErrorPage()
+    //        sendErrorPage()
+    } else if (this->req.len == 0) {
+        throw emptyBuffer();
     }
     this->req.content.append(buffer.begin(), buffer.end());
-    std::cout << BLUE << this->req.content << RESET << std::endl;
+    //std::cout << BLUE << this->req.content << RESET << std::endl;
 }
 
 void Client::sendResponse() {
-    char buffer[] = "HTTP/1.1 308 Permanent Redirect\r\nLocation: https://puginarug.com/";
-    send(this->sockfd, buffer, 65, 0);
+    char buffer[] = "HTTP/1.1 200 OK\r\n\r\nbonjour\r\n\r\n";
+    send(this->sockfd, buffer, strlen(buffer), 0);
 }
