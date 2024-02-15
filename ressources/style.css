@@ -1,0 +1,74 @@
+
+html {
+    background: #101252;
+}
+
+header {
+    position:fixed;
+    width: 100%;
+    height: 75px;
+    top: 0;
+    left: 0;
+    background: #2b2e8c;
+    box-shadow: 0 0 25px rgba(136, 139, 207, 0.5);
+}
+
+.git-section {
+    display: flex;
+    position: relative;
+    flex-direction: row;
+}
+
+.git-rectangle {
+    position: relative;
+    z-index: 1;
+    height: 50px;
+    width: 140px;
+    margin-right: 10px;
+    margin-top: 10px;
+    border-top-left-radius: 26px 26px;
+    border-top-right-radius: 20px 20px;
+    border-bottom-left-radius: 24px 24px;
+    border-bottom-right-radius: 20px 20px;
+    background: linear-gradient(to right, #5758FF 0%, #986EFF 59%, #5F7CBD 100%);
+    box-shadow: 0 0 50px rgba(136, 139, 207, 0.5);
+}
+
+.git-rectangle::before {
+    position: absolute;
+    z-index: -1;
+    content: '';
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border-top-left-radius: 25px 25px;
+    border-top-right-radius: 20px 20px;
+    border-bottom-left-radius: 23px 23px;
+    border-bottom-right-radius: 20px 20px;
+    background: linear-gradient(to right, #987AFF 0%, #469DFB 79%, #69C3FB 100%);
+    transition: opacity 0.25s linear;
+    opacity: 0;
+}
+
+.git-rectangle:hover:before {
+    opacity: 1;
+}
+
+.git-name {
+    color: #ffffff;
+    text-align: left;
+    margin-top: -40px;
+    margin-left: 55px;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+    text-shadow: 1px 1px 2px lightcyan, 0 0 1em blue, 0 0 0.2em blue;
+}
+
+.synth-image {
+    z-index: -1;
+    position: relative;
+    left: 0;
+    margin-left: -7px;
+    margin-bottom: -10px;
+    opacity: 0.25;
+}
