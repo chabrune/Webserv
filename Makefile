@@ -11,17 +11,19 @@ SRCS  = srcs/Client.cpp \
 
 OBJS  = $(SRCS:.cpp=.o)
 
-FLAGS = -std=c++98 -g3 -fsanitize=address
+FLAGS = -Wall -Wextra -Werror -std=c++98
 
 .cpp.o:
 				@c++ $(FLAGS) -c $< -o $(<:.cpp=.o)
 
 all:			$(NAME)
 
-run:			$(NAME)
-				./webserv D
-
 $(NAME):		$(OBJS)
+				@c++ $(FLAGS) $(OBJS) -o $(NAME)
+				@printf "\033[32m Done ✓ \033[0m\n"
+
+debug: 			FLAGS += -g3 -fsanitize=address -D DEBUG=1
+debug:			$(OBJS)
 				@c++ $(FLAGS) $(OBJS) -o $(NAME)
 				@printf "\033[32m Done ✓ \033[0m\n"
 
@@ -34,4 +36,6 @@ fclean: 		clean
 
 re:				fclean all
 
-.PHONY: all clean fclean re
+red:			fclean debug
+
+.PHONY: all debug clean fclean re red

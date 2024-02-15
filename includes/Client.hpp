@@ -18,12 +18,14 @@ class Client {
 
         class recvFailure : public std::exception {
             const char * what() const throw() {
-                return ("failed to read request");
+                return ("-failed to read / empty request");
             }
         };
-        class emptyBuffer : public std::exception {
+        class tooLongRequest : public std::exception {
             const char *what() const throw() {
-                return ("empty request received");
+                return ("request exceeded buffer size");
             }
-    };
+        };
 };
+
+std::ostream & operator<<(std::ostream & out, const Client & cli);

@@ -24,6 +24,10 @@
 #include <signal.h>
 #include <netdb.h>
 
+# ifndef DEBUG
+#  define DEBUG 0 // false by default, automatically set to true with "make debug"
+# endif
+
 # define HTTP_BUFFER_SIZE 4096
 # define CONNECTIONS_NUMBER_LIMIT 2000
 # define TIMEOUT 1 // Seconds before select exit

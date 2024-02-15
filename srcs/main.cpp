@@ -13,7 +13,9 @@ void createTestServer(Mommy *frr) {
 }
 
 void quit(int sig) {
-    frr.running = false;
+    (void)sig;
+    FD_ZERO(&frr.lset);
+    FD_ZERO(&frr.cset);
     for (std::vector<Server *>::iterator it = frr.servers.begin(); !frr.servers.empty();) {
         close((*it)->sockfd);
         delete (*it);
@@ -21,16 +23,21 @@ void quit(int sig) {
         it = frr.servers.begin();
     }
     for (std::map<int, Client *>::iterator it = frr.clients.begin(); !frr.clients.empty();) {
-        close(it->second->sockfd);
-        frr.clients.erase(it->second->sockfd);
-        delete(it->second);
-        it = frr.clients.begin();
+        if (it->second) {
+            int fdsave = it->second->sockfd;
+            close(it->second->sockfd);
+            delete(it->second);
+            frr.clients.erase(fdsave);
+            it = frr.clients.begin();
+        }
     }
     std::cout << YELLOW << "\n-server killed by user" << RESET << std::endl;
+    std::exit(0);
 }
 
 int main(int argc, char **argv)
 {
+    (void)argv;
     if(argc != 2)
     {
         std::cerr << "./webserv [configuration file]" << std::endl;
@@ -39,6 +46,8 @@ int main(int argc, char **argv)
     int ret = 0;
     signal(SIGINT, quit);
     signal(SIGQUIT, quit);
+    if (DEBUG)
+        std::cout << GREEN << "-debug is on" << RESET << std::endl;
     try {
         //frr.inputParsing(std::string(argv[1]));
         createTestServer(&frr);

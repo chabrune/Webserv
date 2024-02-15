@@ -16,7 +16,6 @@ class Mommy
         std::map<int, Client *> clients;
         timeval timeout;
         bool running;
-        bool canDel;
 
         std::vector<int> toDelete;
 
@@ -27,6 +26,11 @@ class Mommy
         class selectError : public std::exception {
             const char * what() const throw() {
                 return ("select() failure");
+            }
+        };
+        class acceptError : public std::exception {
+            const char *what() const throw() {
+                return ("connexion received but failed");
             }
         };
 };

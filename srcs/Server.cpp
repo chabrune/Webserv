@@ -37,5 +37,5 @@ void Server::setup(void)
         throw addrBindError();
     if (listen(this->sockfd, CONNECTIONS_NUMBER_LIMIT) == -1)
         throw sockListeningError();
-    std::cout << GREEN << "-listener socket for /" << this->server_name << ":" << this->port << "\\ ready" << RESET << std::endl;
+    std::cout << GREEN << "-listener socket for " << this->server_name << ":" << this->port << " ready" << RESET << std::endl;
 }
