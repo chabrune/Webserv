@@ -10,8 +10,10 @@ std::ostream & operator<<(std::ostream & out, const Client & cli) {
     return out;
 }
 
-void Client::readRequest() {
-    std::vector<char> buffer(HTTP_BUFFER_SIZE);
+/*void Client::readRequest() {
+    //std::vector<char> buffer(HTTP_BUFFER_SIZE);
+	std::string buffer;
+	buffer.resize(HTTP_BUFFER_SIZE);
     this->req.len = recv(this->sockfd, &(buffer[0]), HTTP_BUFFER_SIZE, 0);
     if (this->req.len <= 0) {
         throw recvFailure();
@@ -19,10 +21,12 @@ void Client::readRequest() {
     else if (this->req.len >= HTTP_BUFFER_SIZE) {
         throw tooLongRequest();
     }
-    this->req.content.append(buffer.begin(), buffer.end());
+	Request r = Request(buffer);
+	//this->req.content = buffer;
+    //this->req.content.append(buffer.begin(), buffer.end());
     //std::cout << BLUE << this->req.content << RESET << std::endl;
     //std::cout << GREEN << this->req.len << RESET << std::endl;
-}
+}*/
 
 void Client::sendResponse() {
     char buffer[] = "HTTP/1.1 200 OK\r\n\r\nbonjour\r\n\r\n";

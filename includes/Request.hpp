@@ -4,13 +4,19 @@
 
 class Request {
     public:
-        Request();
+		Request();
+		Request(int sockfd);
         ~Request();
 
         long len;
-        std::string content; // contain the request
+        //std::string content;
+		std::string method; //GET POST..
+		std::string path_to_file;
+		std::string file_type; //css, js, html
+		std::string host;
+		bool keepalive;
 
-        int Method;
+	private:
 
-        void parseRequest();
+        void parseRequest(std::string &str);
 };
