@@ -30,10 +30,11 @@ void Request::parseRequest(std::string &str) {
 	this->keepalive = false;
 
 	this->method = str.substr(0, first_space_index);
-	this->path_to_file = str.substr(first_space_index + 1, str.find_first_of(' ', first_space_index) - 2);
-	//if file != / get extension
+	this->path_to_file = str.substr(first_space_index + 1, str.find_first_of(' ', first_space_index + 1) - (first_space_index + 1));
+	if (this->path_to_file.length() != 1)
+		this->file_type = this->path_to_file.substr(this->path_to_file.find_first_of('.') + 1, this->path_to_file.length());
 
-	//remove the first line (we already have the necessary information
+	//remove the first line (we already have the necessary information)
 	str.erase(0, str.find_first_of('\n') + 1);
 
 	first_space_index = str.find_first_of(' ');
@@ -42,3 +43,24 @@ void Request::parseRequest(std::string &str) {
 	if (str.find("keep-alive") != std::string::npos)
 		this->keepalive = true;
 }
+
+const std::string &Request::getMethod() const {
+	return method;
+}
+
+const std::string &Request::getPathToFile() const {
+	return path_to_file;
+}
+
+const std::string &Request::getFileType() const {
+	return file_type;
+}
+
+const std::string &Request::getHost() const {
+	return host;
+}
+
+bool Request::isKeepalive() const {
+	return keepalive;
+}
+
