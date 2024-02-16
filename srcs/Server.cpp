@@ -10,7 +10,7 @@ Server& Server::operator=(const Server &rhs)
     return(*this);
 }
 
-Server::Server(const Server &src)
+Server::Server(const Server &src) : ServerConf()
 {
     (void)src;
 }
