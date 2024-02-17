@@ -38,6 +38,8 @@ Client * Mommy::acceptRequest(int fd, Server *server) {
 }
 
 void Mommy::run(void) {
+	Request request;
+
     while (this->running) {
         int maxFd = load_LFdSet();
         int sval = select(maxFd, &this->lset, &this->cset, NULL, &this->timeout);
@@ -51,7 +53,7 @@ void Mommy::run(void) {
                     Client *cli;
                     try {
                         cli = acceptRequest((*it)->sockfd, *it);
-						Request request(cli->sockfd);
+						request = Request(cli->sockfd);
                         /*cli->readRequest();
                         cli->req.parseRequest();*/
                         FD_SET(cli->sockfd, &this->cset);
@@ -73,7 +75,9 @@ void Mommy::run(void) {
                 if (FD_ISSET(it->second->sockfd, &this->cset)) {
                     try {
                         try {
-                            it->second->sendResponse();
+							Response response(request.getPathToFile(), request.getFileType());
+							send(it->second->sockfd, &(response.getResponse()[0]), response.getResponseSize(), 0);
+                            //it->second->sendResponse();
                         } catch (std::exception &e) {
                             if (DEBUG)
                                 std::cerr << RED << "error: " << e.what() << RESET << std::endl;

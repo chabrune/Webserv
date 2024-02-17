@@ -4,6 +4,7 @@
 
 class Request {
     public:
+		Request();
 		Request(int sockfd);
         ~Request();
 

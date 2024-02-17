@@ -1,5 +1,7 @@
 #include "../includes/Request.hpp"
 
+Request::Request() {}
+
 Request::Request(int sockfd) {
 	std::cout << "New request receive.. Check for errors" << std::endl;
 
@@ -24,8 +26,12 @@ void Request::parseRequest(std::string &str) {
 
 	this->method = str.substr(0, first_space_index);
 	this->path_to_file = str.substr(first_space_index + 1, str.find_first_of(' ', first_space_index + 1) - (first_space_index + 1));
-	if (this->path_to_file.length() != 1)
-		this->file_type = this->path_to_file.substr(this->path_to_file.find_first_of('.') + 1, this->path_to_file.length());
+	//If the path to file = / set the default page (index.html for example), define in the server config.
+	if (this->path_to_file == "/")
+		this->path_to_file = "index.html";
+	this->file_type = this->path_to_file.substr(this->path_to_file.find_first_of('.') + 1, this->path_to_file.length());
+	if (this->file_type == "js")
+		this->file_type = "javascript";
 
 	//remove the first line (we already have the necessary information)
 	str.erase(0, str.find_first_of('\n') + 1);
