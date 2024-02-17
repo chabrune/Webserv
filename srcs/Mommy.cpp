@@ -55,7 +55,7 @@ void Mommy::run(void) {
                         /*cli->readRequest();
                         cli->req.parseRequest();*/
                         FD_SET(cli->sockfd, &this->cset);
-                    } catch (Client::tooLongRequest &e) {
+                    } catch (Request::tooLongRequest &e) {
                         std::cerr << RED << "ALLLLEEEEEEEERRRRRRRRRRRTTTTTTTTTTT"<< RESET << std::endl;
                     } catch (std::exception &e) {
                         if (cli) {

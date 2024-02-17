@@ -1,7 +1,4 @@
-
 #include "../includes/Request.hpp"
-
-Request::Request() : len(0){}
 
 Request::Request(int sockfd) {
 	std::cout << "New request receive.. Check for errors" << std::endl;
@@ -9,14 +6,10 @@ Request::Request(int sockfd) {
 	std::string buffer;
 	buffer.resize(HTTP_BUFFER_SIZE);
 	this->len = recv(sockfd, &(buffer[0]), HTTP_BUFFER_SIZE, 0);
-	if (this->len <= 0) {
-		//throw recvFailure();
-		return;
-	}
-	else if (this->len >= HTTP_BUFFER_SIZE) {
-		//throw tooLongRequest();
-		return;
-	}
+	if (this->len <= 0)
+		throw recvFailure();
+	else if (this->len >= HTTP_BUFFER_SIZE)
+		throw tooLongRequest();
 	std::cout << "No errors found, starting to parse.." << std::endl;
 	this->parseRequest(buffer);
 	std::cout << "New request created. Method: " << this->method << " file path: " << this->path_to_file << " host: " << this->host  << " keep-alive: " << this->keepalive << std::endl;
