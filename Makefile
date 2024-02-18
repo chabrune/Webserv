@@ -7,6 +7,7 @@ SRCS  = srcs/Client.cpp \
 		srcs/Mommy.cpp \
 		srcs/Server.cpp \
 		srcs/ServerConf.cpp \
+		srcs/MimeUtils.cpp \
 		srcs/Response.cpp \
 		srcs/Request.cpp
 

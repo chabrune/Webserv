@@ -4,7 +4,10 @@ Response::Response(const std::string &path_to_file, const std::string &file_type
 	std::string tester = "experiment/expe_ali/site/" + path_to_file;
 
 	std::fstream file;
-	file.open(tester.c_str(), std::fstream::in);
+	if (file_type == "jpg") {
+		file.open(tester.c_str(), std::fstream::binary);
+	} else
+		file.open(tester.c_str(), std::fstream::in);
 	if (file.fail())
 		printf("err file");
 
@@ -18,7 +21,7 @@ Response::Response(const std::string &path_to_file, const std::string &file_type
 void Response::headerBuilder(const std::string &file_type) {
 	std::stringstream header_tmp;
 
-	header_tmp << "HTTP/1.1 200 OK\nContent-Type: text/" << file_type << "\nContent-Length: " << this->_content.length() << "\r\n\r\n";
+	header_tmp << "HTTP/1.1 200 OK\nContent-Type: " << file_type << "\nContent-Length: " << this->_content.length() << "\r\n\r\n";
 	this->_header = header_tmp.str();
 }
 

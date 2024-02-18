@@ -1,6 +1,7 @@
 #pragma once
 
 #include "incs.hpp"
+#include "MimeUtils.hpp"
 
 class Request {
     public:
@@ -30,6 +31,7 @@ class Request {
 
 	private:
         void parseRequest(std::string &str);
+		void setFileType();
 		std::string method; //GET, POST..
 		std::string path_to_file;
 		std::string file_type; //css, js, html

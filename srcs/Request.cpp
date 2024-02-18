@@ -4,7 +4,6 @@ Request::Request() {}
 
 Request::Request(int sockfd) {
 	std::cout << "New request receive.. Check for errors" << std::endl;
-
 	std::string buffer;
 	buffer.resize(HTTP_BUFFER_SIZE);
 	this->len = recv(sockfd, &(buffer[0]), HTTP_BUFFER_SIZE, 0);
@@ -29,9 +28,8 @@ void Request::parseRequest(std::string &str) {
 	//If the path to file = / set the default page (index.html for example), define in the server config.
 	if (this->path_to_file == "/")
 		this->path_to_file = "index.html";
-	this->file_type = this->path_to_file.substr(this->path_to_file.find_first_of('.') + 1, this->path_to_file.length());
-	if (this->file_type == "js")
-		this->file_type = "javascript";
+
+	setFileType();
 
 	//remove the first line (we already have the necessary information)
 	str.erase(0, str.find_first_of('\n') + 1);
@@ -41,6 +39,13 @@ void Request::parseRequest(std::string &str) {
 
 	if (str.find("keep-alive") != std::string::npos)
 		this->keepalive = true;
+}
+
+void Request::setFileType() {
+	this->file_type = this->path_to_file.substr(this->path_to_file.find_first_of('.') + 1, this->path_to_file.length());
+	if (this->file_type == "js")
+		this->file_type = "javascript";
+	this->file_type.insert(0, MimeUtils::getTypeOfContent(this->file_type) + "/");
 }
 
 const std::string &Request::getMethod() const {
@@ -62,4 +67,3 @@ const std::string &Request::getHost() const {
 bool Request::isKeepalive() const {
 	return keepalive;
 }
-
