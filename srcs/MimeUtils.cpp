@@ -1,12 +1,24 @@
 #include "../includes/MimeUtils.hpp"
 
 std::string MimeUtils::getTypeOfContent(const std::string &extension) {
-	if (extension == "html" || extension == "javascript" || extension == "css")
-		return "text";
-	else if (extension == "jpg" || extension == "png")
+	if (isImage(extension))
 		return "image";
-	else if (extension == "mp4")
+	else if (isVideo(extension))
 		return "video";
-	std::cout << "There is an error in getTypeOfContent Function.." << std::endl;
-	return "";
+	return "text";
+}
+
+std::ios_base::openmode MimeUtils::getOpenMode(const std::string &extension) {
+	std::string type = getTypeOfContent(extension);
+	if (type == "image" || type == "video")
+		return std::ifstream::binary;
+	return std::ifstream::in;
+}
+
+bool MimeUtils::isImage(const std::string &extension) {
+	return extension == "jpg" || extension == "png";
+}
+
+bool MimeUtils::isVideo(const std::string &extension) {
+	return extension == "mp4";
 }

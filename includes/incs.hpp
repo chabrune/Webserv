@@ -23,6 +23,7 @@
 #include <arpa/inet.h>
 #include <signal.h>
 #include <netdb.h>
+#include "MimeUtils.hpp"
 
 # ifndef DEBUG
 #  define DEBUG 0 // false by default, automatically set to true with "make debug"

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "incs.hpp"
-#include "MimeUtils.hpp"
 
 class Request {
     public:
@@ -14,6 +13,7 @@ class Request {
 		const std::string &getMethod() const;
 		const std::string &getPathToFile() const;
 		const std::string &getFileType() const;
+		const std::string &getExtension() const;
 		const std::string &getHost() const;
 		bool isKeepalive() const;
 
@@ -34,7 +34,8 @@ class Request {
 		void setFileType();
 		std::string method; //GET, POST..
 		std::string path_to_file;
-		std::string file_type; //css, js, html
+		std::string file_type; //text/css, text/js, image/jpg...
+		std::string extension; //jpg, png, css...
 		std::string host;
 		bool keepalive;
 };

@@ -1,10 +1,11 @@
 #pragma once
 
 #include "incs.hpp"
+#include "Request.hpp"
 
 class Response {
 	public:
-		Response(const std::string &path_to_file, const std::string &file_type);
+		Response(const Request &request);
 
 		std::string &getHeader() const;
 		std::string &getContent() const;

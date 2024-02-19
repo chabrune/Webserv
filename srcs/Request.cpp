@@ -45,6 +45,7 @@ void Request::setFileType() {
 	this->file_type = this->path_to_file.substr(this->path_to_file.find_first_of('.') + 1, this->path_to_file.length());
 	if (this->file_type == "js")
 		this->file_type = "javascript";
+	this->extension = this->file_type;
 	this->file_type.insert(0, MimeUtils::getTypeOfContent(this->file_type) + "/");
 }
 
@@ -58,6 +59,10 @@ const std::string &Request::getPathToFile() const {
 
 const std::string &Request::getFileType() const {
 	return file_type;
+}
+
+const std::string &Request::getExtension() const {
+	return extension;
 }
 
 const std::string &Request::getHost() const {

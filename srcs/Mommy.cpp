@@ -75,7 +75,7 @@ void Mommy::run(void) {
                 if (FD_ISSET(it->second->sockfd, &this->cset)) {
                     try {
                         try {
-							Response response(request.getPathToFile(), request.getFileType());
+							Response response(request);
 							send(it->second->sockfd, &(response.getResponse()[0]), response.getResponseSize(), 0);
                             //it->second->sendResponse();
                         } catch (std::exception &e) {
