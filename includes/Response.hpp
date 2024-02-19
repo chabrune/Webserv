@@ -12,7 +12,7 @@ class Response {
 		int getResponseSize() const;
 	private:
 		void headerBuilder(const std::string &file_type);
-		void contentBuilder(std::fstream &file);
+		void contentBuilder(std::ifstream &file, const std::string &file_type);
 		void cgiContentBuilder();
 
 		std::string _header;

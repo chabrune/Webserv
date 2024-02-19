@@ -1,17 +1,22 @@
 #include "../includes/Response.hpp"
+#include <cerrno>
+#include <cstring>
 
 Response::Response(const std::string &path_to_file, const std::string &file_type) {
-	std::string tester = "experiment/expe_ali/site/" + path_to_file;
+	std::string tester = "experiment/expe_ali/site" + path_to_file;
 
-	std::fstream file;
-	if (file_type == "jpg") {
+	std::ifstream file;
+	//todo Better way to do that
+	if (file_type == "image/jpg")
 		file.open(tester.c_str(), std::fstream::binary);
-	} else
+	else
 		file.open(tester.c_str(), std::fstream::in);
-	if (file.fail())
-		printf("err file");
+	if (file.fail()) {
+		std::cerr << "Error: " << std::strerror(errno) << std::endl;
+		return;
+	}
 
-	contentBuilder(file);
+	contentBuilder(file, file_type);
 	headerBuilder(file_type);
 	_response_size = _header.length() + _content.length();
 	_response.resize(_response_size);
@@ -25,8 +30,16 @@ void Response::headerBuilder(const std::string &file_type) {
 	this->_header = header_tmp.str();
 }
 
-void Response::contentBuilder(std::fstream &file) {
+void Response::contentBuilder(std::ifstream &file, const std::string &file_type) {
 	std::string line;
+	if (file_type == "image/jpg") {
+		file.seekg(0, std::ios::end);
+		int length = file.tellg();
+		file.seekg(0, std::ios::beg);
+		this->_content.resize(length);
+		file.read(&this->_content[0], length);
+		return ;
+	}
 
 	while(file.good()) {
 		std::getline(file, line);

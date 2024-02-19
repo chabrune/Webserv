@@ -27,7 +27,7 @@ void Request::parseRequest(std::string &str) {
 	this->path_to_file = str.substr(first_space_index + 1, str.find_first_of(' ', first_space_index + 1) - (first_space_index + 1));
 	//If the path to file = / set the default page (index.html for example), define in the server config.
 	if (this->path_to_file == "/")
-		this->path_to_file = "index.html";
+		this->path_to_file = "/index.html";
 
 	setFileType();
 
