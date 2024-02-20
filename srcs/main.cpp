@@ -3,6 +3,7 @@
 #include "../includes/Server.hpp"
 
 Mommy frr; // Main structure
+Server Serv; //Charles test parsing
 
 //Creating a test server while parsing isn't finished
 void createTestServer(Mommy *frr) {
@@ -50,9 +51,9 @@ int main(int argc, char **argv)
     if (DEBUG)
         std::cout << GREEN << "-debug is on" << RESET << std::endl;
     try {
-        //frr.inputParsing(std::string(argv[1]));
+        Serv.inputParsing(std::string(argv[1]), frr);
         createTestServer(&frr);
-        frr.run();
+        // frr.run();
     } catch (std::exception &e) {
         std::cerr << "error: " << e.what() << std::endl;
         ret = 1;
