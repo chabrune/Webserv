@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Location.hpp"
+#include "Mommy.hpp"
 
 class ServerConf
 {
@@ -10,8 +11,8 @@ class ServerConf
         ServerConf(const ServerConf &src);
         ServerConf& operator=(const ServerConf &rhs);
 
-        void inputParsing(std::string argv);
-        void check_serv_line(std::string &line, int& one_line);
+        void inputParsing(std::string argv, Mommy& frr);
+        void check_serv_line(std::string &line, Mommy& frr);
         void check_serv_name_line(std::string& line, int& one_line);
 
         std::string root; // Define the root directory
