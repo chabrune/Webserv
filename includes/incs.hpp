@@ -23,6 +23,7 @@
 #include <arpa/inet.h>
 #include <signal.h>
 #include <netdb.h>
+#include <sys/stat.h>
 #include "MimeUtils.hpp"
 
 # ifndef DEBUG
@@ -32,6 +33,9 @@
 # define HTTP_BUFFER_SIZE 4096
 # define CONNECTIONS_NUMBER_LIMIT 2000
 # define TIMEOUT 1 // Seconds before select exit
+# define ISDIRECTORY 500
+
+class   requestError : public std::exception {};
 
 enum Methods
 {

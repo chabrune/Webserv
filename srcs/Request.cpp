@@ -1,8 +1,8 @@
 #include "../includes/Request.hpp"
 
-Request::Request() {}
+Request::Request() : isDir(false) {}
 
-Request::Request(int sockfd) {
+Request::Request(int sockfd) : isDir(false) {
 	std::cout << "New request receive.. Check for errors" << std::endl;
 	std::string buffer;
 	buffer.resize(HTTP_BUFFER_SIZE);
@@ -49,6 +49,23 @@ void Request::setFileType() {
 	this->file_type.insert(0, MimeUtils::getTypeOfContent(this->file_type) + "/");
 }
 
+int Request::tryAccess(Request & req) {
+    std::string tester = "experiment/expe_ali/site/" + this->path_to_file;
+    if (access(tester.c_str(), F_OK) != 0)
+        throw accessError();
+    if (access(tester.c_str(), R_OK) != 0)
+        throw accessError();
+    struct stat filestat;
+    if (stat(tester.c_str(), &filestat) == 0) {
+        if (S_ISDIR(filestat.st_mode)) { // Faire en sorte de rediriger vers autoindex ou non
+            req.isDir = true;
+            errno = ISDIRECTORY;
+            throw accessError();
+        }
+    }
+    return (0);
+}
+
 const std::string &Request::getMethod() const {
 	return method;
 }
@@ -63,6 +80,10 @@ const std::string &Request::getFileType() const {
 
 const std::string &Request::getExtension() const {
 	return extension;
+}
+
+const bool &Request::getIsDir() const {
+    return isDir;
 }
 
 const std::string &Request::getHost() const {

@@ -75,9 +75,12 @@ void Mommy::run(void) {
                 if (FD_ISSET(it->second->sockfd, &this->cset)) {
                     try {
                         try {
-							Response response(request);
-							send(it->second->sockfd, &(response.getResponse()[0]), response.getResponseSize(), 0);
+                            request.tryAccess(request);
+                            Response response(request);
+                            send(it->second->sockfd, &(response.getResponse()[0]), response.getResponseSize(), 0);
                             //it->second->sendResponse();
+                        } catch (requestError &e) {
+                            Response::handleRequestError(e, it->second->sockfd);
                         } catch (std::exception &e) {
                             if (DEBUG)
                                 std::cerr << RED << "error: " << e.what() << RESET << std::endl;
