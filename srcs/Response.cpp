@@ -1,18 +1,19 @@
 #include "../includes/Response.hpp"
-#include <cerrno>
-#include <cstring>
-Response::Response(const Request &request) {
+
+Response::Response(Client & client, Request &request) : client(client) {
 	std::cout << "New response is under building.." << std::endl;
 	std::string tester = "experiment/expe_ali/site" + request.getPathToFile();
+    this->_uri = tester.c_str();
+    this->_isAutoindex = request.getIsDir();
 
 	std::ifstream file;
 	file.open(tester.c_str(), MimeUtils::getOpenMode(request.getExtension()));
 	if (file.fail()) {
-		std::cerr << "Error: " << strerror(errno) << std::endl;
+		std::cerr << RED << "Error: " << strerror(errno) << RESET << std::endl;
 		return;
 	}
 
-	contentBuilder(file, request.getExtension());
+	contentBuilder(request, file, request.getExtension(), request.getIsDir());
 	headerBuilder(request.getFileType());
 	_response_size = _header.length() + _content.length();
 	_response.resize(_response_size);
@@ -20,16 +21,50 @@ Response::Response(const Request &request) {
 	std::cout << "Response created. Header:" << std::endl << this->_header;
 }
 
-void Response::headerBuilder(const std::string &file_type) {
+void Response::headerBuilder(std::string file_type) {
 	std::stringstream header_tmp;
 
+    if (this->_isAutoindex) {
+        file_type = "text/html";
+    }
 	header_tmp << "HTTP/1.1 200 OK\nContent-Type: " << file_type << "\nContent-Length: " << this->_content.length() << "\r\n\r\n";
 	this->_header = header_tmp.str();
 }
 
-void Response::contentBuilder(std::ifstream &file, const std::string &extension) {
+void Response::generateAutoindex(Request & req) {
+   DIR* dir = opendir(this->_uri.c_str());
+   if (!dir)
+       std::cerr << RED << "can't open dir" << RESET << std::endl;
+   perror("");
+    std::string content;
+    content = "<!DOCTYPE html>\n<html>\n<head>\n<title>Index of ";
+    content += this->_uri;
+    content += "</title>\n</head>\n<body>\n<h1>Index of ";
+    content += this->_uri;
+    content += "</h1>\n<ul>\n";
+    struct dirent *entry;
+    while ((entry = readdir(dir)) != NULL) {
+        content += "<li><a href=\"http://localhost:8080";
+        content += req.getPathToFile();
+        content += "/";
+        content += entry->d_name;
+        content += "\">./";
+        content += entry->d_name;
+        content += "</a></li>\n";
+    }
+    content += "</ul>\n</body>\n</html>\n\r\n\r\n";
+    closedir(dir);
+    this->_content = content;
+    std::cout << YELLOW << content << RESET << std::endl;
+}
+
+void Response::contentBuilder(Request & req, std::ifstream &file, const std::string &extension, const bool isDir) {
 	std::string line;
-	if (MimeUtils::isImage(extension) || MimeUtils::isVideo(extension)) {
+
+    if (isDir) {
+        generateAutoindex(req);
+        return;
+    } else if (MimeUtils::isImage(extension) || MimeUtils::isVideo(extension)) {
 		file.seekg(0, std::ios::end);
 		int length = file.tellg();
 		file.seekg(0, std::ios::beg);
@@ -76,13 +111,12 @@ std::string Response::getCodeHeader(std::string * path) {
     return ("HTTP/1.1 500 Internal Server Error\n");
 }
 
-void Response::handleRequestError(requestError &e, int sockfd) {
+void Response::handleRequestError(int sockfd) {
     std::string header = "";
     std::string codePath = "";
     char buffer[4096];
     memset(buffer, 0, sizeof(buffer));
 
-    (void)e;
     if (DEBUG)
         std::cout << RED << "Sending error code, reason: " << errno << RESET << std::endl;
     header = getCodeHeader(&codePath);
@@ -99,7 +133,6 @@ void Response::handleRequestError(requestError &e, int sockfd) {
     }
     if (!header.empty()) {
         try {
-            std::cout << GREEN << "HEADER:\n" << header << RESET << std::endl;
             send(sockfd, &(header[0]), header.length(), 0);
         } catch (std::exception &e) {
             if (DEBUG)
@@ -108,8 +141,12 @@ void Response::handleRequestError(requestError &e, int sockfd) {
     }
 }
 
-std::string Response::getResponse() const {
+std::string & Response::getResponse() {
 	return this->_response;
+}
+
+std::string &Response::getUri() {
+    return this->_uri;
 }
 
 int Response::getResponseSize() const {

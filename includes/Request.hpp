@@ -17,7 +17,7 @@ class Request {
 		const std::string &getHost() const;
         const bool &getIsDir() const;
 		bool isKeepalive() const;
-        int tryAccess(Request & req);
+        int tryAccess(Request & req, bool autoindex);
 
 		class recvFailure : public requestError {
 			const char * what() const throw() {

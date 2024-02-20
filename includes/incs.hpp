@@ -24,6 +24,8 @@
 #include <signal.h>
 #include <netdb.h>
 #include <sys/stat.h>
+#include <cerrno>
+#include <dirent.h>
 #include "MimeUtils.hpp"
 
 # ifndef DEBUG

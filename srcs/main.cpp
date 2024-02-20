@@ -9,6 +9,7 @@ void createTestServer(Mommy *frr) {
     frr->servers.push_back(new Server());
     frr->servers.back()->port = 8080;
     frr->servers.back()->server_name = "localhost";
+    frr->servers.back()->autoindex = true;
     frr->servers.back()->setup();
 }
 

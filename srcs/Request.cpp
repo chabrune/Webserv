@@ -49,7 +49,7 @@ void Request::setFileType() {
 	this->file_type.insert(0, MimeUtils::getTypeOfContent(this->file_type) + "/");
 }
 
-int Request::tryAccess(Request & req) {
+int Request::tryAccess(Request & req, bool autoindex) {
     std::string tester = "experiment/expe_ali/site/" + this->path_to_file;
     if (access(tester.c_str(), F_OK) != 0)
         throw accessError();
@@ -57,10 +57,12 @@ int Request::tryAccess(Request & req) {
         throw accessError();
     struct stat filestat;
     if (stat(tester.c_str(), &filestat) == 0) {
-        if (S_ISDIR(filestat.st_mode)) { // Faire en sorte de rediriger vers autoindex ou non
+        if (S_ISDIR(filestat.st_mode)){
             req.isDir = true;
-            errno = ISDIRECTORY;
-            throw accessError();
+            if (!autoindex) {
+                errno = ISDIRECTORY;
+                throw accessError();
+            }
         }
     }
     return (0);
