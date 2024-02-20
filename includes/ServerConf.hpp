@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Location.hpp"
-#include "Mommy.hpp"
+
+class Mommy;
 
 class ServerConf
 {

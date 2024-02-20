@@ -4,6 +4,8 @@
 #include "Response.hpp"
 #include "Server.hpp"
 
+class Server;
+
 class Client {
     public:
         Client(int fd, sockaddr_in addr, Server *server);

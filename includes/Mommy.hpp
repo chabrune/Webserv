@@ -3,6 +3,9 @@
 #include "Server.hpp"
 #include "Client.hpp"
 
+class Server;
+class Client;
+
 class Mommy
 {
     public:
