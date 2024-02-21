@@ -10,11 +10,16 @@ class Server : public ServerConf
         Server(const Server &src);
         Server& operator=(const Server &rhs);
 
-        void setup();
-
         int sockfd;
         sockaddr_in srvaddress; // Server address
         timeval timeout;
+
+        void setup();
+        Location * getLocationFrom(const std::string & path);
+        std::vector<std::string> & getAllowedMethodsFrom(const std::string & path);
+        std::string & getRootFrom(const std::string & path);
+        bool getAutoindexFrom(const std::string & path);
+        std::string & getIndexFrom(const std::string & path);
 
         class socketCreationError : public std::exception {
             const char * what() const throw() {

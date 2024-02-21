@@ -1,6 +1,7 @@
 #include "../includes/Mommy.hpp"
 #include "../includes/incs.hpp"
 #include "../includes/Server.hpp"
+#include "../includes/Location.hpp"
 
 Mommy frr; // Main structure
 Server Serv; //Charles test parsing
@@ -10,8 +11,16 @@ void createTestServer(Mommy *frr) {
     frr->servers.push_back(new Server());
     frr->servers.back()->port = 8080;
     frr->servers.back()->server_name = "localhost";
+    frr->servers.back()->root = "experiment/expe_ali/site"; // la ya pas de /
+    frr->servers.back()->index = "/index.html"; // et la yen a un bref a regler psq cest degeulasse
     frr->servers.back()->autoindex = true;
+    frr->servers.back()->allowed_methods.push_back("GET");
     frr->servers.back()->setup();
+    frr->servers.back()->locations.push_back(Location());
+    frr->servers.back()->locations.back().path = "/test";
+    frr->servers.back()->locations.back().allowed_methods.push_back("GET");
+    frr->servers.back()->locations.back().root = "experiment/expe_ali/site/test";
+    frr->servers.back()->locations.back().autoindex = true;
 }
 
 void quit(int sig) {
@@ -33,8 +42,10 @@ void quit(int sig) {
             it = frr.clients.begin();
         }
     }
-    std::cout << YELLOW << "\n-server killed by user" << RESET << std::endl;
-    std::exit(0);
+    if (sig != 0) {
+        std::cout << YELLOW << "\n-server killed by user" << RESET << std::endl;
+        std::exit(0);
+    }
 }
 
 int main(int argc, char **argv)
@@ -55,8 +66,9 @@ int main(int argc, char **argv)
         createTestServer(&frr);
         frr.run();
     } catch (std::exception &e) {
-        std::cerr << "error: " << e.what() << std::endl;
+        std::cerr << RED << "error: " << e.what() << RESET << std::endl;
         ret = 1;
+        quit(0);
     }
     return (ret);
 }

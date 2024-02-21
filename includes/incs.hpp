@@ -36,6 +36,7 @@
 # define CONNECTIONS_NUMBER_LIMIT 2000
 # define TIMEOUT 1 // Seconds before select exit
 # define ISDIRECTORY 500
+# define NOTALLOWEDMETHOD 501
 
 class   requestError : public std::exception {};
 

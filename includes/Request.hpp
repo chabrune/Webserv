@@ -1,11 +1,12 @@
 #pragma once
 
 #include "incs.hpp"
+#include "Server.hpp"
 
 class Request {
     public:
 		Request();
-		Request(int sockfd);
+		Request(Server *server, int sockfd);
         ~Request();
 
         long len;
@@ -17,7 +18,9 @@ class Request {
 		const std::string &getHost() const;
         const bool &getIsDir() const;
 		bool isKeepalive() const;
-        int tryAccess(Request & req, bool autoindex);
+        void tryAccess(Server *server);
+        void isAllowed(Server *server);
+        std::string subLocation(Location *location);
 
 		class recvFailure : public requestError {
 			const char * what() const throw() {
@@ -37,7 +40,7 @@ class Request {
         };
 
 	private:
-        void parseRequest(std::string &str);
+        void parseRequest(Server *server, std::string &str);
 		void setFileType();
 		std::string method; //GET, POST..
 		std::string path_to_file;

@@ -8,7 +8,7 @@ class Client;
 
 class Response {
 	public:
-		Response(Client & client, Request &request);
+		Response(Server & server, Request &request);
 
 		std::string &getHeader() const;
 		std::string &getContent() const;
@@ -22,7 +22,7 @@ class Response {
         void generateAutoindex(Request & req);
         static std::string getCodeHeader(std::string * path);
 
-        Client & client; // Attached client
+        Server & server; // Attached server
         std::string _uri;
 		std::string _header;
 		std::string _content;

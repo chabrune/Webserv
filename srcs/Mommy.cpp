@@ -53,7 +53,7 @@ void Mommy::run(void) {
                     Client *cli;
                     try {
                         cli = acceptRequest((*it)->sockfd, *it);
-						request = Request(cli->sockfd);
+						request = Request(*it, cli->sockfd);
                         /*cli->readRequest();
                         cli->req.parseRequest();*/
                         FD_SET(cli->sockfd, &this->cset);
@@ -75,8 +75,9 @@ void Mommy::run(void) {
                 if (FD_ISSET(it->second->sockfd, &this->cset)) {
                     try {
                         try {
-                            request.tryAccess(request, it->second->server->autoindex);
-                            Response response(*it->second, request);
+                            request.isAllowed(it->second->server);
+                            request.tryAccess(it->second->server);
+                            Response response(*it->second->server, request);
                             send(it->second->sockfd, &(response.getResponse()[0]), response.getResponseSize(), 0);
                             //it->second->sendResponse();
                         } catch (requestError &e) {

@@ -39,3 +39,46 @@ void Server::setup(void)
         throw sockListeningError();
     std::cout << GREEN << "-listener socket for " << this->server_name << ":" << this->port << " ready" << RESET << std::endl;
 }
+
+Location * Server::getLocationFrom(const std::string &path) {
+    for (std::vector<Location>::iterator it = this->locations.begin(); it != this->locations.end(); it++) {
+        std::string itpath = (*it).path;
+        itpath[itpath.length() - 1] == '/' ? 0 : itpath += "/";
+        if (path.length() >= itpath.length() && path.compare(0, itpath.length(), itpath) == 0)
+            return (&(*it));
+    }
+    return (0);
+}
+
+std::string & Server::getRootFrom(const std::string & path) {
+    Location * location = getLocationFrom(path);
+    if (location) {
+        return (location->root);
+    }
+    return (this->root);
+}
+
+bool Server::getAutoindexFrom(const std::string & path) {
+    Location * location = getLocationFrom(path);
+    if (location) {
+        return (location->autoindex);
+    }
+    return (this->autoindex);
+}
+
+std::string & Server::getIndexFrom(const std::string & path) {
+    Location * location = getLocationFrom(path);
+    if (location) {
+        return (location->index);
+    }
+    return (this->index);
+}
+
+std::vector<std::string> & Server::getAllowedMethodsFrom(const std::string &path) {
+    Location * location = getLocationFrom(path);
+    if (location) {
+        std::cout << GREEN << "got location!" << RESET << std::endl;
+        return (location->allowed_methods);
+    }
+    return (this->allowed_methods);
+}

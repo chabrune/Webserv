@@ -1,8 +1,10 @@
 #include "../includes/Response.hpp"
 
-Response::Response(Client & client, Request &request) : client(client) {
+Response::Response(Server & server, Request &request) : server(server) {
 	std::cout << "New response is under building.." << std::endl;
-	std::string tester = "experiment/expe_ali/site" + request.getPathToFile();
+	//std::string tester = "experiment/expe_ali/site" + request.getPathToFile();
+    std::string tester = server.getRootFrom(request.getPathToFile()) + request.subLocation(server.getLocationFrom(request.getPathToFile()));
+    std::cout << YELLOW << tester << RESET << std::endl;
     this->_uri = tester.c_str();
     this->_isAutoindex = request.getIsDir();
 
@@ -44,7 +46,12 @@ void Response::generateAutoindex(Request & req) {
     content += "</h1>\n<ul>\n";
     struct dirent *entry;
     while ((entry = readdir(dir)) != NULL) {
-        content += "<li><a href=\"http://localhost:8080";
+        content += "<li><a href=\"http://";
+        content += this->server.server_name;
+        content += ":";
+        std::ostringstream tstring;
+        tstring << this->server.port;
+        content+= tstring.str();
         content += req.getPathToFile();
         content += "/";
         content += entry->d_name;
@@ -106,6 +113,10 @@ std::string Response::getCodeHeader(std::string * path) {
     if (errno == ETXTBSY) {
         *path = "ressources/default/409.html";
         return ("HTTP/1.1 409 Conflict\n");
+    }
+    if (errno == NOTALLOWEDMETHOD) {
+        *path = "ressources/default/405.html";
+        return ("HTTP/1.1 405 Method Not Allowed\n");
     }
     *path = "ressources/default/500.html";
     return ("HTTP/1.1 500 Internal Server Error\n");
