@@ -13,7 +13,7 @@ class ServerConf
         ServerConf& operator=(const ServerConf &rhs);
 
         void inputParsing(std::string argv, Mommy& frr);
-        void check_serv_line(std::string &line, Mommy& frr);
+        void check_serv_line(std::string &line);
         void check_serv_name_line(std::string& line, int& one_line);
 
         std::string root; // Define the root directory
