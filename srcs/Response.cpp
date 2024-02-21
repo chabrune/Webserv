@@ -47,10 +47,10 @@ void Response::generateAutoindex(Request & req) {
     struct dirent *entry;
     while ((entry = readdir(dir)) != NULL) {
         content += "<li><a href=\"http://";
-        content += this->server.server_name;
+        content += this->server.getServerName();
         content += ":";
         std::ostringstream tstring;
-        tstring << this->server.port;
+        tstring << this->server.getPort();
         content+= tstring.str();
         content += req.getPathToFile();
         content += "/";

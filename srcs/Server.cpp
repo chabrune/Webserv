@@ -20,7 +20,7 @@ void Server::setup(void)
     memset(&this->srvaddress, 0, sizeof(this->srvaddress));
     this->srvaddress.sin_family = AF_INET;
     this->srvaddress.sin_addr.s_addr = htonl(INADDR_ANY);
-    this->srvaddress.sin_port = htons(this->port);
+    this->srvaddress.sin_port = htons(getPort());
     this->sockfd = socket(PF_INET, SOCK_STREAM, 0);
     if (sockfd == -1)
         throw socketCreationError();
@@ -37,7 +37,7 @@ void Server::setup(void)
         throw addrBindError();
     if (listen(this->sockfd, CONNECTIONS_NUMBER_LIMIT) == -1)
         throw sockListeningError();
-    std::cout << GREEN << "-listener socket for " << this->server_name << ":" << this->port << " ready" << RESET << std::endl;
+    std::cout << GREEN << "-listener socket for " << getServerName() << ":" << getPort() << " ready" << RESET << std::endl;
 }
 
 Location * Server::getLocationFrom(const std::string &path) {

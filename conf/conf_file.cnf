@@ -1,13 +1,13 @@
 
 server {
     listen 80
-    return localhost:8002
+    return localhost:8080
 }
 
 server {
-    listen 8002
+    listen 8080
     server_name localhost
-
+    root experiment/expe_ali/site
     root fusion_web
     client_max_body_size 3000000
     index index.html
