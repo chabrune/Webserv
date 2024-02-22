@@ -4,14 +4,14 @@
 #include "../includes/Location.hpp"
 
 Mommy frr; // Main structure
-Server Serv; //Charles test parsing
+Server Serv;
 
 //Creating a test server while parsing isn't finished
 void createTestServer(Mommy *frr) {
-    // frr->servers.push_back(new Server());
-    // frr->servers.back()->port = 8080;
-    // frr->servers.back()->server_name = "localhost";
-    // frr->servers.back()->root = "experiment/expe_ali/site"; // la ya pas de /
+    frr->servers.push_back(new Server());
+    frr->servers.back()->port = 8080;
+    frr->servers.back()->server_name = "localhost";
+    frr->servers.back()->root = "experiment/expe_ali/site"; // la ya pas de /
     frr->servers.back()->index = "/index.html"; // et la yen a un bref a regler psq cest degeulasse
     frr->servers.back()->autoindex = true;
     frr->servers.back()->allowed_methods.push_back("GET");
@@ -62,7 +62,7 @@ int main(int argc, char **argv)
     if (DEBUG)
         std::cout << GREEN << "-debug is on" << RESET << std::endl;
     try {
-        Serv.inputParsing(std::string(argv[1]), frr);
+        // Serv.inputParsing(std::string(argv[1]), frr);
         createTestServer(&frr);
         frr.run();
     } catch (std::exception &e) {

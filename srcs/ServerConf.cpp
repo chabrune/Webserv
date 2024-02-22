@@ -120,6 +120,67 @@ void ServerConf::check_client_max_body_size(std::string &line, size_t currentSer
 	}
 }
 
+void ServerConf::check_serv_index(std::string &line, size_t currentServerIndex, Mommy& frr)
+{
+	size_t i = 0;
+	for (; i < line.length() && std::isspace(static_cast<unsigned char>(line[i])); i++) {}
+	line = line.substr(i);
+	i = 6;
+	while (i < line.length())
+	{
+		int start = i;
+		while (i < line.length() && !isspace(line[i]))
+			i++;
+		std::string index = line.substr(start, i - start);
+		if(line != "index " + index)
+			throw std::logic_error("config file : check index");
+		frr.servers[currentServerIndex]->index = index;
+		i++;
+	}
+}
+
+void ServerConf::check_serv_return(std::string &line, size_t currentServerIndex, Mommy& frr)
+{
+	size_t i = 0;
+	for (; i < line.length() && std::isspace(static_cast<unsigned char>(line[i])); i++) {}
+	line = line.substr(i);
+	i = 7;
+	while (i < line.length())
+	{
+		int start = i;
+		while (i < line.length() && !isspace(line[i]))
+			i++;
+		std::string sreturn = line.substr(start, i - start);
+		if(line != "return " + sreturn)
+			throw std::logic_error("config file : check return");
+		frr.servers[currentServerIndex]->to_return = sreturn;
+		i++;
+	}
+}
+
+void ServerConf::check_error_page(std::string &line, size_t currentServerIndex, Mommy& frr)
+{
+	size_t i = 0;
+	for (; i < line.length() && std::isspace(static_cast<unsigned char>(line[i])); i++) {}
+	line = line.substr(i);
+	i = 11;
+	int start = i;
+	while (i < line.length() && !isspace(line[i]))
+		i++;
+	std::string serror_nb = line.substr(start, i - start);
+	int error_nb = atoi(serror_nb.c_str());
+	if(error_nb < 100 || error_nb > 505)
+		throw std::logic_error("config file : check error_page number");
+	while(i < line.length() && isspace(line[i]))
+		i++;
+	start = i;
+	while (i < line.length() && !isspace(line[i]))
+		i++;
+	std::string error_path = line.substr(start, i - start);
+	if(line != "error_page " + serror_nb + " " + error_path)
+		throw std::logic_error("config file : check error_page line");
+	frr.servers[currentServerIndex]->errors_pages[error_nb] = error_path;
+}
 
 void ServerConf::inputParsing(std::string argv, Mommy& frr) 
 {
@@ -169,5 +230,11 @@ void ServerConf::inputParsing(std::string argv, Mommy& frr)
 			check_serv_root(line, currentServerIndex, frr);
 		else if(isInsideServerSection && !isInsideLocationSection && line.find("client_max_body_size") != std::string::npos)
 			check_client_max_body_size(line, currentServerIndex, frr);
+		else if(isInsideServerSection && !isInsideLocationSection && line.find("index") != std::string::npos)
+			check_serv_index(line, currentServerIndex, frr);
+		else if(isInsideServerSection && !isInsideLocationSection && line.find("return") != std::string::npos)
+			check_serv_return(line, currentServerIndex, frr);
+		else if(isInsideServerSection && !isInsideLocationSection && line.find("error_page") != std::string::npos)
+			check_error_page(line, currentServerIndex, frr);
     }
 }

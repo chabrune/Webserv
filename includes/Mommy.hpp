@@ -21,7 +21,6 @@ class Mommy
         bool running;
 
         std::vector<int> toDelete;
-
         void run(void);
         int load_LFdSet(void); // Loading listeners socks fd's
         Client * acceptRequest(int fd, Server *server);
