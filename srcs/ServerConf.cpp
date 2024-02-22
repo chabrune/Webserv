@@ -30,7 +30,7 @@ void ServerConf::check_serv_line(std::string& line)
 }
 
 // p-e return int pour check a la fin de la boucle si == 0 = error
-void ServerConf::check_serv_name_line(std::string& line, size_t currentServerIndex, Mommy& frr) 
+void ServerConf::check_serv_name_line(std::string& line, size_t currentServerIndex, Mommy& frr)
 {
 	size_t i = 0;
 	for (; i < line.length() && std::isspace(static_cast<unsigned char>(line[i])); i++) {}
@@ -182,10 +182,11 @@ void ServerConf::check_error_page(std::string &line, size_t currentServerIndex, 
 	frr.servers[currentServerIndex]->errors_pages[error_nb] = error_path;
 }
 
-void ServerConf::inputParsing(std::string argv, Mommy& frr) 
+
+void ServerConf::inputParsing(std::string argv, Mommy& frr)
 {
     std::ifstream file(argv.c_str());
-    if (!file.is_open()) 
+    if (!file.is_open())
 	{
         std::cerr << "Error: could not open file.\n";
         return;
@@ -194,7 +195,7 @@ void ServerConf::inputParsing(std::string argv, Mommy& frr)
     bool isInsideServerSection = false;
     bool isInsideLocationSection = false;
     size_t currentServerIndex = frr.servers.size();
-    while (std::getline(file, line)) 
+    while (std::getline(file, line))
 	{
         if (line.empty() || line.find("#") == 0 || line.find("//") == 0) continue;
 		if(line.find("location") != std::string::npos)
@@ -216,7 +217,7 @@ void ServerConf::inputParsing(std::string argv, Mommy& frr)
 			isInsideLocationSection = false;
 			continue;
 		}
-        if (line.find("}") == 0) 
+        if (line.find("}") == 0)
 		{
             isInsideServerSection = false;
             ++currentServerIndex;

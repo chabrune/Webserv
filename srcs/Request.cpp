@@ -35,8 +35,11 @@ void Request::parseRequest(Server *server, std::string &str) {
 
 	this->method = str.substr(0, first_space_index);
 	this->path_to_file = str.substr(first_space_index + 1, str.find_first_of(' ', first_space_index + 1) - (first_space_index + 1));
+    if (this->path_to_file[this->path_to_file.size() - 1] == '/') {
+        this->path_to_file.erase(this->path_to_file.size() - 1);
+    }
 	//If the path to file = / set the default page (index.html for example), define in the server config.
-	if (this->path_to_file == "/") {
+	if (this->path_to_file == "") {
         if (!server->getIndexFrom(this->path_to_file).empty())
             this->path_to_file = server->getIndexFrom(this->path_to_file);
         else if (server->getAutoindexFrom(this->path_to_file))
@@ -56,6 +59,8 @@ void Request::parseRequest(Server *server, std::string &str) {
 
 void Request::setFileType() {
 	this->file_type = this->path_to_file.substr(this->path_to_file.find_first_of('.') + 1, this->path_to_file.length());
+    std::cout << YELLOW << "file type: " << this->file_type << RESET << std::endl;
+    std::cout << YELLOW << this->path_to_file << RESET << std::endl;
 	if (this->file_type == "js")
 		this->file_type = "javascript";
 	this->extension = this->file_type;
@@ -64,7 +69,7 @@ void Request::setFileType() {
 
 void Request::tryAccess(Server *server) {
     std::string tester = server->getRootFrom(this->getPathToFile()) + this->subLocation(server->getLocationFrom(this->getPathToFile()));
-    std::cout << YELLOW << tester << RESET << std::endl;
+    //std::cout << YELLOW << tester << RESET << std::endl;
     if (access(tester.c_str(), F_OK) != 0)
         throw accessError();
     if (access(tester.c_str(), R_OK) != 0)

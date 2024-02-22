@@ -17,6 +17,7 @@
 #include <vector>
 #include <fstream>
 #include <string>
+#include <list>
 #include <sstream>
 #include <ctype.h>
 #include <sys/time.h>

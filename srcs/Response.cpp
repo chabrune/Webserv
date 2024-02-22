@@ -4,7 +4,7 @@ Response::Response(Server & server, Request &request) : server(server) {
 	std::cout << "New response is under building.." << std::endl;
 	//std::string tester = "experiment/expe_ali/site" + request.getPathToFile();
     std::string tester = server.getRootFrom(request.getPathToFile()) + request.subLocation(server.getLocationFrom(request.getPathToFile()));
-    std::cout << YELLOW << tester << RESET << std::endl;
+    //std::cout << YELLOW << tester << RESET << std::endl;
     this->_uri = tester.c_str();
     this->_isAutoindex = request.getIsDir();
 
@@ -35,9 +35,10 @@ void Response::headerBuilder(std::string file_type) {
 
 void Response::generateAutoindex(Request & req) {
    DIR* dir = opendir(this->_uri.c_str());
+   std::cout << "dddddd: " << this->_uri.c_str() << std::endl;
    if (!dir)
        std::cerr << RED << "can't open dir" << RESET << std::endl;
-   perror("");
+    perror("");
     std::string content;
     content = "<!DOCTYPE html>\n<html>\n<head>\n<title>Index of ";
     content += this->_uri;
@@ -62,7 +63,7 @@ void Response::generateAutoindex(Request & req) {
     content += "</ul>\n</body>\n</html>\n\r\n\r\n";
     closedir(dir);
     this->_content = content;
-    std::cout << YELLOW << content << RESET << std::endl;
+    //std::cout << YELLOW << content << RESET << std::endl;
 }
 
 void Response::contentBuilder(Request & req, std::ifstream &file, const std::string &extension, const bool isDir) {
@@ -71,7 +72,7 @@ void Response::contentBuilder(Request & req, std::ifstream &file, const std::str
     if (isDir) {
         generateAutoindex(req);
         return;
-    } else if (MimeUtils::isImage(extension) || MimeUtils::isVideo(extension)) {
+    } else if (MimeUtils::isImage(extension) || MimeUtils::isVideo(extension) || MimeUtils::isAudio(extension)) {
 		file.seekg(0, std::ios::end);
 		int length = file.tellg();
 		file.seekg(0, std::ios::beg);

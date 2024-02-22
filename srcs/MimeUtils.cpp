@@ -5,7 +5,10 @@ std::string MimeUtils::getTypeOfContent(const std::string &extension) {
 		return "image";
 	else if (isVideo(extension))
 		return "video";
-	return "text";
+    else if (isAudio(extension))
+        return "audio";
+    else
+	    return "text";
 }
 
 std::ios_base::openmode MimeUtils::getOpenMode(const std::string &extension) {
@@ -16,9 +19,16 @@ std::ios_base::openmode MimeUtils::getOpenMode(const std::string &extension) {
 }
 
 bool MimeUtils::isImage(const std::string &extension) {
-	return extension == "jpg" || extension == "png";
+	return extension == "jpg" || extension == "jpeg" || extension == "png" || extension == "gif" ||
+        extension == "bmp" || extension == "tiff" || extension == "webp";
 }
 
 bool MimeUtils::isVideo(const std::string &extension) {
-	return extension == "mp4";
+    return extension == "mp4" || extension == "avi" || extension == "mkv" ||
+        extension == "mov" || extension == "wmv" || extension == "flv";
+}
+
+bool MimeUtils::isAudio(const std::string &extension) {
+    return extension == "mp3" || extension == "wav" || extension == "ogg" ||
+        extension == "flac" || extension == "aac" || extension == "wma";
 }
