@@ -26,6 +26,10 @@ class ServerConf
         void check_serv_index(std::string &line, size_t currentServerIndex, Mommy& frr);
         void check_serv_return(std::string &line, size_t currentServerIndex, Mommy& frr);
         void check_error_page(std::string &line, size_t currentServerIndex, Mommy& frr);
+        void check_serv_CGI(std::string &line, size_t currentServerIndex, Mommy& frr);
+        void check_serv_allowed_methods(std::string &line, size_t currentServerIndex, Mommy& frr);
+        void check_serv_autoindex(std::string &line, size_t currentServerIndex, Mommy& frr);
+        void check_location_path(std::string &line, size_t currentServerIndex, Mommy& frr, size_t currentLocationIndex);
 
         const std::string& getRoot() const { return this->root; }
         const std::string& getServerName() const { return this->server_name; }

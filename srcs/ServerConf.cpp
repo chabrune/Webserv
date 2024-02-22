@@ -46,7 +46,7 @@ void ServerConf::check_serv_name_line(std::string& line, size_t currentServerInd
 		if (server_name.find(';') != std::string::npos)
 			server_name.erase(server_name.length() - 1);
 		if(line != "server_name " + server_name)
-			throw std::logic_error("config file : check server_name");
+			throw std::logic_error("config file : server : check server_name");
 		frr.servers[currentServerIndex]->server_name = server_name;
 		i++;
 	}
@@ -65,7 +65,7 @@ void ServerConf::check_serv_port(std::string &line, size_t currentServerIndex, M
 			i++;
 		std::string sport = line.substr(start, i - start);
 		if(line != "listen " + sport)
-			throw std::logic_error("config file : check port");
+			throw std::logic_error("config file : server : check port");
 		int port = atoi(sport.c_str());
 		if (!port || port <= 0 || port > 65535)
             throw std::invalid_argument("Invalid port number.");
@@ -87,7 +87,7 @@ void ServerConf::check_serv_root(std::string &line, size_t currentServerIndex, M
 			i++;
 		std::string root = line.substr(start, i - start);
 		if(line != "root " + root)
-			throw std::logic_error("config file : check root path");
+			throw std::logic_error("config file : server : check root path");
 		frr.servers[currentServerIndex]->root = root;
 		i++;
 	}
@@ -106,7 +106,7 @@ void ServerConf::check_client_max_body_size(std::string &line, size_t currentSer
 			i++;
 		std::string smax_body_size = line.substr(start, i - start);
 		if(line != "client_max_body_size " + smax_body_size)
-			throw std::logic_error("config file : check client_max_body_size");
+			throw std::logic_error("config file : server : check client_max_body_size");
     	unsigned long max_body_size = 0;
     	char* endPtr = NULL;
     	errno = 0;
@@ -133,7 +133,7 @@ void ServerConf::check_serv_index(std::string &line, size_t currentServerIndex, 
 			i++;
 		std::string index = line.substr(start, i - start);
 		if(line != "index " + index)
-			throw std::logic_error("config file : check index");
+			throw std::logic_error("config file : server : check index");
 		frr.servers[currentServerIndex]->index = index;
 		i++;
 	}
@@ -152,7 +152,7 @@ void ServerConf::check_serv_return(std::string &line, size_t currentServerIndex,
 			i++;
 		std::string sreturn = line.substr(start, i - start);
 		if(line != "return " + sreturn)
-			throw std::logic_error("config file : check return");
+			throw std::logic_error("config file : server : check return");
 		frr.servers[currentServerIndex]->to_return = sreturn;
 		i++;
 	}
@@ -170,7 +170,7 @@ void ServerConf::check_error_page(std::string &line, size_t currentServerIndex, 
 	std::string serror_nb = line.substr(start, i - start);
 	int error_nb = atoi(serror_nb.c_str());
 	if(error_nb < 100 || error_nb > 505)
-		throw std::logic_error("config file : check error_page number");
+		throw std::logic_error("config file : server : check error_page number");
 	while(i < line.length() && isspace(line[i]))
 		i++;
 	start = i;
@@ -178,10 +178,89 @@ void ServerConf::check_error_page(std::string &line, size_t currentServerIndex, 
 		i++;
 	std::string error_path = line.substr(start, i - start);
 	if(line != "error_page " + serror_nb + " " + error_path)
-		throw std::logic_error("config file : check error_page line");
+		throw std::logic_error("config file : server : check error_page line");
 	frr.servers[currentServerIndex]->errors_pages[error_nb] = error_path;
 }
 
+void ServerConf::check_serv_CGI(std::string &line, size_t currentServerIndex, Mommy& frr)
+{
+	size_t i = 0;
+	for (; i < line.length() && std::isspace(static_cast<unsigned char>(line[i])); i++) {}
+	line = line.substr(i);
+	i = 4;
+	int start = i;
+	while (i < line.length() && !isspace(line[i]))
+			i++;
+	std::string cgi_extension = line.substr(start, i - start);
+	if(cgi_extension[0] != '.' || cgi_extension != ".py")
+		throw std::logic_error("config file : server : check cgi");
+	frr.servers[currentServerIndex]->cgi_extensions.push_back(cgi_extension);
+	while(isspace(line[i]))
+		i++;
+	start = i;
+	while (i < line.length() && !isspace(line[i]))
+		i++;
+	std::string cgi_path = line.substr(start, i - start);
+	if(line != "cgi " + cgi_extension + " " + cgi_path)
+		throw std::logic_error("config file : server : check cgi");
+	frr.servers[currentServerIndex]->cgi_paths.push_back(cgi_path);
+}
+
+void ServerConf::check_serv_allowed_methods(std::string &line, size_t currentServerIndex, Mommy& frr)
+{
+	size_t i = 0;
+	for (; i < line.length() && std::isspace(static_cast<unsigned char>(line[i])); i++) {}
+	line = line.substr(i);
+	i = 6;
+	while (i < line.length())
+	{
+		int start = i;
+		while (i < line.length() && !isspace(line[i]))
+			i++;
+		std::string methods = line.substr(start, i - start);
+		if(methods != "GET" && methods != "HEAD" && methods != "POST" && methods != "DELETE" && methods != "PUT")
+			throw std::logic_error("config file : server : check allowed methods");
+		frr.servers[currentServerIndex]->allowed_methods.push_back(methods);
+		i++;
+	}
+}
+
+void ServerConf::check_serv_autoindex(std::string &line, size_t currentServerIndex, Mommy& frr)
+{
+	size_t i = 0;
+	for (; i < line.length() && std::isspace(static_cast<unsigned char>(line[i])); i++) {}
+	line = line.substr(i);
+	i = 10;
+	int start = i;
+	while (i < line.length() && !isspace(line[i]))
+		i++;
+	std::string autoindex = line.substr(start, i - start);
+	if(autoindex != "on" && autoindex != "off")
+		throw std::logic_error("config file : server : check autoindex");
+	if(autoindex == "on")
+		frr.servers[currentServerIndex]->autoindex = true;
+	else
+		frr.servers[currentServerIndex]->autoindex = false;
+}
+
+// void ServerConf::check_location_path(std::string &line, size_t currentServerIndex, Mommy& frr, size_t currentLocationIndex)
+// {
+// 	size_t i = 0;
+// 	for (; i < line.length() && std::isspace(static_cast<unsigned char>(line[i])); i++) {}
+// 	line = line.substr(i);
+// 	i = 9;
+// 	int start = i;
+// 	while (i < line.length() && !isspace(line[i]))
+// 		i++;
+// 	std::string location_path = line.substr(start, i - start);
+// 	std::cout << location_path << std::endl;
+// 	if(line != "location " + location_path)
+// 		throw std::logic_error("config file : location : check path");
+// 	// frr.servers[currentServerIndex]->locations[] = true;
+// 	(void)frr;
+// 	(void)currentLocationIndex;
+// 	(void)currentServerIndex;
+// }
 
 void ServerConf::inputParsing(std::string argv, Mommy& frr)
 {
@@ -197,10 +276,15 @@ void ServerConf::inputParsing(std::string argv, Mommy& frr)
     size_t currentServerIndex = frr.servers.size();
     while (std::getline(file, line))
 	{
+    	// size_t currentLocationIndex = frr.servers[currentServerIndex]->locations.size();
+		// std::cout << currentLocationIndex << std::endl;
         if (line.empty() || line.find("#") == 0 || line.find("//") == 0) continue;
 		if(line.find("location") != std::string::npos)
 		{
 			isInsideLocationSection = true;
+			// Location* location = new Location;
+			// frr.servers[currentServerIndex]->locations.push_back(location);
+			// check_location_path(line, currentServerIndex, frr, currentLocationIndex);
 			//LOCATION A FAIRE ......
 			continue;
 		}
@@ -215,6 +299,7 @@ void ServerConf::inputParsing(std::string argv, Mommy& frr)
 		if(line.find("    }") == 0)
 		{
 			isInsideLocationSection = false;
+			// ++currentLocationIndex;
 			continue;
 		}
         if (line.find("}") == 0)
@@ -231,11 +316,17 @@ void ServerConf::inputParsing(std::string argv, Mommy& frr)
 			check_serv_root(line, currentServerIndex, frr);
 		else if(isInsideServerSection && !isInsideLocationSection && line.find("client_max_body_size") != std::string::npos)
 			check_client_max_body_size(line, currentServerIndex, frr);
-		else if(isInsideServerSection && !isInsideLocationSection && line.find("index") != std::string::npos)
+		else if(isInsideServerSection && !isInsideLocationSection && line.find("index") != std::string::npos && line.find("autoindex") == std::string::npos)
 			check_serv_index(line, currentServerIndex, frr);
 		else if(isInsideServerSection && !isInsideLocationSection && line.find("return") != std::string::npos)
 			check_serv_return(line, currentServerIndex, frr);
 		else if(isInsideServerSection && !isInsideLocationSection && line.find("error_page") != std::string::npos)
 			check_error_page(line, currentServerIndex, frr);
+		else if(isInsideServerSection && !isInsideLocationSection && line.find("cgi") != std::string::npos)
+			check_serv_CGI(line, currentServerIndex, frr);
+		else if(isInsideServerSection && !isInsideLocationSection && line.find("allow") != std::string::npos)
+			check_serv_allowed_methods(line, currentServerIndex, frr);
+		else if(isInsideServerSection && !isInsideLocationSection && line.find("autoindex") != std::string::npos)
+			check_serv_autoindex(line, currentServerIndex, frr);
     }
 }
