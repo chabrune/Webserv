@@ -72,7 +72,7 @@ void Response::contentBuilder(Request & req, std::ifstream &file, const std::str
     if (isDir) {
         generateAutoindex(req);
         return;
-    } else if (MimeUtils::isImage(extension) || MimeUtils::isVideo(extension) || MimeUtils::isAudio(extension)) {
+    } else if (MimeUtils::isImage(extension) || MimeUtils::isVideo(extension) || MimeUtils::isAudio(extension) || MimeUtils::isFont(extension)) {
 		file.seekg(0, std::ios::end);
 		int length = file.tellg();
 		file.seekg(0, std::ios::beg);

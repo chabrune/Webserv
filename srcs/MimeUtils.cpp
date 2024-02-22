@@ -7,6 +7,8 @@ std::string MimeUtils::getTypeOfContent(const std::string &extension) {
 		return "video";
     else if (isAudio(extension))
         return "audio";
+    else if (isFont(extension))
+        return "font";
     else
 	    return "text";
 }
@@ -31,4 +33,9 @@ bool MimeUtils::isVideo(const std::string &extension) {
 bool MimeUtils::isAudio(const std::string &extension) {
     return extension == "mp3" || extension == "wav" || extension == "ogg" ||
         extension == "flac" || extension == "aac" || extension == "wma";
+}
+
+bool MimeUtils::isFont(const std::string &extension) {
+    return extension == "ttf" || extension == "otf" || extension == "woff" ||
+        extension == "woff2" || extension == "eot";
 }

@@ -10,7 +10,7 @@ Server Serv;
 void createTestServer(Mommy *frr) {
     frr->servers.push_back(new Server());
     frr->servers.back()->port = 8080;
-    frr->servers.back()->server_name = "localhost";
+    frr->servers.back()->server_name = "k0r3p7";
     frr->servers.back()->root = "ressources"; // la ya pas de /
     frr->servers.back()->index = "/cyber.html"; // et la yen a un bref a regler psq cest degeulasse
     frr->servers.back()->autoindex = true;
