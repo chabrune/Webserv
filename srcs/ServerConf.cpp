@@ -243,24 +243,20 @@ void ServerConf::check_serv_autoindex(std::string &line, size_t currentServerInd
 		frr.servers[currentServerIndex]->autoindex = false;
 }
 
-// void ServerConf::check_location_path(std::string &line, size_t currentServerIndex, Mommy& frr, size_t currentLocationIndex)
-// {
-// 	size_t i = 0;
-// 	for (; i < line.length() && std::isspace(static_cast<unsigned char>(line[i])); i++) {}
-// 	line = line.substr(i);
-// 	i = 9;
-// 	int start = i;
-// 	while (i < line.length() && !isspace(line[i]))
-// 		i++;
-// 	std::string location_path = line.substr(start, i - start);
-// 	std::cout << location_path << std::endl;
-// 	if(line != "location " + location_path)
-// 		throw std::logic_error("config file : location : check path");
-// 	// frr.servers[currentServerIndex]->locations[] = true;
-// 	(void)frr;
-// 	(void)currentLocationIndex;
-// 	(void)currentServerIndex;
-// }
+void ServerConf::check_location_path(std::string &line, size_t currentServerIndex, Mommy& frr, size_t currentLocationIndex)
+{
+	size_t i = 0;
+	for (; i < line.length() && std::isspace(static_cast<unsigned char>(line[i])); i++) {}
+	line = line.substr(i);
+	i = 9;
+	int start = i;
+	while (i < line.length() && !isspace(line[i]))
+		i++;
+	std::string location_path = line.substr(start, i - start);
+	if(line != "location " + location_path + " {")
+		throw std::logic_error("config file : location : check path");
+	frr.servers[currentServerIndex]->locations[currentLocationIndex].path = location_path;
+}
 
 void ServerConf::inputParsing(std::string argv, Mommy& frr)
 {
@@ -274,18 +270,16 @@ void ServerConf::inputParsing(std::string argv, Mommy& frr)
     bool isInsideServerSection = false;
     bool isInsideLocationSection = false;
     size_t currentServerIndex = frr.servers.size();
+    size_t currentLocationIndex = 0;
     while (std::getline(file, line))
 	{
-    	// size_t currentLocationIndex = frr.servers[currentServerIndex]->locations.size();
-		// std::cout << currentLocationIndex << std::endl;
         if (line.empty() || line.find("#") == 0 || line.find("//") == 0) continue;
 		if(line.find("location") != std::string::npos)
 		{
 			isInsideLocationSection = true;
-			// Location* location = new Location;
-			// frr.servers[currentServerIndex]->locations.push_back(location);
-			// check_location_path(line, currentServerIndex, frr, currentLocationIndex);
-			//LOCATION A FAIRE ......
+			Location location;
+			frr.servers[currentServerIndex]->locations.push_back(location);
+			check_location_path(line, currentServerIndex, frr, currentLocationIndex);
 			continue;
 		}
         if (line.find("server {") == 0)
@@ -299,7 +293,7 @@ void ServerConf::inputParsing(std::string argv, Mommy& frr)
 		if(line.find("    }") == 0)
 		{
 			isInsideLocationSection = false;
-			// ++currentLocationIndex;
+			++currentLocationIndex;
 			continue;
 		}
         if (line.find("}") == 0)
