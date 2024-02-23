@@ -18,18 +18,25 @@ class ServerConf
         ServerConf& operator=(const ServerConf &rhs);
 
         void inputParsing(std::string argv, Mommy& frr);
-        void check_serv_line(std::string &line);
-        void check_serv_name_line(std::string& line, size_t currentServerIndex, Mommy& frr);
-        void check_serv_port(std::string &line, size_t currentServerIndex, Mommy& frr);
-        void check_serv_root(std::string &line, size_t currentServerIndex, Mommy& frr);
-        void check_client_max_body_size(std::string &line, size_t currentServerIndex, Mommy& frr);
-        void check_serv_index(std::string &line, size_t currentServerIndex, Mommy& frr);
-        void check_serv_return(std::string &line, size_t currentServerIndex, Mommy& frr);
-        void check_error_page(std::string &line, size_t currentServerIndex, Mommy& frr);
-        void check_serv_CGI(std::string &line, size_t currentServerIndex, Mommy& frr);
-        void check_serv_allowed_methods(std::string &line, size_t currentServerIndex, Mommy& frr);
-        void check_serv_autoindex(std::string &line, size_t currentServerIndex, Mommy& frr);
-        void check_location_path(std::string &line, size_t currentServerIndex, Mommy& frr, size_t currentLocationIndex);
+        void serv_line(std::string &line);
+        void serv_name_line(std::string& line, size_t currentServerIndex, Mommy& frr);
+        void serv_port(std::string &line, size_t currentServerIndex, Mommy& frr);
+        void serv_root(std::string &line, size_t currentServerIndex, Mommy& frr);
+        void serv_client_max_body_size(std::string &line, size_t currentServerIndex, Mommy& frr);
+        void serv_index(std::string &line, size_t currentServerIndex, Mommy& frr);
+        void serv_return(std::string &line, size_t currentServerIndex, Mommy& frr);
+        void serv_error_page(std::string &line, size_t currentServerIndex, Mommy& frr);
+        void serv_CGI(std::string &line, size_t currentServerIndex, Mommy& frr);
+        void serv_allowed_methods(std::string &line, size_t currentServerIndex, Mommy& frr);
+        void serv_autoindex(std::string &line, size_t currentServerIndex, Mommy& frr);
+        void location_path(std::string &line, size_t currentServerIndex, Mommy& frr, size_t currentLocationIndex);
+        void location_root(std::string &line, size_t currentServerIndex, Mommy& frr, size_t currentLocationIndex);
+        void location_allowed_methods(std::string &line, size_t currentServerIndex, Mommy& frr, size_t currentLocationIndex);
+        void location_CGI_path(std::string &line, size_t currentServerIndex, Mommy& frr, size_t currentLocationIndex);
+        void location_CGI_ext(std::string &line, size_t currentServerIndex, Mommy& frr, size_t currentLocationIndex);
+        void location_index(std::string &line, size_t currentServerIndex, Mommy& frr, size_t currentLocationIndex);
+        void location_error_page(std::string &line, size_t currentServerIndex, Mommy& frr, size_t currentLocationIndex);
+        void location_client_max_body_size(std::string &line, size_t currentServerIndex, Mommy& frr, size_t currentLocationIndex);
 
         const std::string& getRoot() const { return this->root; }
         const std::string& getServerName() const { return this->server_name; }

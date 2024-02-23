@@ -16,7 +16,7 @@ class Location
         std::vector<std::string> cgi_paths; // Define cgi path in the same order than cgi_extensions;
         std::vector<std::string> cgi_extensions; // Define cgi_extensions
         std::string index;
-        std::vector<std::string> errors_pages;
+        std::map<int, std::string> errors_pages;
         unsigned long max_body_size;
         std::string to_return; // Set what to return
         bool autoindex;
