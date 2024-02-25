@@ -41,12 +41,13 @@ void Server::setup(void)
 }
 
 Location * Server::getLocationFrom(const std::string &path) {
-    for (std::vector<Location>::iterator it = this->locations.begin(); it != this->locations.end(); it++) {
+	(void)path;
+    /*for (std::vector<Location>::iterator it = this->locations.begin(); it != this->locations.end(); it++) {
         std::string itpath = (*it).path;
         itpath[itpath.length() - 1] == '/' ? 0 : itpath += "/";
         if (path.length() >= itpath.length() && path.compare(0, itpath.length(), itpath) == 0)
             return (&(*it));
-    }
+    }*/
     return (0);
 }
 

@@ -39,3 +39,7 @@ bool MimeUtils::isFont(const std::string &extension) {
     return extension == "ttf" || extension == "otf" || extension == "woff" ||
         extension == "woff2" || extension == "eot";
 }
+
+bool MimeUtils::isMedia(const std::string &extension) {
+	return isImage(extension) || isVideo(extension) || isAudio(extension) || isFont(extension);
+}

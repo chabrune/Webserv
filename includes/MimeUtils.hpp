@@ -10,4 +10,5 @@ class MimeUtils {
 		static bool isVideo(const std::string &extension);
         static bool isAudio(const std::string &extension);
         static bool isFont(const std::string &extension);
+		static bool isMedia(const std::string &extension);
 };

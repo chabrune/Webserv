@@ -77,8 +77,8 @@ void Mommy::run(void) {
                         try {
                             request.isAllowed(it->second->server);
                             request.tryAccess(it->second->server);
-                            Response response(*it->second->server, request);
-                            send(it->second->sockfd, &(response.getResponse()[0]), response.getResponseSize(), 0);
+                            Response response(it->second->sockfd, *it->second->server, request);
+                            //send(it->second->sockfd, &(response.getResponse()[0]), response.getResponseSize(), 0);
                             //it->second->sendResponse();
                         } catch (requestError &e) {
                             Response::handleRequestError(it->second->sockfd);
