@@ -15,7 +15,7 @@ std::string MimeUtils::getTypeOfContent(const std::string &extension) {
 
 std::ios_base::openmode MimeUtils::getOpenMode(const std::string &extension) {
 	std::string type = getTypeOfContent(extension);
-	if (type == "image" || type == "video")
+	if (isMedia(extension))
 		return std::ifstream::binary;
 	return std::ifstream::in;
 }
