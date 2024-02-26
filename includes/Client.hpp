@@ -14,6 +14,8 @@ class Client {
         int sockfd;
         sockaddr_in addr;
         Server *server; // Attached server
+        Response response;
+        Request request;
 
         void readRequest();
         void sendResponse();

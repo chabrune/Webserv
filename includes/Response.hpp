@@ -2,32 +2,31 @@
 
 #include "incs.hpp"
 #include "Request.hpp"
-#include "Client.hpp"
 
 class Client;
 
-#define BUFFER_SIZE 1024
-
 class Response {
 	public:
-		Response(int sockfd, Server & server, Request &request);
+        Response();
+		Response(Server & server, Request &request);
 
+		std::string &getHeader() const;
 		std::string &getContent() const;
         std::string &getUri();
+		std::string &getResponse();
+		int getResponseSize() const;
         static void handleRequestError(int sockfd);
 	private:
-		bool fileManager(const char *path, const std::string &extension);
-		void headerManager(int sockfd, std::string file_type) const;
-		void mediaContentManager(int sockfd);
-		void contentManager(int sockfd);
-		void generateAutoindex(int sockfd, Request & req);
-		void cgiBuilder();
+		void headerBuilder(std::string file_type);
+		void contentBuilder(Request & req, std::ifstream &file, const std::string &file_type, const bool isDir);
+        void generateAutoindex(Request & req);
         static std::string getCodeHeader(std::string * path);
 
-        Server & server; // Attached server
+        Server * server; // Attached server
         std::string _uri;
-		std::ifstream _file;
+		std::string _header;
 		std::string _content;
-		long long _content_size;
+		std::string _response;
+		int _response_size;
         bool _isAutoindex;
 };
