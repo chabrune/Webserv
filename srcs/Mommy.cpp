@@ -38,8 +38,6 @@ Client * Mommy::acceptRequest(int fd, Server *server) {
 }
 
 void Mommy::run(void) {
-	Request request;
-
     while (this->running) {
         int maxFd = load_LFdSet();
         int sval = select(maxFd, &this->lset, &this->cset, NULL, &this->timeout);
@@ -53,7 +51,7 @@ void Mommy::run(void) {
                     Client *cli;
                     try {
                         cli = acceptRequest((*it)->sockfd, *it);
-						request = Request(*it, cli->sockfd);
+						cli->request = Request(*it, cli->sockfd);
                         /*cli->readRequest();
                         cli->req.parseRequest();*/
                         FD_SET(cli->sockfd, &this->cset);
@@ -75,10 +73,10 @@ void Mommy::run(void) {
                 if (FD_ISSET(it->second->sockfd, &this->cset)) {
                     try {
                         try {
-                            request.isAllowed(it->second->server);
-                            request.tryAccess(it->second->server);
-                            Response response(it->second->sockfd, *it->second->server, request);
-                            //send(it->second->sockfd, &(response.getResponse()[0]), response.getResponseSize(), 0);
+                            it->second->request.isAllowed(it->second->server);
+                            it->second->request.tryAccess(it->second->server);
+                            it->second->response = Response(*it->second->server, it->second->request);
+                            send(it->second->sockfd, &(it->second->response.getResponse()[0]), it->second->response.getResponseSize(), 0);
                             //it->second->sendResponse();
                         } catch (requestError &e) {
                             Response::handleRequestError(it->second->sockfd);

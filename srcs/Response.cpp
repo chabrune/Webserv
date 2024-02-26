@@ -1,6 +1,8 @@
 #include "../includes/Response.hpp"
 
-Response::Response(int sockfd, Server & server, Request &request) : server(server) {
+Response::Response() {}
+
+Response::Response(Server & server, Request &request) : server(&server) {
 	std::cout << "New response is under building.." << std::endl;
 	//std::string tester = "experiment/expe_ali/site" + request.getPathToFile();
     std::string tester = server.getRootFrom(request.getPathToFile()) + request.subLocation(server.getLocationFrom(request.getPathToFile()));
@@ -8,44 +10,32 @@ Response::Response(int sockfd, Server & server, Request &request) : server(serve
     this->_uri = tester.c_str();
     this->_isAutoindex = request.getIsDir();
 
-	//if false faire une erreur
-	fileManager(tester.c_str(), request.getExtension());
-
-	headerManager(sockfd, request.getFileType());
-
-	if (MimeUtils::isMedia(request.getExtension()))
-		mediaContentManager(sockfd);
-	else if (request.getIsDir())
-		generateAutoindex(sockfd, request);
-	else
-		contentManager(sockfd);
-
-	//std::cout << "Response created. Header:" << std::endl << this->_header;
-}
-
-bool Response::fileManager(const char *path, const std::string &extension) {
-	_file.open(path, MimeUtils::getOpenMode(extension));
-	if (_file.fail()) {
+	std::ifstream file;
+	file.open(tester.c_str(), MimeUtils::getOpenMode(request.getExtension()));
+	if (file.fail()) {
 		std::cerr << RED << "Error: " << strerror(errno) << RESET << std::endl;
-		return false;
+		return;
 	}
-	_file.seekg(0, std::ifstream::end);
-	_content_size = _file.tellg();
-	_file.seekg(0, std::ifstream::beg);
-	return true;
+
+	contentBuilder(request, file, request.getExtension(), request.getIsDir());
+	headerBuilder(request.getFileType());
+	_response_size = _header.length() + _content.length();
+	_response.resize(_response_size);
+	_response = _header + _content;
+	std::cout << "Response created. Header:" << std::endl << this->_header;
 }
 
-void Response::headerManager(int sockfd, std::string file_type) const {
-	std::stringstream header;
+void Response::headerBuilder(std::string file_type) {
+	std::stringstream header_tmp;
 
     if (this->_isAutoindex) {
         file_type = "text/html";
     }
-	header << "HTTP/1.1 200 OK\nContent-Type: " << file_type << "\nContent-Length: " << this->_content_size << "\r\n\r\n";
-	send(sockfd, &(header.str()[0]), header.str().length(), 0);
+	header_tmp << "HTTP/1.1 200 OK\nContent-Type: " << file_type << "\nContent-Length: " << this->_content.length() << "\r\n\r\n";
+	this->_header = header_tmp.str();
 }
 
-void Response::generateAutoindex(int sockfd, Request & req) {
+void Response::generateAutoindex(Request & req) {
    DIR* dir = opendir(this->_uri.c_str());
    std::cout << "dddddd: " << this->_uri.c_str() << std::endl;
    if (!dir)
@@ -60,10 +50,10 @@ void Response::generateAutoindex(int sockfd, Request & req) {
     struct dirent *entry;
     while ((entry = readdir(dir)) != NULL) {
         content += "<li><a href=\"http://";
-        content += this->server.getServerName();
+        content += this->server->getServerName();
         content += ":";
         std::ostringstream tstring;
-        tstring << this->server.getPort();
+        tstring << this->server->getPort();
         content+= tstring.str();
         content += req.getPathToFile();
         content += "/";
@@ -75,32 +65,29 @@ void Response::generateAutoindex(int sockfd, Request & req) {
     content += "</ul>\n</body>\n</html>\n\r\n\r\n";
     closedir(dir);
     this->_content = content;
-	send(sockfd, &(this->_content[0]), this->_content_size, 0);
-	//std::cout << YELLOW << content << RESET << std::endl;
+    //std::cout << YELLOW << content << RESET << std::endl;
 }
 
-void Response::mediaContentManager(int sockfd) {
-	while (_content_size > 0) {
-		size_t bytes_to_read = std::min(static_cast<size_t>(BUFFER_SIZE), static_cast<size_t>(_content_size));
-		this->_content.resize(bytes_to_read);
-		_file.read(&this->_content[0], bytes_to_read);
-		ssize_t bytes_sent = send(sockfd, &(this->_content[0]), bytes_to_read, 0);
-		if (bytes_sent <= 0) {
-			std::cout << "err" << std::endl;
-			return;
-		}
-		_content_size -= bytes_sent;
-	}
-}
-
-void Response::contentManager(int sockfd) {
+void Response::contentBuilder(Request & req, std::ifstream &file, const std::string &extension, const bool isDir) {
 	std::string line;
-	while(_file.good()) {
-		std::getline(_file, line);
+
+    if (isDir) {
+        generateAutoindex(req);
+        return;
+    } else if (MimeUtils::isImage(extension) || MimeUtils::isVideo(extension) || MimeUtils::isAudio(extension) || MimeUtils::isFont(extension)) {
+		file.seekg(0, std::ios::end);
+		int length = file.tellg();
+		file.seekg(0, std::ios::beg);
+		this->_content.resize(length);
+		file.read(&this->_content[0], length);
+		return ;
+	}
+
+	while(file.good()) {
+		std::getline(file, line);
 		//if line is CGI...
 		this->_content.append(line);
 	}
-	send(sockfd, &(this->_content[0]), this->_content_size, 0);
 }
 
 std::string intToString(int num) {
@@ -168,6 +155,14 @@ void Response::handleRequestError(int sockfd) {
     }
 }
 
+std::string & Response::getResponse() {
+	return this->_response;
+}
+
 std::string &Response::getUri() {
     return this->_uri;
+}
+
+int Response::getResponseSize() const {
+	return this->_response_size;
 }
