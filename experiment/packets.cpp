@@ -18,7 +18,7 @@
 
 #define PORT 8080
 #define BACKLOG 100
-#define BUFFER_SIZE 1000000
+#define BUFFER_SIZE 16384
 
 int main() {
     int server_fd, new_socket;
@@ -56,27 +56,23 @@ int main() {
         return 1;
     }
 
+    fcntl(server_fd, F_SETFL, O_NONBLOCK);
+
     while (1) {
         // Acceptation d'une nouvelle connexion
         new_socket = accept(server_fd, (struct sockaddr *) &address, (socklen_t * ) & addrlen);
-        if (new_socket == -1) {
-            std::cerr << "Erreur lors de l'acceptation de la connexion." << std::endl;
+        if (new_socket == -1)
             continue;
-        }
 
         std::cout << "Client connecté: " << inet_ntoa(address.sin_addr) << ":" << ntohs(address.sin_port) << std::endl;
 
         // Lecture de la requête HTTP (non traitée dans cet exemple)
 
-        std::ifstream file("video3.mp4", std::ios::binary | std::ios::ate);
-        if (!file.is_open()) {
-            std::cerr << "Impossible d'ouvrir le fichier vidéo." << std::endl;
-            close(new_socket);
-            continue;
-        }
+        std::istream * file = new std::ifstream("video.mp4");
 
-        long long size = file.tellg();
-        file.seekg(0, std::ios::beg);
+        file->seekg(0, std::ios::end);
+        long long size = file->tellg();
+        file->seekg(0, std::ios::beg);
         std::cout << "Fichier ouvert, taille: " << size << " octets." << std::endl;
 
         // Envoi de l'en-tête HTTP
@@ -92,24 +88,22 @@ int main() {
         std::cout << "starting to send" << std::endl;
 
         long long sent = 0;
-        while (sent < size) {
-            int bytesRead = std::min(static_cast<long long>(BUFFER_SIZE), size - sent);
-            char buffer[bytesRead];
-            file.read(buffer, bytesRead);
-            if (send(new_socket, buffer, bytesRead, 0) == -1) {
-                perror("");
-            }
-            sent += bytesRead;
-        }
-        if (file.eof())
-            std::cout << "eof reached" << std::endl;
-        else
-            perror("error: ");
-        std::string end = "\r\n\r\n";
-        send(new_socket, &end[0], end.size(), 0);
-        std::cout << "Fichier envoyé. Taille: " << sent << std::endl;
+        while (1) {
+            file->read(buffer, BUFFER_SIZE);
+            long long bytesRead = file->gcount();
+            std::cout << bytesRead << std::endl;
+            if (bytesRead > 0) {
+                if (send(new_socket, buffer, bytesRead, 0) == -1) {
+                    perror("");
+                }
+            } else if (bytesRead == 0){
 
-        file.close();
+            }
+        }
+        //std::string end = "\r\n\r\n";
+        //send(new_socket, &end[0], end.size(), 0);
+        std::cout << "Fichier envoyé. Taille: " << file->tellg() << std::endl;
+
         close(new_socket);
     }
 

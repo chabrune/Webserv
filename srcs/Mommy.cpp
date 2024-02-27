@@ -1,7 +1,7 @@
 #include "../includes/Mommy.hpp"
 
 Mommy::Mommy() {
-    this->timeout.tv_sec = TIMEOUT;
+    this->timeout.tv_sec = 1;
     this->timeout.tv_usec = 0;
     this->running = true;
 }
@@ -17,6 +17,12 @@ int Mommy::load_LFdSet(void) {
         FD_SET((*it)->sockfd, &this->lset);
         if ((*it)->sockfd > maxFd)
             maxFd = (*it)->sockfd;
+    }
+    for (std::map<int, Client*>::iterator it = this->clients.begin(); it != this->clients.end(); it++) {
+        FD_SET(it->second->sockfd, &this->cset);
+        FD_SET(it->second->sockfd, &this->lset);
+        if (it->second->sockfd > maxFd)
+            maxFd = it->second->sockfd;
     }
     return (maxFd + 1);
 }
@@ -52,8 +58,6 @@ void Mommy::run(void) {
                     try {
                         cli = acceptRequest((*it)->sockfd, *it);
 						cli->request = Request(*it, cli->sockfd);
-                        /*cli->readRequest();
-                        cli->req.parseRequest();*/
                         FD_SET(cli->sockfd, &this->cset);
                     } catch (Request::tooLongRequest &e) {
                         std::cerr << RED << "ALLLLEEEEEEEERRRRRRRRRRRTTTTTTTTTTT"<< RESET << std::endl;
@@ -72,27 +76,35 @@ void Mommy::run(void) {
             for (std::map<int, Client*>::iterator it = this->clients.begin(); it != this->clients.end(); it++) {
                 if (FD_ISSET(it->second->sockfd, &this->cset)) {
                     try {
-                        try {
-                            it->second->request.isAllowed(it->second->server);
-                            it->second->request.tryAccess(it->second->server);
-                            it->second->response = Response(*it->second->server, it->second->request);
-                            send(it->second->sockfd, &(it->second->response.getResponse()[0]), it->second->response.getResponseSize(), 0);
-                            //it->second->sendResponse();
-                        } catch (requestError &e) {
-                            Response::handleRequestError(it->second->sockfd);
-                        } catch (std::exception &e) {
-                            if (DEBUG)
-                                std::cerr << RED << "error: " << e.what() << RESET << std::endl;
+                        if (!it->second->readyToSend) {
+                            try {
+                                it->second->request.isAllowed(it->second->server);
+                                it->second->request.tryAccess(it->second->server);
+                                it->second->response = Response(*it->second->server, it->second->request);
+                                it->second->readyToSend = true;
+                                //send(it->second->sockfd, &(it->second->response.getResponse()[0]), it->second->response.getResponseSize(), 0);
+                            } catch (requestError &e) {
+                                it->second->response.handleRequestError(it->second->sockfd);
+                                it->second->readyToSend = true;
+                            } catch (std::exception &e) {
+                                if (DEBUG)
+                                    std::cerr << RED << "error: " << e.what() << RESET << std::endl;
+                            }
                         }
-                        if (close(it->second->sockfd) == -1)
-                            std::cerr << RED << "error: failed to close fd after sending response" << RESET << std::endl;
-                        std::cout << BLUE << "-" << *(it->second) << " connexion closed" << RESET << std::endl;
-                        FD_CLR(it->second->sockfd, &this->cset);
-                        FD_CLR(it->second->sockfd, &this->lset);
-                        this->toDelete.push_back(it->first);
+                        if (it->second->readyToSend && !it->second->sent) {
+                            it->second->sendResponse();
+                        }
                     } catch (std::exception &e) {
                         std::cerr << "error: connection received but failed" << std::endl;
                     }
+                }
+                if (it->second->sent) {
+                    if (close(it->second->sockfd) == -1)
+                        std::cerr << RED << "error: failed to close fd after sending response" << RESET << std::endl;
+                    std::cout << BLUE << "-" << *(it->second) << " connexion closed" << RESET << std::endl;
+                    FD_CLR(it->second->sockfd, &this->cset);
+                    FD_CLR(it->second->sockfd, &this->lset);
+                    this->toDelete.push_back(it->first);
                 }
             }
             while (!this->toDelete.empty()) {

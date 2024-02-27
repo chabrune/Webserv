@@ -74,6 +74,8 @@ int main() {
     // Écoute des connexions entrantes
     listen(server_fd, BACKLOG);
 
+    fcntl(server_fd, F_SETFL, O_NONBLOCK);
+
     while (1) {
         // Acceptation d'une nouvelle connexion
         new_socket = accept(server_fd, (struct sockaddr *) &address, (socklen_t * ) & addrlen);

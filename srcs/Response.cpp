@@ -1,94 +1,99 @@
 #include "../includes/Response.hpp"
 
-Response::Response() {}
+Response::Response() : _contentFile(0), _isGenerated(false) {}
 
-Response::Response(Server & server, Request &request) : server(&server) {
+Response::Response(Server & server, Request &request) : _contentFile(0), server(&server), _isGenerated(false) {
 	std::cout << "New response is under building.." << std::endl;
 	//std::string tester = "experiment/expe_ali/site" + request.getPathToFile();
     std::string tester = server.getRootFrom(request.getPathToFile()) + request.subLocation(server.getLocationFrom(request.getPathToFile()));
     //std::cout << YELLOW << tester << RESET << std::endl;
     this->_uri = tester.c_str();
-    this->_isAutoindex = request.getIsDir();
+    if (request.getIsDir()) {
+        generateAutoindex(request);
+        return;
+    }
 
-	std::ifstream file;
-	file.open(tester.c_str(), MimeUtils::getOpenMode(request.getExtension()));
-	if (file.fail()) {
+    this->_contentFile = new std::ifstream;
+	this->_contentFile->open(tester.c_str(), MimeUtils::getOpenMode(request.getExtension()));
+	if (!this->_contentFile->is_open()) {
 		std::cerr << RED << "Error: " << strerror(errno) << RESET << std::endl;
 		return;
 	}
+    this->_contentFile->seekg(0, std::ios::end);
+    this->_contentSize = this->_contentFile->tellg();
+    this->_contentFile->seekg(0, std::ios::beg);
 
-	contentBuilder(request, file, request.getExtension(), request.getIsDir());
-	headerBuilder(request.getFileType());
-	_response_size = _header.length() + _content.length();
-	_response.resize(_response_size);
-	_response = _header + _content;
+	//contentBuilder(request, file, request.getExtension(), request.getIsDir());
+	headerFileBuilder(request.getFileType());
 	std::cout << "Response created. Header:" << std::endl << this->_header;
 }
 
-void Response::headerBuilder(std::string file_type) {
+void Response::headerFileBuilder(std::string file_type) {
 	std::stringstream header_tmp;
 
-    if (this->_isAutoindex) {
+    if (this->_isGenerated) {
         file_type = "text/html";
     }
-	header_tmp << "HTTP/1.1 200 OK\nContent-Type: " << file_type << "\nContent-Length: " << this->_content.length() << "\r\n\r\n";
+	header_tmp << "HTTP/1.1 200 OK\nContent-Type: " << file_type << "\nContent-Length: " << this->_contentSize << "\r\n\r\n";
 	this->_header = header_tmp.str();
+}
+
+void Response::headerGenBuilder(std::string file_type) {
+    std::stringstream header_tmp;
+
+    if (this->_isGenerated) {
+        file_type = "text/html";
+    }
+    header_tmp << "HTTP/1.1 200 OK\nContent-Type: " << file_type << "\nContent-Length: " << this->_content << "\r\n\r\n";
+    this->_header = header_tmp.str();
 }
 
 void Response::generateAutoindex(Request & req) {
    DIR* dir = opendir(this->_uri.c_str());
-   std::cout << "dddddd: " << this->_uri.c_str() << std::endl;
    if (!dir)
        std::cerr << RED << "can't open dir" << RESET << std::endl;
-    perror("");
-    std::string content;
-    content = "<!DOCTYPE html>\n<html>\n<head>\n<title>Index of ";
-    content += this->_uri;
-    content += "</title>\n</head>\n<body>\n<h1>Index of ";
-    content += this->_uri;
-    content += "</h1>\n<ul>\n";
+    std::stringstream buff;
+    buff << "<!DOCTYPE html>\n<html>\n<head>\n<title>Index of " << this->_uri << "</title>\n</head>\n<body>\n<h1>Index of " << this->_uri << "</h1>\n<ul>\n";
     struct dirent *entry;
-    while ((entry = readdir(dir)) != NULL) {
-        content += "<li><a href=\"http://";
-        content += this->server->getServerName();
-        content += ":";
+    entry = readdir(dir);
+    while (entry != NULL) {
+        buff << "<li><a href=\"http://" << this->server->getServerName() << ":";
         std::ostringstream tstring;
         tstring << this->server->getPort();
-        content+= tstring.str();
-        content += req.getPathToFile();
-        content += "/";
-        content += entry->d_name;
-        content += "\">./";
-        content += entry->d_name;
-        content += "</a></li>\n";
+        buff << tstring.str() << req.getPathToFile() << "/" << entry->d_name << "\">./" << entry->d_name << "</a></li>\n";
+        entry = readdir(dir);
     }
-    content += "</ul>\n</body>\n</html>\n\r\n\r\n";
+    buff << "</ul>\n</body>\n</html>\n";
     closedir(dir);
-    this->_content = content;
+
+    this->_content = buff.str();
+    headerGenBuilder("text/html");
+    this->_isGenerated= true;
+    std::cout << "Generated" << std::endl;
     //std::cout << YELLOW << content << RESET << std::endl;
 }
 
-void Response::contentBuilder(Request & req, std::ifstream &file, const std::string &extension, const bool isDir) {
-	std::string line;
-
-    if (isDir) {
-        generateAutoindex(req);
-        return;
-    } else if (MimeUtils::isImage(extension) || MimeUtils::isVideo(extension) || MimeUtils::isAudio(extension) || MimeUtils::isFont(extension)) {
-		file.seekg(0, std::ios::end);
-		int length = file.tellg();
-		file.seekg(0, std::ios::beg);
-		this->_content.resize(length);
-		file.read(&this->_content[0], length);
-		return ;
-	}
-
-	while(file.good()) {
-		std::getline(file, line);
-		//if line is CGI...
-		this->_content.append(line);
-	}
-}
+//void Response::contentBuilder(Request & req, std::ifstream &file, const std::string &extension, const bool isDir) {
+//	std::string line;
+//
+//    if (isDir) {
+//        generateAutoindex(req);
+//        return;
+//    } else if (MimeUtils::isImage(extension) || MimeUtils::isVideo(extension) || MimeUtils::isAudio(extension) || MimeUtils::isFont(extension)) {
+//		file.seekg(0, std::ios::end);
+//		int length = file.tellg();
+//		file.seekg(0, std::ios::beg);
+//		this->_content->resize(length);
+//		file.read(&this->_content[0], length);
+//		return ;
+//	}
+//
+//	while(file.good()) {
+//		std::getline(file, line);
+//		//if line is CGI...
+//		this->_content.append(line);
+//	}
+//}
 
 std::string intToString(int num) {
     std::ostringstream oss;
@@ -126,33 +131,34 @@ std::string Response::getCodeHeader(std::string * path) {
 }
 
 void Response::handleRequestError(int sockfd) {
-    std::string header = "";
-    std::string codePath = "";
-    char buffer[4096];
+    (void)sockfd;
+    std::string header;
+    std::string codePath;
+    char buffer[8192];
     memset(buffer, 0, sizeof(buffer));
 
     if (DEBUG)
         std::cout << RED << "Sending error code, reason: " << errno << RESET << std::endl;
-    header = getCodeHeader(&codePath);
-    std::ifstream file;
-    file.open(codePath.c_str(),std::ifstream::in);
-    if (file.is_open()) {
-        header += intToString(strlen(buffer));
-        header += "\nContent-Type: text/html\n\n";
-        file.read(buffer, sizeof(buffer));
-        header += buffer;
-        header += "\r\n\r\n";
-    } else if (DEBUG) {
-        std::cerr << RED << "Failed to open code path" << RESET << std::endl;
-    }
-    if (!header.empty()) {
-        try {
-            send(sockfd, &(header[0]), header.length(), 0);
-        } catch (std::exception &e) {
-            if (DEBUG)
-                std::cerr << RED << "error: failed to send response to client" << RESET << std::endl;
-        }
-    }
+    this->_header = getCodeHeader(&codePath);
+
+    if (this->_contentFile)
+        delete this->_contentFile;
+    this->_contentFile = new std::ifstream;
+    this->_contentFile->open(codePath.c_str(),std::ifstream::in);
+    if (!this->_contentFile->is_open())
+        std::cerr << RED << "aled le file code d'errur il est pa ouvert" << RESET << std::endl;
+
+    this->_header += "Content-Length: ";
+    this->_header += this->_contentSize;
+    this->_header += "\nContent-Type: text/html\n\n";
+
+    this->_contentFile->seekg(0, std::ios::end);
+    this->_contentSize = this->_contentFile->tellg();
+    this->_contentFile->seekg(0, std::ios::beg);
+}
+
+std::string & Response::getContent() {
+    return this->_content;
 }
 
 std::string & Response::getResponse() {
@@ -165,4 +171,12 @@ std::string &Response::getUri() {
 
 int Response::getResponseSize() const {
 	return this->_response_size;
+}
+
+std::string &Response::getHeader() {
+    return this->_header;
+}
+
+bool Response::getGenerated() {
+    return this->_isGenerated;
 }

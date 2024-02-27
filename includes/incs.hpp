@@ -27,6 +27,7 @@
 #include <sys/stat.h>
 #include <cerrno>
 #include <dirent.h>
+#include <fcntl.h>
 #include "MimeUtils.hpp"
 
 # ifndef DEBUG
@@ -34,8 +35,11 @@
 # endif
 
 # define HTTP_BUFFER_SIZE 4096
+# define SND_BUFFER_SIZE 16384
 # define CONNECTIONS_NUMBER_LIMIT 2000
 # define TIMEOUT 1 // Seconds before select exit
+
+// errno custom values
 # define ISDIRECTORY 500
 # define NOTALLOWEDMETHOD 501
 

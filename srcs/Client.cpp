@@ -1,7 +1,7 @@
 
 #include "../includes/Client.hpp"
 
-Client::Client(int fd, sockaddr_in addr, Server *server) : sockfd(fd), addr(addr), server(server) { }
+Client::Client(int fd, sockaddr_in addr, Server *server) : sockfd(fd), addr(addr), server(server), readyToSend(false), headerSent(false), sent(false), contentSent(0) { }
 
 Client::~Client() {}
 
@@ -29,8 +29,59 @@ std::ostream & operator<<(std::ostream & out, const Client & cli) {
 }*/
 
 void Client::sendResponse() {
-    char buffer[] = "HTTP/1.1 200 OK\r\n\r\nbonjour\r\n\r\n";
-    send(this->sockfd, buffer, strlen(buffer), 0);
+    // Send Header
+    if (!this->headerSent) {
+        if (send(this->sockfd, &this->response.getHeader()[0], this->response.getHeader().size(), 0) == -1)
+            std::cerr << RED << "TA MERE LE HEADER" << RESET << std::endl;
+        this->headerSent = true;
+    }
+    if (this->response.getGenerated())
+        sendGeneratedContent();
+    else
+        sendInfileContent();
 }
 
+void Client::sendGeneratedContent() {
+    long size = std::min(static_cast<long long>(SND_BUFFER_SIZE), static_cast<long long>(this->response.getContent().size() - this->contentSent));
+    std::cout << "size: " << this->response.getContent().size() << std::endl;
+    std::string buffer = this->response.getContent().substr(this->contentSent, size);
 
+    // Send non-file content
+    std::cout << buffer << std::endl;
+    long sent = send(this->sockfd, &buffer[0], size, 0);
+    if (sent == -1) {
+        std::cerr << RED << "gen send refused" << RESET << std::endl;
+        this->sent = true;
+        return;
+    } else if (sent != size) {
+        size = sent;
+    }
+    this->contentSent += size;
+    if (this->contentSent >= static_cast<long long>(this->response.getContent().size())) {
+        this->sent = true;
+        std::cout << GREEN << "all gen data sent" << RESET << std::endl;
+    }
+}
+
+void Client::sendInfileContent() {
+    char buffer[SND_BUFFER_SIZE + 1];
+    memset(buffer, 0, SND_BUFFER_SIZE + 1);
+
+    // Send file content
+    long size = std::min(static_cast<long long>(SND_BUFFER_SIZE), this->response._contentSize - this->contentSent);
+    this->response._contentFile->seekg(this->contentSent);
+    this->response._contentFile->read(buffer, size);
+    long sent = send(this->sockfd, buffer, size, 0);
+    if (sent == -1) {
+        std::cerr << RED << "send refused" << RESET << std::endl;
+        this->sent = true;
+        return;
+    } else if (sent != size) {
+        size = sent;
+    }
+    this->contentSent += size;
+    if (this->contentSent >= this->response._contentSize) {
+        this->sent = true;
+        std::cout << GREEN << "all data sent" << RESET << std::endl;
+    }
+}

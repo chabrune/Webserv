@@ -10,14 +10,20 @@ class Response {
         Response();
 		Response(Server & server, Request &request);
 
-		std::string &getHeader() const;
-		std::string &getContent() const;
+		std::string &getHeader();
+		std::string &getContent();
         std::string &getUri();
 		std::string &getResponse();
 		int getResponseSize() const;
-        static void handleRequestError(int sockfd);
+        bool getGenerated();
+        void handleRequestError(int sockfd);
+
+
+        std::ifstream *_contentFile; //For local files
+        long long _contentSize;
 	private:
-		void headerBuilder(std::string file_type);
+        void headerGenBuilder(std::string file_type);
+        void headerFileBuilder(std::string file_type);
 		void contentBuilder(Request & req, std::ifstream &file, const std::string &file_type, const bool isDir);
         void generateAutoindex(Request & req);
         static std::string getCodeHeader(std::string * path);
@@ -25,8 +31,8 @@ class Response {
         Server * server; // Attached server
         std::string _uri;
 		std::string _header;
-		std::string _content;
+        std::string _content; // For auto-generated content like autoindex
 		std::string _response;
 		int _response_size;
-        bool _isAutoindex;
+        bool _isGenerated;
 };
