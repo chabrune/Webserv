@@ -28,6 +28,8 @@ Response::Response(Server & server, Request &request) : _contentFile(0), server(
 	std::cout << "Response created. Header:" << std::endl << this->_header;
 }
 
+Response::~Response() {}
+
 void Response::headerFileBuilder(std::string file_type) {
 	std::stringstream header_tmp;
 

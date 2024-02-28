@@ -3,7 +3,10 @@
 
 Client::Client(int fd, sockaddr_in addr, Server *server) : sockfd(fd), addr(addr), server(server), readyToSend(false), headerSent(false), sent(false), contentSent(0) { }
 
-Client::~Client() {}
+Client::~Client() {
+    if (this->response._contentFile)
+        delete this->response._contentFile;
+}
 
 std::ostream & operator<<(std::ostream & out, const Client & cli) {
     out << inet_ntoa(cli.addr.sin_addr) << ":" << (int)ntohs(cli.addr.sin_port);
@@ -73,7 +76,7 @@ void Client::sendInfileContent() {
     this->response._contentFile->read(buffer, size);
     long sent = send(this->sockfd, buffer, size, 0);
     if (sent == -1) {
-        std::cerr << RED << "send refused" << RESET << std::endl;
+        std::cerr << RED << "connexion lost" << RESET << std::endl;
         this->sent = true;
         return;
     } else if (sent != size) {

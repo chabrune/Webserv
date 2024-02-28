@@ -35,15 +35,13 @@ void Request::parseRequest(Server *server, std::string &str) {
 
 	this->method = str.substr(0, first_space_index);
 	this->path_to_file = str.substr(first_space_index + 1, str.find_first_of(' ', first_space_index + 1) - (first_space_index + 1));
-    if (this->path_to_file[this->path_to_file.size() - 1] == '/') {
+    while (this->path_to_file.size() > 1 && this->path_to_file[this->path_to_file.size() - 1] == '/') {
         this->path_to_file.erase(this->path_to_file.size() - 1);
     }
 	//If the path to file = / set the default page (index.html for example), define in the server config.
-	if (this->path_to_file == "") {
+	if (this->path_to_file == "/") {
         if (!server->getIndexFrom(this->path_to_file).empty())
             this->path_to_file = server->getIndexFrom(this->path_to_file);
-        else if (server->getAutoindexFrom(this->path_to_file))
-            this->path_to_file += "";
     }
 	setFileType();
 
@@ -69,7 +67,7 @@ void Request::setFileType() {
 
 void Request::tryAccess(Server *server) {
     std::string tester = server->getRootFrom(this->getPathToFile()) + this->subLocation(server->getLocationFrom(this->getPathToFile()));
-    //std::cout << YELLOW << tester << RESET << std::endl;
+    std::cout << YELLOW << this->subLocation(server->getLocationFrom(this->getPathToFile())) << RESET << std::endl;
     if (access(tester.c_str(), F_OK) != 0)
         throw accessError();
     if (access(tester.c_str(), R_OK) != 0)
@@ -88,6 +86,7 @@ void Request::tryAccess(Server *server) {
 
 void Request::isAllowed(Server *server) {
     std::cout << GREEN << "start check meths" << RESET << std::endl;
+    //this->path_to_file[this->path_to_file.length() - 1] == '/' ? 0 : this->path_to_file += "/";
     std::vector<std::string> & methods = server->getAllowedMethodsFrom(this->path_to_file);
     std::vector<std::string>::iterator it = methods.begin();
     while (it != methods.end()) {

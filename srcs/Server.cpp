@@ -45,10 +45,16 @@ void Server::setup(void)
 Location * Server::getLocationFrom(const std::string &path) {
     for (std::vector<Location*>::iterator it = this->locations.begin(); it != this->locations.end(); it++) {
         std::string itpath = (*it)->path;
-        itpath[itpath.length() - 1] == '/' ? 0 : itpath += "/";
-        if (path.length() >= itpath.length() && path.compare(0, itpath.length(), itpath) == 0)
+        std::string tmppath = path;
+        if (tmppath.length() > 1)
+            tmppath[tmppath.length() - 1] == '/' ? tmppath : tmppath += "/";
+        if (itpath.length() > 1)
+            itpath[itpath.length() - 1] == '/' ? itpath : itpath += "/";
+        if (tmppath.length() >= itpath.length() && tmppath.compare(0, itpath.length(), itpath) == 0) {
             return (*it);
+        }
     }
+    std::cout << "NO LOC" << std::endl;
     return (0);
 }
 
@@ -80,6 +86,9 @@ std::vector<std::string> & Server::getAllowedMethodsFrom(const std::string &path
     Location * location = getLocationFrom(path);
     if (location) {
         std::cout << GREEN << "got location!" << RESET << std::endl;
+        for (std::vector<std::string>::iterator it = location->allowed_methods.begin(); it != location->allowed_methods.end(); it++) {
+            std::cout << YELLOW << *it << RESET << std::endl;
+        }
         return (location->allowed_methods);
     }
     return (this->allowed_methods);

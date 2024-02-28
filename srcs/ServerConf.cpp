@@ -1,6 +1,7 @@
 #include "../includes/ServerConf.hpp"
 #include "../includes/Server.hpp"
 #include "../includes/Mommy.hpp"
+#include "../includes/incs.hpp"
 
 ServerConf::ServerConf() {
     this->autoindex = false;
@@ -487,6 +488,7 @@ void ServerConf::inputParsing(std::string argv, Mommy& frr)
         if (line.find("}") == 0)
 		{
             isInsideServerSection = false;
+            frr.servers.back()->setup();
             ++currentServerIndex;
             continue;
         }

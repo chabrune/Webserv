@@ -9,6 +9,7 @@ class Response {
 	public:
         Response();
 		Response(Server & server, Request &request);
+        ~Response();
 
 		std::string &getHeader();
 		std::string &getContent();
