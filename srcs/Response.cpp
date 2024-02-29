@@ -136,9 +136,8 @@ void Response::handleRequestError() {
     std::stringstream tmphead;
     std::string codePath;
 
-    if (1) {
+    if (DEBUG)
         std::cout << RED << "Sending error code, reason: " << errno << RESET << std::endl;
-    }
 
     tmphead << getCodeHeader(&codePath);
     if (this->_contentFile)

@@ -84,7 +84,6 @@ void Mommy::run(void) {
                                 it->second->readyToSend = true;
                                 //send(it->second->sockfd, &(it->second->response.getResponse()[0]), it->second->response.getResponseSize(), 0);
                             } catch (requestError &e) {
-                                std::cout << "DJAWHUIYDGAWUYDGWAYIGDWAIYDGWAYIGDYIDYIAWDG" << std::endl;
                                 it->second->response.handleRequestError();
                                 it->second->readyToSend = true;
                             } catch (std::exception &e) {
