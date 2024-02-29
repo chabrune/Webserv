@@ -34,6 +34,7 @@ std::ostream & operator<<(std::ostream & out, const Client & cli) {
 void Client::sendResponse() {
     // Send Header
     if (!this->headerSent) {
+        std::cout << MAGENTA << this->response.getHeader() << RESET << std::endl;
         if (send(this->sockfd, &this->response.getHeader()[0], this->response.getHeader().size(), 0) == -1)
             std::cerr << RED << "TA MERE LE HEADER" << RESET << std::endl;
         this->headerSent = true;

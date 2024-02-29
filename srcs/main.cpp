@@ -28,6 +28,11 @@ void quit(int sig) {
     FD_ZERO(&frr.lset);
     FD_ZERO(&frr.cset);
     for (std::vector<Server *>::iterator it = frr.servers.begin(); !frr.servers.empty();) {
+        for (std::vector<Location *>::iterator itl = (*it)->locations.begin(); !(*it)->locations.empty();) {
+            delete(*itl);
+            (*it)->locations.erase(itl);
+            itl = (*it)->locations.begin();
+        }
         close((*it)->sockfd);
         delete (*it);
         frr.servers.erase(it);
@@ -59,6 +64,7 @@ int main(int argc, char **argv)
     int ret = 0;
     signal(SIGINT, quit);
     signal(SIGQUIT, quit);
+    signal(SIGPIPE, SIG_IGN);
     if (DEBUG)
         std::cout << GREEN << "-debug is on" << RESET << std::endl;
     try {

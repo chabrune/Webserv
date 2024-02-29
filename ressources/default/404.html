@@ -2,8 +2,45 @@
 <html>
     <head>
         <title>404 Not Found</title>
+        <style>
+            html {
+                height: 100%;
+                background: #ececec;
+            }
+            body {
+                position: relative;
+                top: 10%;
+            }
+            .text {
+                font-family: 'Cyber', sans-serif;
+                color: #343434;
+            }
+            .container {
+                position: absolute;
+                width: 75%;
+                right: 12%;
+            }
+
+            .back {
+                position: relative;
+                width: 100%;
+            }
+
+            .front {
+                position: absolute;
+                top: 35%;
+                width: 20%;
+                left: 65%;
+            }
+        </style>
     </head>
     <body>
-        <h1>404 Not Found</h1>
+        <center>
+            <h1 class="text">404 Not Found</h1>
+            <div class="container">
+                <img class="back" src="/default/assets/backrooms.jpg" alt="">
+                <img class="front" src="/default/assets/john.gif" alt="">
+            </div>
+        </center>
     </body>
 </html>

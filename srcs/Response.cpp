@@ -132,17 +132,15 @@ std::string Response::getCodeHeader(std::string * path) {
     return ("HTTP/1.1 500 Internal Server Error\n");
 }
 
-void Response::handleRequestError(int sockfd) {
-    (void)sockfd;
-    std::string header;
+void Response::handleRequestError() {
+    std::stringstream tmphead;
     std::string codePath;
-    char buffer[8192];
-    memset(buffer, 0, sizeof(buffer));
 
-    if (DEBUG)
+    if (1) {
         std::cout << RED << "Sending error code, reason: " << errno << RESET << std::endl;
-    this->_header = getCodeHeader(&codePath);
+    }
 
+    tmphead << getCodeHeader(&codePath);
     if (this->_contentFile)
         delete this->_contentFile;
     this->_contentFile = new std::ifstream;
@@ -150,13 +148,11 @@ void Response::handleRequestError(int sockfd) {
     if (!this->_contentFile->is_open())
         std::cerr << RED << "aled le file code d'errur il est pa ouvert" << RESET << std::endl;
 
-    this->_header += "Content-Length: ";
-    this->_header += this->_contentSize;
-    this->_header += "\nContent-Type: text/html\n\n";
-
     this->_contentFile->seekg(0, std::ios::end);
     this->_contentSize = this->_contentFile->tellg();
     this->_contentFile->seekg(0, std::ios::beg);
+    tmphead << "Content-Length: " << this->_contentSize << "\nContent-Type: text/html\n\n";
+    this->_header = tmphead.str();
 }
 
 std::string & Response::getContent() {

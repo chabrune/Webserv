@@ -17,7 +17,7 @@ class Response {
 		std::string &getResponse();
 		int getResponseSize() const;
         bool getGenerated();
-        void handleRequestError(int sockfd);
+        void handleRequestError();
 
 
         std::ifstream *_contentFile; //For local files

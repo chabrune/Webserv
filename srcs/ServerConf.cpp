@@ -117,7 +117,7 @@ void ServerConf::serv_index(std::string &line, size_t currentServerIndex, Mommy&
 	int start = i;
 	while (i < line.length() && !isspace(line[i]))
 		i++;
-	std::string index = line.substr(start, i - start);
+	std::string index = "/" + line.substr(start, i - start);
 	if(line != "index " + index)
 		throw std::logic_error("Config file : Server : Check index");
 	frr.servers[currentServerIndex]->index = index;

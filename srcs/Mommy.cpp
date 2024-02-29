@@ -84,7 +84,8 @@ void Mommy::run(void) {
                                 it->second->readyToSend = true;
                                 //send(it->second->sockfd, &(it->second->response.getResponse()[0]), it->second->response.getResponseSize(), 0);
                             } catch (requestError &e) {
-                                it->second->response.handleRequestError(it->second->sockfd);
+                                std::cout << "DJAWHUIYDGAWUYDGWAYIGDWAIYDGWAYIGDYIDYIAWDG" << std::endl;
+                                it->second->response.handleRequestError();
                                 it->second->readyToSend = true;
                             } catch (std::exception &e) {
                                 if (DEBUG)
@@ -92,7 +93,11 @@ void Mommy::run(void) {
                             }
                         }
                         if (it->second->readyToSend && !it->second->sent) {
-                            it->second->sendResponse();
+                            try {
+                                it->second->sendResponse();
+                            } catch (std::exception &e) {
+                                std::cout << RED << e.what() << RESET << std::endl;
+                            }
                         }
                     } catch (std::exception &e) {
                         std::cerr << "error: connection received but failed" << std::endl;

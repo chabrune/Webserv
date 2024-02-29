@@ -54,7 +54,6 @@ Location * Server::getLocationFrom(const std::string &path) {
             return (*it);
         }
     }
-    std::cout << "NO LOC" << std::endl;
     return (0);
 }
 
@@ -85,7 +84,6 @@ std::string & Server::getIndexFrom(const std::string & path) {
 std::vector<std::string> & Server::getAllowedMethodsFrom(const std::string &path) {
     Location * location = getLocationFrom(path);
     if (location) {
-        std::cout << GREEN << "got location!" << RESET << std::endl;
         for (std::vector<std::string>::iterator it = location->allowed_methods.begin(); it != location->allowed_methods.end(); it++) {
             std::cout << YELLOW << *it << RESET << std::endl;
         }
