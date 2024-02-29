@@ -118,13 +118,13 @@ void ServerConf::serv_index(std::string &line, size_t currentServerIndex, Mommy&
 	int start = i;
 	while (i < line.length() && !isspace(line[i]))
 		i++;
-	std::string index = "/" + line.substr(start, i - start);
+	std::string index = line.substr(start, i - start);
 	if(index.length() > 1)
 		if(index[index.length() - 1] == '/')
 			throw std::logic_error("Config file : Server : Check index");
 	if(line != "index " + index || index[0] == '/')
 		throw std::logic_error("Config file : Server : Check index");
-	frr.servers[currentServerIndex]->index = index;
+	frr.servers[currentServerIndex]->index = '/' + index;
 }
 
 void ServerConf::serv_return(std::string &line, size_t currentServerIndex, Mommy& frr)
