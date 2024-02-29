@@ -4,7 +4,7 @@ server {
     server_name k0r3p4
     root ressources
     client_max_body_size 3000000
-    index /cyber.html
+    index cyber.html
     error_page 404 error_pages/404.html
     cgi .py ./test/py-cgi
     autoindex off
@@ -12,6 +12,6 @@ server {
 
     location /assets {
         autoindex on
-        allow_methods GET POST PUT HEAD
+        allow GET POST PUT HEAD
     }
 }
