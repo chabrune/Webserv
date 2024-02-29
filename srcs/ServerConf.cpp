@@ -61,7 +61,11 @@ void ServerConf::serv_port(std::string &line, size_t currentServerIndex, Mommy& 
 	i = 7;
 	int start = i;
 	while (i < line.length() && !isspace(line[i]))
+	{
+		if(!isdigit(line[i]))
+			throw std::logic_error("Config file : Server : Check port");
 		i++;
+	}
 	std::string sport = line.substr(start, i - start);
 	if(line != "listen " + sport)
 		throw std::logic_error("Config file : Server : Check port");
@@ -470,6 +474,14 @@ void ServerConf::location_autoindex(std::string &line, size_t currentServerIndex
 		frr.servers[currentServerIndex]->locations[currentLocationIndex]->autoindex = false;
 }
 
+bool ServerConf::requirements_serv(Mommy& frr, size_t currentServerIndex)
+{
+	if(currentServerIndex < frr.servers.size())
+		if(frr.servers[currentServerIndex]->port == 0 && frr.servers[currentServerIndex]->server_name.length() == 0)
+			return (false);
+	return(true);
+}
+
 void ServerConf::inputParsing(std::string argv, Mommy& frr)
 {
     std::ifstream file(argv.c_str());
@@ -510,9 +522,11 @@ void ServerConf::inputParsing(std::string argv, Mommy& frr)
 		}
         if (line.find("}") == 0)
 		{
+			if(!requirements_serv(frr, currentServerIndex))
+				throw std::logic_error("Config file : Server : need at least a server name and port");
             isInsideServerSection = false;
             frr.servers.back()->setup();
-            ++currentServerIndex;
+			++currentServerIndex;
             continue;
         }
         if (isInsideServerSection && !isInsideLocationSection && line.find("server_name") != std::string::npos)
