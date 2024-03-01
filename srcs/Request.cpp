@@ -69,14 +69,21 @@ void Request::tryAccess(Server *server) {
     std::string tester = server->getRootFrom(this->getPathToFile()) + this->subLocation(server->getLocationFrom(this->getPathToFile()));
     std::cout << YELLOW << this->subLocation(server->getLocationFrom(this->getPathToFile())) << RESET << std::endl;
     if (access(tester.c_str(), F_OK) != 0)
+    {
+        std::cout << "Yolo1" << std::endl;
         throw accessError();
+    }
     if (access(tester.c_str(), R_OK) != 0)
+    {
+        std::cout << "Yolo2" << std::endl;
         throw accessError();
+    }
     struct stat filestat;
     if (stat(tester.c_str(), &filestat) == 0) {
         if (S_ISDIR(filestat.st_mode)){
             this->isDir = true;
             if (!server->getAutoindexFrom(this->path_to_file)) {
+                std::cout << "Yolo3" << std::endl;
                 errno = ISDIRECTORY;
                 throw accessError();
             }

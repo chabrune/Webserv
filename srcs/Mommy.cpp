@@ -47,22 +47,32 @@ void Mommy::run(void) {
     while (this->running) {
         int maxFd = load_LFdSet();
         int sval = select(maxFd, &this->lset, &this->cset, NULL, &this->timeout);
-        if (sval == -1) {
+        if (sval == -1) 
+        {
             if (this->running)
                 throw selectError();
             this->running = false;
-        } else {
+        } 
+        else 
+        {
             for (std::vector<Server*>::iterator it = this->servers.begin(); it != this->servers.end(); it++) {
-                if (FD_ISSET((*it)->sockfd, &this->lset)) {
+                if (FD_ISSET((*it)->sockfd, &this->lset)) 
+                {
                     Client *cli;
-                    try {
+                    try 
+                    {
                         cli = acceptRequest((*it)->sockfd, *it);
 						cli->request = Request(*it, cli->sockfd);
                         FD_SET(cli->sockfd, &this->cset);
-                    } catch (Request::tooLongRequest &e) {
+                    } 
+                    catch (Request::tooLongRequest &e) 
+                    {
                         std::cerr << RED << "ALLLLEEEEEEEERRRRRRRRRRRTTTTTTTTTTT"<< RESET << std::endl;
-                    } catch (std::exception &e) {
-                        if (cli) {
+                    } 
+                    catch (std::exception &e) 
+                    {
+                        if (cli) 
+                        {
                             FD_CLR((*it)->sockfd, &this->lset);
                             this->clients.erase(cli->sockfd);
                             close(cli->sockfd);
@@ -74,35 +84,50 @@ void Mommy::run(void) {
                 }
             }
             for (std::map<int, Client*>::iterator it = this->clients.begin(); it != this->clients.end(); it++) {
-                if (FD_ISSET(it->second->sockfd, &this->cset)) {
-                    try {
-                        if (!it->second->readyToSend) {
-                            try {
+                if (FD_ISSET(it->second->sockfd, &this->cset)) 
+                {
+                    try 
+                    {
+                        if (!it->second->readyToSend) 
+                        {
+                            try 
+                            {
                                 it->second->request.isAllowed(it->second->server);
                                 it->second->request.tryAccess(it->second->server);
                                 it->second->response = Response(*it->second->server, it->second->request);
                                 it->second->readyToSend = true;
                                 //send(it->second->sockfd, &(it->second->response.getResponse()[0]), it->second->response.getResponseSize(), 0);
-                            } catch (requestError &e) {
-                                it->second->response.handleRequestError();
+                            } 
+                            catch (requestError &e) 
+                            {
+                                it->second->response.handleRequestError(it->second->server);
                                 it->second->readyToSend = true;
-                            } catch (std::exception &e) {
+                            } 
+                            catch (std::exception &e) 
+                            {
                                 if (DEBUG)
                                     std::cerr << RED << "error: " << e.what() << RESET << std::endl;
                             }
                         }
-                        if (it->second->readyToSend && !it->second->sent) {
-                            try {
+                        if (it->second->readyToSend && !it->second->sent) 
+                        {
+                            try 
+                            {
                                 it->second->sendResponse();
-                            } catch (std::exception &e) {
+                            } 
+                            catch (std::exception &e) 
+                            {
                                 std::cout << RED << e.what() << RESET << std::endl;
                             }
                         }
-                    } catch (std::exception &e) {
+                    } 
+                    catch (std::exception &e) 
+                    {
                         std::cerr << "error: connection received but failed" << std::endl;
                     }
                 }
-                if (it->second->sent) {
+                if (it->second->sent) 
+                {
                     if (close(it->second->sockfd) == -1)
                         std::cerr << RED << "error: failed to close fd after sending response" << RESET << std::endl;
                     std::cout << BLUE << "-" << *(it->second) << " connexion closed" << RESET << std::endl;
@@ -111,7 +136,8 @@ void Mommy::run(void) {
                     this->toDelete.push_back(it->first);
                 }
             }
-            while (!this->toDelete.empty()) {
+            while (!this->toDelete.empty()) 
+            {
                 std::map<int, Client*>::iterator it = this->clients.find(this->toDelete.front());
                 if (it == this->clients.end())
                     continue;

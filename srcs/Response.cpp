@@ -103,7 +103,23 @@ std::string intToString(int num) {
     return oss.str();
 }
 
-std::string Response::getCodeHeader(std::string * path) {
+std::string Response::getCodeHeader(std::string * path, Server* server) {
+    (void)server;
+    // if(!server->to_return.empty())
+    // {
+    //     std::string newPath;
+    //     std::map<int, std::string>::iterator it = server->to_return.begin();
+    //     size_t pos = it->second.find("ressources");
+    //     if(pos != std::string::npos)
+    //     {
+    //         size_t i = pos;
+    //         while(i < it->second.length())
+    //             i++;
+    //         newPath = it->second.substr(pos, i);
+    //     }
+    //     *path = newPath;
+    //     return("HTTP/1.1 404 Not Found\n");
+    // }
     if (errno == EACCES || errno == EROFS) {
         *path = "ressources/default/403.html";
         return ("HTTP/1.1 403 Forbidden\n");
@@ -132,14 +148,14 @@ std::string Response::getCodeHeader(std::string * path) {
     return ("HTTP/1.1 500 Internal Server Error\n");
 }
 
-void Response::handleRequestError() {
+void Response::handleRequestError(Server* server) {
     std::stringstream tmphead;
     std::string codePath;
 
     if (DEBUG)
         std::cout << RED << "Sending error code, reason: " << errno << RESET << std::endl;
 
-    tmphead << getCodeHeader(&codePath);
+    tmphead << getCodeHeader(&codePath, server);
     if (this->_contentFile)
         delete this->_contentFile;
     this->_contentFile = new std::ifstream;

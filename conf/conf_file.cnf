@@ -1,10 +1,17 @@
-
+server {
+    root ressources
+    listen 8081
+    server_name localhost
+    allow GET
+    return 404 https://k0r3p5:8080/ressources/default/404.html
+}
 server {
     listen 8080
-    server_name k0r3p4
+    server_name localhost
     root ressources
     client_max_body_size 3000000
     index cyber.html
+// Index without '/' but added in serv_index (ServerConf.cpp)
     error_page 404 error_pages/404.html
     cgi .py ./test/py-cgi
     autoindex off

@@ -17,7 +17,7 @@ class Response {
 		std::string &getResponse();
 		int getResponseSize() const;
         bool getGenerated();
-        void handleRequestError();
+        void handleRequestError(Server* server);
 
 
         std::ifstream *_contentFile; //For local files
@@ -27,7 +27,7 @@ class Response {
         void headerFileBuilder(std::string file_type);
 		void contentBuilder(Request & req, std::ifstream &file, const std::string &file_type, const bool isDir);
         void generateAutoindex(Request & req);
-        static std::string getCodeHeader(std::string * path);
+        static std::string getCodeHeader(std::string * path, Server* server);
 
         Server * server; // Attached server
         std::string _uri;
