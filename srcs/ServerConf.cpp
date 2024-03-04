@@ -126,9 +126,9 @@ void ServerConf::serv_index(std::string &line, size_t currentServerIndex, Mommy&
 	if(index.length() > 1)
 		if(index[index.length() - 1] == '/')
 			throw std::logic_error("Config file : Server : Check index");
-	if(line != "index " + index || index[0] == '/')
+	if(line != "index " + index)
 		throw std::logic_error("Config file : Server : Check index");
-	frr.servers[currentServerIndex]->index = '/' + index;
+	frr.servers[currentServerIndex]->index = index;
 }
 
 void ServerConf::serv_return(std::string &line, size_t currentServerIndex, Mommy& frr)
@@ -150,6 +150,7 @@ void ServerConf::serv_return(std::string &line, size_t currentServerIndex, Mommy
 	std::string path = line.substr(start, i - start);
 	if(line != "return " + snb + " " + path)
 		throw std::logic_error("Config file : Server : Check return");
+	this->isReturn = true;
 	frr.servers[currentServerIndex]->to_return[nb] = path;
 }
 
@@ -452,6 +453,7 @@ void ServerConf::location_return(std::string &line, size_t currentServerIndex, M
 	std::string path = line.substr(start, i - start);
 	if(line != "return " + snb + " " + path)
 		throw std::logic_error("Config file : Server : Check return");
+	frr.servers[currentServerIndex]->locations[currentLocationIndex]->isReturn = true;
 	frr.servers[currentServerIndex]->locations[currentLocationIndex]->to_return[nb] = path;
 }
 
