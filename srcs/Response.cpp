@@ -4,14 +4,17 @@ Response::Response() : _contentFile(0), _isGenerated(false) {}
 
 Response::Response(Server & server, Request &request) : _contentFile(0), server(&server), _isGenerated(false) {
 	std::cout << "New response is under building.." << std::endl;
-	//std::string tester = "experiment/expe_ali/site" + request.getPathToFile();
     std::string tester = server.getRootFrom(request.getPathToFile()) + request.subLocation(server.getLocationFrom(request.getPathToFile()));
-    //std::cout << YELLOW << tester << RESET << std::endl;
     this->_uri = tester.c_str();
     if (request.getIsDir()) {
         generateAutoindex(request);
         return;
     }
+
+	if (isCgi(request.getFileType())) {
+		std::cout << "yes cgi" << std::endl;
+		return;
+	}
 
     this->_contentFile = new std::ifstream;
 	this->_contentFile->open(tester.c_str(), MimeUtils::getOpenMode(request.getExtension()));
@@ -23,12 +26,9 @@ Response::Response(Server & server, Request &request) : _contentFile(0), server(
     this->_contentSize = this->_contentFile->tellg();
     this->_contentFile->seekg(0, std::ios::beg);
 
-	//contentBuilder(request, file, request.getExtension(), request.getIsDir());
 	headerFileBuilder(request.getFileType());
 	std::cout << "Response created. Header:" << std::endl << this->_header;
 }
-
-Response::~Response() {}
 
 void Response::headerFileBuilder(std::string file_type) {
 	std::stringstream header_tmp;
@@ -72,30 +72,14 @@ void Response::generateAutoindex(Request & req) {
     headerGenBuilder("text/html");
     this->_isGenerated= true;
     std::cout << "Generated" << std::endl;
-    //std::cout << YELLOW << content << RESET << std::endl;
 }
 
-//void Response::contentBuilder(Request & req, std::ifstream &file, const std::string &extension, const bool isDir) {
-//	std::string line;
-//
-//    if (isDir) {
-//        generateAutoindex(req);
-//        return;
-//    } else if (MimeUtils::isImage(extension) || MimeUtils::isVideo(extension) || MimeUtils::isAudio(extension) || MimeUtils::isFont(extension)) {
-//		file.seekg(0, std::ios::end);
-//		int length = file.tellg();
-//		file.seekg(0, std::ios::beg);
-//		this->_content->resize(length);
-//		file.read(&this->_content[0], length);
-//		return ;
-//	}
-//
-//	while(file.good()) {
-//		std::getline(file, line);
-//		//if line is CGI...
-//		this->_content.append(line);
-//	}
-//}
+bool Response::isCgi(const std::string &file_type) {
+	//temp system
+	if (file_type.find("py") != std::string::npos)
+		return true;
+	return false;
+}
 
 std::string intToString(int num) {
     std::ostringstream oss;
@@ -174,16 +158,8 @@ std::string & Response::getContent() {
     return this->_content;
 }
 
-std::string & Response::getResponse() {
-	return this->_response;
-}
-
 std::string &Response::getUri() {
     return this->_uri;
-}
-
-int Response::getResponseSize() const {
-	return this->_response_size;
 }
 
 std::string &Response::getHeader() {
