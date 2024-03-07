@@ -1,7 +1,7 @@
 #include "../includes/Response.hpp"
 
 Response::Response() : _contentFile(0), _isGenerated(false) {}
-
+#include <errno.h>
 Response::Response(Server & server, Request &request) : _contentFile(0), server(&server), _isGenerated(false) {
 	std::cout << "New response is under building.." << std::endl;
     std::string tester = server.getRootFrom(request.getPathToFile()) + request.subLocation(server.getLocationFrom(request.getPathToFile()));
@@ -12,8 +12,17 @@ Response::Response(Server & server, Request &request) : _contentFile(0), server(
     }
 
 	if (isCgi(request.getFileType())) {
-		std::cout << "yes cgi" << std::endl;
-		return;
+
+        char **argv = new char*[3];
+        for (int i = 0; i < 3; i++)
+            argv[i] = new char[50];
+        strcpy(argv[0], "/usr/bin/python3");  // Path to Python interpreter
+        strcpy(argv[1], "experiment/expe_ali/site/testpy.py");  // Path to your Python script
+        argv[2] = 0;  // Null-terminate the array
+
+        int res = execve(argv[0], argv, 0);
+		std::cout << "yes cgi " << res << errno << std::endl;
+        exit(1);
 	}
 
     this->_contentFile = new std::ifstream;
