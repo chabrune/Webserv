@@ -22,6 +22,7 @@ class Response {
         void headerGenBuilder(std::string file_type);
         void headerFileBuilder(std::string file_type);
         void generateAutoindex(Request & req);
+        void cgiBuilder(const Request &request);
 		bool isCgi(const std::string &file_type);
         static std::string getCodeHeader(std::string * path, Server* server);
 
@@ -31,6 +32,7 @@ class Response {
         std::string _content; // For auto-generated content like autoindex
         bool _isGenerated;
 
+        char **_env;
         //int pipeIn[2]; //Used by server to send data to cgi
         //int pipeOUt[2]; // Used by cgi to send data to server
 };
