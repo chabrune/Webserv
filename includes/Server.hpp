@@ -20,6 +20,7 @@ class Server : public ServerConf
         std::string & getRootFrom(const std::string & path);
         bool getAutoindexFrom(const std::string & path);
         std::string & getIndexFrom(const std::string & path);
+        std::string getErrorPage(int err, const std::string & path);
 
         class socketCreationError : public std::exception {
             const char * what() const throw() {

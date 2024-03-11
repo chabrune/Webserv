@@ -92,3 +92,21 @@ std::vector<std::string> & Server::getAllowedMethodsFrom(const std::string &path
     }
     return (this->allowed_methods);
 }
+
+std::string Server::getErrorPage(int err, const std::string & path) {
+    std::string res;
+    Location * location = getLocationFrom(path);
+    if (location) {
+        try {
+            res = location->errors_pages[err];
+            return res;
+        }
+        catch (std::exception &e) {}
+    }
+    try {
+        res = this->errors_pages[err];
+        return res;
+    } catch (std::exception &e) {
+        throw std::exception();
+    }
+}

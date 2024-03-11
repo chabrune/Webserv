@@ -55,6 +55,37 @@ enum Methods
     METHODS_END // usefull to stop an incrementation on an Enum
 };
 
+class defaultErrorPages {
+private:
+    std::map<unsigned int, std::string> errorPages;
+public:
+    defaultErrorPages() {
+        errorPages[400] = "ressources/default/400.html";
+        errorPages[403] = "ressources/default/403.html";
+        errorPages[404] = "ressources/default/404.html";
+        errorPages[405] = "ressources/default/405.html";
+        errorPages[409] = "ressources/default/409.html";
+        errorPages[414] = "ressources/default/414.html";
+        errorPages[500] = "ressources/default/500.html";
+    }
+    class indexOutOfBounds : public std::exception
+    {
+        const char *what(void) const throw()
+        {
+            return ("Index out of bounds");
+        }
+    };
+    std::string operator[](unsigned int index) {
+        try {
+            return (this->errorPages[index]);
+        } catch (std::exception &e) {
+            throw indexOutOfBounds();
+        }
+    }
+};
+
+extern defaultErrorPages __defaultErrorPages;
+
 # define RESET	"\033[0m"
 # define RED 	"\033[31m"
 # define GREEN  "\033[32m"

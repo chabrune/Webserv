@@ -1,7 +1,8 @@
 #include "../includes/Response.hpp"
 
+defaultErrorPages __defaultErrorPages;
+
 Response::Response() : _contentFile(0), _isGenerated(false) {}
-#include <errno.h>
 Response::Response(Server & server, Request &request) : _contentFile(0), server(&server), _isGenerated(false) {
     if (DEBUG)
 	    std::cout << "New response is under building.." << std::endl;
@@ -158,8 +159,9 @@ std::string intToString(int num) {
     return oss.str();
 }
 
-std::string Response::getCodeHeader(std::string * path, Server* server) {
+std::string Response::getCodeHeader(std::string * path, Server* server,  const std::string & uri) {
     (void)server;
+    std::string root = server->getRootFrom(uri) + "/";
     // if(!server->to_return.empty())
     // {
     //     std::string newPath;
@@ -176,48 +178,75 @@ std::string Response::getCodeHeader(std::string * path, Server* server) {
     //     return("HTTP/1.1 404 Not Found\n");
     // }
     if (errno == EACCES || errno == EROFS) {
-        *path = "ressources/default/403.html";
+        try {
+            *path = root + server->getErrorPage(403, uri);
+        } catch (std::exception &e) {
+            *path = __defaultErrorPages[403];
+        }
         return ("HTTP/1.1 403 Forbidden\n");
-    }
-    if (errno == ENAMETOOLONG) {
-        *path = "ressources/default/414.html";
+    } else if (errno == ENAMETOOLONG) {
+        try {
+            *path = root + server->getErrorPage(414, uri);
+        } catch (std::exception &e) {
+            *path = __defaultErrorPages[414];
+        }
         return ("HTTP/1.1 414 Uri Too Long\n");
-    }
-    if (errno == ENOENT) {
-        *path = "ressources/default/404.html";
+    } else if (errno == ENOENT) {
+        try {
+            *path = root + server->getErrorPage(404, uri);
+        } catch (std::exception &e) {
+            *path = __defaultErrorPages[404];
+        }
         return ("HTTP/1.1 404 Not Found\n");
-    }
-    if (errno == ENOTDIR || errno == EINVAL || errno == EROFS || errno == ISDIRECTORY) {
-        *path = "ressources/default/400.html";
+    }else if (errno == ENOTDIR || errno == EINVAL || errno == EROFS || errno == ISDIRECTORY) {
+        try {
+            *path = root + server->getErrorPage(400, uri);
+        } catch (std::exception &e) {
+            *path = __defaultErrorPages[400];
+        }
         return ("HTTP/1.1 400 Bad Request\n");
-    }
-    if (errno == ETXTBSY) {
-        *path = "ressources/default/409.html";
+    }else if (errno == ETXTBSY) {
+        try {
+            *path = root + server->getErrorPage(409, uri);
+        } catch (std::exception &e) {
+            *path = __defaultErrorPages[409];
+        }
         return ("HTTP/1.1 409 Conflict\n");
-    }
-    if (errno == NOTALLOWEDMETHOD) {
-        *path = "ressources/default/405.html";
+    }else if (errno == NOTALLOWEDMETHOD) {
+        try {
+            *path = root + server->getErrorPage(405, uri);
+        } catch (std::exception &e) {
+            *path = __defaultErrorPages[403];
+        }
         return ("HTTP/1.1 405 Method Not Allowed\n");
+    } else {
+        try {
+            *path = root + server->getErrorPage(500, uri);
+        } catch (std::exception &e) {
+            *path = __defaultErrorPages[500];
+        }
+        return ("HTTP/1.1 500 Internal Server Error\n");
     }
-    *path = "ressources/default/500.html";
-    return ("HTTP/1.1 500 Internal Server Error\n");
 }
 
-void Response::handleRequestError(Server* server) {
+void Response::handleRequestError(Server* server, const std::string & uri) {
     std::stringstream tmphead;
     std::string codePath;
 
     if (DEBUG)
         std::cout << RED << "Sending error code, reason: " << errno << RESET << std::endl;
 
-    tmphead << getCodeHeader(&codePath, server);
+    tmphead << getCodeHeader(&codePath, server, uri);
     if (this->_contentFile)
         delete this->_contentFile;
     this->_contentFile = new std::ifstream;
     this->_contentFile->open(codePath.c_str(),std::ifstream::in);
-    if (!this->_contentFile->is_open() && DEBUG)
-        std::cerr << RED << "aled le file code d'errur il est pa ouvert" << RESET << std::endl;
-
+    if (!this->_contentFile->is_open()) {
+        if (DEBUG)
+            std::cerr << RED << "error: can't access error page" << RESET << std::endl;
+        this->_header = tmphead.str() + "Content-Length: 0\n\r\n\r\n";
+        return;
+    }
     this->_contentFile->seekg(0, std::ios::end);
     this->_contentSize = this->_contentFile->tellg();
     this->_contentFile->seekg(0, std::ios::beg);

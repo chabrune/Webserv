@@ -14,7 +14,7 @@ class Response {
 		std::string &getContent();
         std::string &getUri();
         bool getGenerated();
-        void handleRequestError(Server* server);
+        void handleRequestError(Server* server, const std::string & uri);
 
         std::ifstream *_contentFile; //For local files
         long long _contentSize;
@@ -24,7 +24,7 @@ class Response {
         void generateAutoindex(Request & req);
         void cgiBuilder(const Request &request);
 		bool isCgi(const std::string &file_type);
-        static std::string getCodeHeader(std::string * path, Server* server);
+        std::string getCodeHeader(std::string * path, Server* server, const std::string & uri);
 
         Server *server; // Attached server
         std::string _uri;

@@ -1,14 +1,15 @@
 server {
     root ressources
     listen 8081
-    server_name localhost
+    server_name k0r3p4
     index /cyber.html
     allow GET
     return 301 https://wwww.google.com
 }
+
 server {
     listen 8080
-    server_name localhost
+    server_name k0r3p4
     root ressources
     client_max_body_size 3000000
     index /cyber.html
