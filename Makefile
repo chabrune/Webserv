@@ -18,7 +18,7 @@ FLAGS = -Wall -Wextra -Werror -std=c++98
 .cpp.o:
 				@c++ $(FLAGS) -c $< -o $(<:.cpp=.o)
 
-all:			$(JPP)
+all:			$(YOLO)
 
 $(NAME):		$(OBJS)
 				@c++ $(FLAGS) $(OBJS) -o $(NAME)
