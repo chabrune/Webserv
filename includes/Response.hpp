@@ -26,7 +26,6 @@ class Response {
 		bool isCgi(const std::string &file_type);
         void pipeCreatorAndExec(char **argv);
         void closeAllPipe();
-        static std::string getCodeHeader(std::string * path, Server* server);
         std::string getCodeHeader(std::string * path, Server* server, const std::string & uri);
 
         Server *server; // Attached server

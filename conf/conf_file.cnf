@@ -13,7 +13,7 @@ server {
     root ressources
     client_max_body_size 3000000
     index /cyber.html
-    error_page 404 error_pages/404.html
+    error_page 404 default/404.html
     cgi .py ./test/py-cgi
     autoindex off
     allow GET POST DELETE

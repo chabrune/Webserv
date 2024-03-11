@@ -39,7 +39,7 @@ Client * Mommy::acceptRequest(int fd, Server *server) {
     if (!cli)
         throw std::bad_alloc();
     this->clients[cliFd] = cli;
-    std::cout << BLUE << "✅ new connexion from " << GREEN << *cli << RESET << std::endl;
+    std::cout << BLUE << "✅ new connexion from " << GREEN << *cli << BLUE << " on " << GREEN << server->getServerName() << ":" << server->getPort() << RESET << std::endl;
     return cli;
 }
 

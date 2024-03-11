@@ -57,11 +57,11 @@ void Response::generateAutoindex(Request & req) {
    if (!dir && DEBUG)
        std::cerr << RED << "can't open dir" << RESET << std::endl;
     std::stringstream buff;
-    buff << "<!DOCTYPE html>\n<html>\n<head>\n<title>Index of " << this->_uri << "</title>\n</head>\n<body>\n<h1>Index of " << this->_uri << "</h1>\n<ul>\n";
+    buff << "<!DOCTYPE html>\n<html>\n<head>\n<title>Index of " << this->_uri << "</title>\n<style>.text{font-family: 'Cyber', sans-serif;}</style></head>\n<body>\n<h1 class=\"text\">Index of " << this->_uri << "</h1>\n<ul>\n";
     struct dirent *entry;
     entry = readdir(dir);
     while (entry != NULL) {
-        buff << "<li><a href=\"http://" << this->server->getServerName() << ":";
+        buff << "<li><a class=\"text\" href=\"http://" << this->server->getServerName() << ":";
         std::ostringstream tstring;
         tstring << this->server->getPort();
         buff << tstring.str() << req.getPathToFile() << "/" << entry->d_name << "\">./" << entry->d_name << "</a></li>\n";
