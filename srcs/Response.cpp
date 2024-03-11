@@ -136,10 +136,14 @@ void Response::cgiBuilder(const Request &request) {
     }
     this->_env[env_as_map.size()] = 0;
 
-    //pipe builder
+    pipeCreatorAndExec(argv);
+    //chdir("experiment/expe_ali/site/");
 
-    execve(argv[0], argv, this->_env);
-    exit(1);
+    //readfrom pipe
+    char t[1024];
+    read(_pipe_out[0], t, 1024);
+    std::cout << "res= " << t << std::endl;
+    closeAllPipe();
 }
 
 bool Response::isCgi(const std::string &file_type) {
@@ -147,6 +151,36 @@ bool Response::isCgi(const std::string &file_type) {
 	if (file_type.find("py") != std::string::npos)
 		return true;
 	return false;
+}
+
+void Response::pipeCreatorAndExec(char **argv) {
+    if (pipe(this->_pipe_out) < 0) {
+        std::cout << "pipe1 marche po" << std::endl;
+        exit(1);
+    }
+    if (pipe(this->_pipe_in) < 0) {
+        std::cout << "pipe2 marche po" << std::endl;
+        exit(1);
+    }
+    _pid = fork();
+    if (_pid < 0) {
+        std::cout << "fork marche po" << std::endl;
+        exit(1);
+    }
+
+    if (_pid == 0) {
+        dup2(_pipe_in[0], STDIN_FILENO);
+        dup2(_pipe_out[1], STDOUT_FILENO);
+        closeAllPipe();
+        exit(execve(argv[0], argv, this->_env));
+    }
+}
+
+void Response::closeAllPipe() {
+    close(_pipe_in[0]);
+    close(_pipe_in[1]);
+    close(_pipe_out[0]);
+    close(_pipe_out[1]);
 }
 
 std::string intToString(int num) {

@@ -24,6 +24,8 @@ class Response {
         void generateAutoindex(Request & req);
         void cgiBuilder(const Request &request);
 		bool isCgi(const std::string &file_type);
+        void pipeCreatorAndExec(char **argv);
+        void closeAllPipe();
         static std::string getCodeHeader(std::string * path, Server* server);
 
         Server *server; // Attached server
@@ -33,6 +35,7 @@ class Response {
         bool _isGenerated;
 
         char **_env;
-        //int pipeIn[2]; //Used by server to send data to cgi
-        //int pipeOUt[2]; // Used by cgi to send data to server
+        int _pid;
+        int _pipe_in[2]; //Used by server to send data to cgi
+        int _pipe_out[2]; // Used by cgi to send data to server
 };
