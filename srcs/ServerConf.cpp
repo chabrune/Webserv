@@ -531,43 +531,43 @@ void ServerConf::inputParsing(std::string argv, Mommy& frr)
 			++currentServerIndex;
             continue;
         }
-        if (isInsideServerSection && !isInsideLocationSection && line.find("server_name") != std::string::npos)
+        if (isInsideServerSection && !isInsideLocationSection && line.find("server_name ") != std::string::npos)
             serv_name_line(line, currentServerIndex, frr);
-		else if(isInsideServerSection && !isInsideLocationSection && line.find("listen") != std::string::npos)
+		else if(isInsideServerSection && !isInsideLocationSection && line.find("listen ") != std::string::npos)
             serv_port(line, currentServerIndex, frr);
-		else if(isInsideServerSection && !isInsideLocationSection && line.find("root") != std::string::npos)
+		else if(isInsideServerSection && !isInsideLocationSection && line.find("root ") != std::string::npos)
 			serv_root(line, currentServerIndex, frr);
-		else if(isInsideServerSection && !isInsideLocationSection && line.find("client_max_body_size") != std::string::npos)
+		else if(isInsideServerSection && !isInsideLocationSection && line.find("client_max_body_size ") != std::string::npos)
 			serv_client_max_body_size(line, currentServerIndex, frr);
-		else if(isInsideServerSection && !isInsideLocationSection && line.find("index") != std::string::npos && line.find("autoindex") == std::string::npos)
+		else if(isInsideServerSection && !isInsideLocationSection && line.find("index ") != std::string::npos && line.find("autoindex") == std::string::npos)
 			serv_index(line, currentServerIndex, frr);
-		else if(isInsideServerSection && !isInsideLocationSection && line.find("return") != std::string::npos)
+		else if(isInsideServerSection && !isInsideLocationSection && line.find("return ") != std::string::npos)
 			serv_return(line, currentServerIndex, frr);
-		else if(isInsideServerSection && !isInsideLocationSection && line.find("error_page") != std::string::npos)
+		else if(isInsideServerSection && !isInsideLocationSection && line.find("error_page ") != std::string::npos)
 			serv_error_page(line, currentServerIndex, frr);
-		else if(isInsideServerSection && !isInsideLocationSection && line.find("cgi") != std::string::npos)
+		else if(isInsideServerSection && !isInsideLocationSection && line.find("cgi ") != std::string::npos)
 			serv_CGI(line, currentServerIndex, frr);
-		else if(isInsideServerSection && !isInsideLocationSection && line.find("allow") != std::string::npos)
+		else if(isInsideServerSection && !isInsideLocationSection && line.find("allow ") != std::string::npos)
 			serv_allowed_methods(line, currentServerIndex, frr);
-		else if(isInsideServerSection && !isInsideLocationSection && line.find("autoindex") != std::string::npos)
+		else if(isInsideServerSection && !isInsideLocationSection && line.find("autoindex ") != std::string::npos)
 			serv_autoindex(line, currentServerIndex, frr);
-		else if(isInsideLocationSection && line.find("root") != std::string::npos)
+		else if(isInsideLocationSection && line.find("root ") != std::string::npos)
 			location_root(line, currentServerIndex, frr, currentLocationIndex);
-		else if(isInsideLocationSection && line.find("allow") != std::string::npos)
+		else if(isInsideLocationSection && line.find("allow ") != std::string::npos)
 			location_allowed_methods(line, currentServerIndex, frr, currentLocationIndex);
-		else if(isInsideLocationSection && line.find("cgi_path") != std::string::npos)
+		else if(isInsideLocationSection && line.find("cgi_path ") != std::string::npos)
 			location_CGI_path(line, currentServerIndex, frr, currentLocationIndex);
-		else if(isInsideLocationSection && line.find("cgi_ext") != std::string::npos)
+		else if(isInsideLocationSection && line.find("cgi_ext ") != std::string::npos)
 			location_CGI_ext(line, currentServerIndex, frr, currentLocationIndex);
-		else if(isInsideLocationSection && line.find("index") != std::string::npos && line.find("autoindex") == std::string::npos)
+		else if(isInsideLocationSection && line.find("index ") != std::string::npos && line.find("autoindex") == std::string::npos)
 			location_index(line, currentServerIndex, frr, currentLocationIndex);
-		else if(isInsideLocationSection && line.find("error_page") != std::string::npos)
+		else if(isInsideLocationSection && line.find("error_page ") != std::string::npos)
 			location_error_page(line, currentServerIndex, frr, currentLocationIndex);
-        else if(isInsideLocationSection && line.find("autoindex") != std::string::npos)
+        else if(isInsideLocationSection && line.find("autoindex ") != std::string::npos)
             location_autoindex(line, currentServerIndex, frr, currentLocationIndex);
-		else if(isInsideLocationSection && line.find("client_max_body_size") != std::string::npos)
+		else if(isInsideLocationSection && line.find("client_max_body_size ") != std::string::npos)
 			location_client_max_body_size(line, currentServerIndex, frr, currentLocationIndex);
-		else if(isInsideLocationSection && line.find("return") != std::string::npos)
+		else if(isInsideLocationSection && line.find("return ") != std::string::npos)
 			location_return(line, currentServerIndex, frr, currentLocationIndex);
     }
 }
