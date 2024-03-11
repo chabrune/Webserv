@@ -3,7 +3,8 @@
 Request::Request() : isDir(false) {}
 
 Request::Request(Server *server, int sockfd) : isDir(false) {
-	std::cout << "New request receive.. Check for errors" << std::endl;
+    if (DEBUG)
+	    std::cout << "New request receive.. Check for errors" << std::endl;
 	std::string buffer;
 	buffer.resize(HTTP_BUFFER_SIZE);
 	this->len = recv(sockfd, &(buffer[0]), HTTP_BUFFER_SIZE, 0);
@@ -11,9 +12,11 @@ Request::Request(Server *server, int sockfd) : isDir(false) {
 		throw recvFailure();
 	else if (this->len >= HTTP_BUFFER_SIZE)
 		throw tooLongRequest();
-	std::cout << "No errors found, starting to parse.." << std::endl;
+    if (DEBUG)
+	    std::cout << "No errors found, starting to parse.." << std::endl;
 	this->parseRequest(server, buffer);
-	std::cout << "New request created. Method: " << this->method << " file path: " << this->path_to_file << " host: " << this->host  << " keep-alive: " << this->keepalive << std::endl;
+    if (DEBUG)
+	    std::cout << "New request created. Method: " << this->method << " file path: " << this->path_to_file << " host: " << this->host  << " keep-alive: " << this->keepalive << std::endl;
 }
 
 Request::~Request() {}
@@ -57,8 +60,10 @@ void Request::parseRequest(Server *server, std::string &str) {
 
 void Request::setFileType() {
 	this->file_type = this->path_to_file.substr(this->path_to_file.find_first_of('.') + 1, this->path_to_file.length());
-    std::cout << YELLOW << "file type: " << this->file_type << RESET << std::endl;
-    std::cout << YELLOW << this->path_to_file << RESET << std::endl;
+    if (DEBUG) {
+        std::cout << YELLOW << "file type: " << this->file_type << RESET << std::endl;
+        std::cout << YELLOW << this->path_to_file << RESET << std::endl;
+    }
 	if (this->file_type == "js")
 		this->file_type = "javascript";
 	this->extension = this->file_type;
@@ -67,15 +72,13 @@ void Request::setFileType() {
 
 void Request::tryAccess(Server *server) {
     std::string tester = server->getRootFrom(this->getPathToFile()) + this->subLocation(server->getLocationFrom(this->getPathToFile()));
-    std::cout << YELLOW << this->subLocation(server->getLocationFrom(this->getPathToFile())) << RESET << std::endl;
+    //std::cout << YELLOW << this->subLocation(server->getLocationFrom(this->getPathToFile())) << RESET << std::endl;
     if (access(tester.c_str(), F_OK) != 0)
     {
-        std::cout << "Yolo1" << std::endl;
         throw accessError();
     }
     if (access(tester.c_str(), R_OK) != 0)
     {
-        std::cout << "Yolo2" << std::endl;
         throw accessError();
     }
     struct stat filestat;
@@ -83,7 +86,6 @@ void Request::tryAccess(Server *server) {
         if (S_ISDIR(filestat.st_mode)){
             this->isDir = true;
             if (!server->getAutoindexFrom(this->path_to_file)) {
-                std::cout << "Yolo3" << std::endl;
                 errno = ISDIRECTORY;
                 throw accessError();
             }
@@ -92,12 +94,14 @@ void Request::tryAccess(Server *server) {
 }
 
 void Request::isAllowed(Server *server) {
-    std::cout << GREEN << "start check meths" << RESET << std::endl;
+    if (DEBUG)
+        std::cout << GREEN << "start check meths" << RESET << std::endl;
     //this->path_to_file[this->path_to_file.length() - 1] == '/' ? 0 : this->path_to_file += "/";
     std::vector<std::string> & methods = server->getAllowedMethodsFrom(this->path_to_file);
     std::vector<std::string>::iterator it = methods.begin();
     while (it != methods.end()) {
-        std::cout << GREEN << "allowed it: " << *it << RESET << std::endl;
+        if (DEBUG)
+            std::cout << GREEN << "allowed it: " << *it << RESET << std::endl;
         if (this->method == *it)
             break;
         it++;
