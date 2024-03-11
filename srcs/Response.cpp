@@ -3,7 +3,8 @@
 Response::Response() : _contentFile(0), _isGenerated(false) {}
 #include <errno.h>
 Response::Response(Server & server, Request &request) : _contentFile(0), server(&server), _isGenerated(false) {
-	std::cout << "New response is under building.." << std::endl;
+    if (DEBUG)
+	    std::cout << "New response is under building.." << std::endl;
     std::string tester = server.getRootFrom(request.getPathToFile()) + request.subLocation(server.getLocationFrom(request.getPathToFile()));
     this->_uri = tester.c_str();
     if (request.getIsDir()) {
@@ -26,7 +27,8 @@ Response::Response(Server & server, Request &request) : _contentFile(0), server(
     this->_contentFile->seekg(0, std::ios::beg);
 
 	headerFileBuilder(request.getFileType());
-	std::cout << "Response created. Header:" << std::endl << this->_header;
+    if (DEBUG)
+	    std::cout << "Response created. Header:" << std::endl << this->_header;
 }
 
 void Response::headerFileBuilder(std::string file_type) {
@@ -51,7 +53,7 @@ void Response::headerGenBuilder(std::string file_type) {
 
 void Response::generateAutoindex(Request & req) {
    DIR* dir = opendir(this->_uri.c_str());
-   if (!dir)
+   if (!dir && DEBUG)
        std::cerr << RED << "can't open dir" << RESET << std::endl;
     std::stringstream buff;
     buff << "<!DOCTYPE html>\n<html>\n<head>\n<title>Index of " << this->_uri << "</title>\n</head>\n<body>\n<h1>Index of " << this->_uri << "</h1>\n<ul>\n";
@@ -70,7 +72,8 @@ void Response::generateAutoindex(Request & req) {
     this->_content = buff.str();
     headerGenBuilder("text/html");
     this->_isGenerated= true;
-    std::cout << "Generated" << std::endl;
+    if (DEBUG)
+        std::cout << "Autoindex Generated" << std::endl;
 }
 
 //env example
@@ -246,7 +249,7 @@ void Response::handleRequestError(Server* server) {
         delete this->_contentFile;
     this->_contentFile = new std::ifstream;
     this->_contentFile->open(codePath.c_str(),std::ifstream::in);
-    if (!this->_contentFile->is_open())
+    if (!this->_contentFile->is_open() && DEBUG)
         std::cerr << RED << "aled le file code d'errur il est pa ouvert" << RESET << std::endl;
 
     this->_contentFile->seekg(0, std::ios::end);

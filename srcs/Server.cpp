@@ -39,10 +39,11 @@ void Server::setup(void)
         throw sockListeningError();
     //fcntl(this->sockfd, SO_SNDTIMEO);
     //fcntl(this->sockfd, F_SETFL, O_NONBLOCK);
-    std::cout << GREEN << "-listener socket for " << getServerName() << ":" << getPort() << " ready" << RESET << std::endl;
+    std::cout << GREEN << "-listener socket for " << BLUE << getServerName() << ":" << getPort() << " ready" << RESET << std::endl;
 }
 
 Location * Server::getLocationFrom(const std::string &path) {
+//    std::cout << MAGENTA << "loc: " << this->locations.back()->path << " path: " << path << RESET << std::endl;
     for (std::vector<Location*>::iterator it = this->locations.begin(); it != this->locations.end(); it++) {
         std::string itpath = (*it)->path;
         std::string tmppath = path;
@@ -84,9 +85,9 @@ std::string & Server::getIndexFrom(const std::string & path) {
 std::vector<std::string> & Server::getAllowedMethodsFrom(const std::string &path) {
     Location * location = getLocationFrom(path);
     if (location) {
-        for (std::vector<std::string>::iterator it = location->allowed_methods.begin(); it != location->allowed_methods.end(); it++) {
-            std::cout << YELLOW << *it << RESET << std::endl;
-        }
+//        for (std::vector<std::string>::iterator it = location->allowed_methods.begin(); it != location->allowed_methods.end(); it++) {
+//            std::cout << YELLOW << *it << RESET << std::endl;
+//        }
         return (location->allowed_methods);
     }
     return (this->allowed_methods);

@@ -39,7 +39,7 @@ Client * Mommy::acceptRequest(int fd, Server *server) {
     if (!cli)
         throw std::bad_alloc();
     this->clients[cliFd] = cli;
-    std::cout << BLUE << "-new connexion from "  << *cli << RESET << std::endl;
+    std::cout << BLUE << "✅ new connexion from " << GREEN << *cli << RESET << std::endl;
     return cli;
 }
 
@@ -130,7 +130,7 @@ void Mommy::run(void) {
                 {
                     if (close(it->second->sockfd) == -1)
                         std::cerr << RED << "error: failed to close fd after sending response" << RESET << std::endl;
-                    std::cout << BLUE << "-" << *(it->second) << " connexion closed" << RESET << std::endl;
+                    std::cout << YELLOW << "❌ connection closed for " << GREEN << *(it->second) << RESET << std::endl;
                     FD_CLR(it->second->sockfd, &this->cset);
                     FD_CLR(it->second->sockfd, &this->lset);
                     this->toDelete.push_back(it->first);

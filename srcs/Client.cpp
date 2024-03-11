@@ -34,9 +34,11 @@ std::ostream & operator<<(std::ostream & out, const Client & cli) {
 void Client::sendResponse() {
     // Send Header
     if (!this->headerSent) {
-        std::cout << MAGENTA << this->response.getHeader() << RESET << std::endl;
+        if (DEBUG)
+            std::cout << MAGENTA << this->response.getHeader() << RESET << std::endl;
         if (send(this->sockfd, &this->response.getHeader()[0], this->response.getHeader().size(), 0) == -1)
-            std::cerr << RED << "TA MERE LE HEADER" << RESET << std::endl;
+            if (DEBUG)
+                std::cerr << RED << "TA MERE LE HEADER" << RESET << std::endl;
         this->headerSent = true;
     }
     if (this->response.getGenerated())
@@ -47,14 +49,14 @@ void Client::sendResponse() {
 
 void Client::sendGeneratedContent() {
     long size = std::min(static_cast<long long>(SND_BUFFER_SIZE), static_cast<long long>(this->response.getContent().size() - this->contentSent));
-    std::cout << "size: " << this->response.getContent().size() << std::endl;
+    if (DEBUG)
+        std::cout << "size: " << this->response.getContent().size() << std::endl;
     std::string buffer = this->response.getContent().substr(this->contentSent, size);
 
     // Send non-file content
-    std::cout << buffer << std::endl;
     long sent = send(this->sockfd, &buffer[0], size, 0);
     if (sent == -1) {
-        std::cerr << RED << "gen send refused" << RESET << std::endl;
+        std::cerr << RED << "❗ connexion lost for " << GREEN << *this << RESET << std::endl;
         this->sent = true;
         return;
     } else if (sent != size) {
@@ -63,7 +65,8 @@ void Client::sendGeneratedContent() {
     this->contentSent += size;
     if (this->contentSent >= static_cast<long long>(this->response.getContent().size())) {
         this->sent = true;
-        std::cout << GREEN << "all gen data sent" << RESET << std::endl;
+        if (DEBUG)
+            std::cout << GREEN << "all gen data sent" << RESET << std::endl;
     }
 }
 
@@ -77,7 +80,7 @@ void Client::sendInfileContent() {
     this->response._contentFile->read(buffer, size);
     long sent = send(this->sockfd, buffer, size, 0);
     if (sent == -1) {
-        std::cerr << RED << "connexion lost" << RESET << std::endl;
+        std::cerr << RED << "❗ connexion lost for " << GREEN << *this << RESET << std::endl;
         this->sent = true;
         return;
     } else if (sent != size) {
@@ -86,6 +89,7 @@ void Client::sendInfileContent() {
     this->contentSent += size;
     if (this->contentSent >= this->response._contentSize) {
         this->sent = true;
-        std::cout << GREEN << "all data sent" << RESET << std::endl;
+        if (DEBUG)
+            std::cout << GREEN << "all data sent" << RESET << std::endl;
     }
 }

@@ -563,6 +563,8 @@ void ServerConf::inputParsing(std::string argv, Mommy& frr)
 			location_index(line, currentServerIndex, frr, currentLocationIndex);
 		else if(isInsideLocationSection && line.find("error_page") != std::string::npos)
 			location_error_page(line, currentServerIndex, frr, currentLocationIndex);
+        else if(isInsideLocationSection && line.find("autoindex") != std::string::npos)
+            location_autoindex(line, currentServerIndex, frr, currentLocationIndex);
 		else if(isInsideLocationSection && line.find("client_max_body_size") != std::string::npos)
 			location_client_max_body_size(line, currentServerIndex, frr, currentLocationIndex);
 		else if(isInsideLocationSection && line.find("return") != std::string::npos)
