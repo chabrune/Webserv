@@ -12,7 +12,12 @@ Response::Response(Server & server, Request &request) : _contentFile(0), server(
         generateAutoindex(request);
         return;
     }
-
+    if(!server.to_return.empty())
+    {
+        this->_isGenerated = true;
+        handleReturn(&server);
+        return;
+    }
 	if (isCgi(request.getFileType())) {
         cgiBuilder(request);
 	}
@@ -30,6 +35,37 @@ Response::Response(Server & server, Request &request) : _contentFile(0), server(
 	headerFileBuilder(request.getFileType());
     if (DEBUG)
 	    std::cout << "Response created. Header:" << std::endl << this->_header;
+}
+
+bool findStatusCode(std::map<int, std::string>::iterator itf, std::map<int, std::string>& error_code)
+{
+    std::map<int, std::string>::iterator it = error_code.find(itf->first);
+    return it != error_code.end();
+}
+
+
+void Response::handleReturn(Server *server)
+{
+    std::map<int, std::string> error_code;
+    error_code[300] = "Multiple Choices";
+    error_code[301] = "Moved Permanently";
+    error_code[302] = "Found";
+    error_code[303] = "See Other";
+    error_code[304] = "Not Modified";
+    error_code[305] = "Use Proxy";
+    error_code[306] = "Switch Proxy";
+    error_code[307] = "Temporary Redirect";
+    error_code[308] = "Permanent Redirect";
+    if (findStatusCode(server->to_return.begin(), error_code)) 
+    {
+        std::map<int, std::string>::iterator it = server->to_return.begin();
+        std::stringstream ss;
+        ss << "HTTP/1.1 " << it->first << " " << error_code[it->first] << "\r\n";
+        ss << "Location: " << it->second << "\r\n";
+        ss << "\r\n";
+        this->_header = ss.str();
+    }
+
 }
 
 void Response::headerFileBuilder(std::string file_type) {

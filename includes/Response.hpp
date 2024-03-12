@@ -15,7 +15,7 @@ class Response {
         std::string &getUri();
         bool getGenerated();
         void handleRequestError(Server* server, const std::string & uri);
-
+        void handleReturn(Server *server);
         std::ifstream *_contentFile; //For local files
         long long _contentSize;
 	private:
