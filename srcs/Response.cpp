@@ -47,25 +47,84 @@ bool findStatusCode(std::map<int, std::string>::iterator itf, std::map<int, std:
 void Response::handleReturn(Server *server)
 {
     std::map<int, std::string> error_code;
+    error_code[100] = "Continue";
+    error_code[101] = "Switching Protocols";
+    error_code[200] = "OK";
+    error_code[201] = "Created";
+    error_code[202] = "Accepted";
+    error_code[203] = "Non-Authoritative Information";
+    error_code[204] = "No Content";
+    error_code[205] = "Reset Content";
+    error_code[206] = "Partial Content";
     error_code[300] = "Multiple Choices";
     error_code[301] = "Moved Permanently";
     error_code[302] = "Found";
     error_code[303] = "See Other";
     error_code[304] = "Not Modified";
     error_code[305] = "Use Proxy";
-    error_code[306] = "Switch Proxy";
     error_code[307] = "Temporary Redirect";
-    error_code[308] = "Permanent Redirect";
+    error_code[400] = "Bad Request";
+    error_code[401] = "Unauthorized";
+    error_code[402] = "Payment Required";
+    error_code[403] = "Forbidden";
+    error_code[404] = "Not Found";
+    error_code[405] = "Method Not Allowed";
+    error_code[406] = "Not Acceptable";
+    error_code[407] = "Proxy Authentication Required";
+    error_code[408] = "Request Timeout";
+    error_code[409] = "Conflict";
+    error_code[410] = "Gone";
+    error_code[411] = "Length Required";
+    error_code[412] = "Precondition Failed";
+    error_code[413] = "Payload Too Large";
+    error_code[414] = "URI Too Long";
+    error_code[415] = "Unsupported Media Type";
+    error_code[416] = "Range Not Satisfiable";
+    error_code[417] = "Expectation Failed";
+    error_code[418] = "I'm a teapot";
+    error_code[421] = "Misdirected Request";
+    error_code[422] = "Unprocessable Entity";
+    error_code[423] = "Locked";
+    error_code[424] = "Failed Dependency";
+    error_code[426] = "Upgrade Required";
+    error_code[428] = "Precondition Required";
+    error_code[429] = "Too Many Requests";
+    error_code[431] = "Request Header Fields Too Large";
+    error_code[500] = "Internal Server Error";
+    error_code[501] = "Not Implemented";
+    error_code[502] = "Bad Gateway";
+    error_code[503] = "Service Unavailable";
+    error_code[504] = "Gateway Timeout";
+    error_code[505] = "HTTP Version Not Supported";
+    error_code[506] = "Variant Also Negotiates";
+    error_code[507] = "Insufficient Storage";
+    error_code[508] = "Loop Detected";
+    error_code[510] = "Not Extended";
     if (findStatusCode(server->to_return.begin(), error_code)) 
     {
         std::map<int, std::string>::iterator it = server->to_return.begin();
-        std::stringstream ss;
-        ss << "HTTP/1.1 " << it->first << " " << error_code[it->first] << "\r\n";
-        ss << "Location: " << it->second << "\r\n";
-        ss << "\r\n";
-        this->_header = ss.str();
+        if(it->first == 301 || it->first == 302 || it->first == 303 || it->first == 307)
+        {
+            if(it->second.find("http://") == std::string::npos && it->second.find("https://") == std::string::npos)
+                return;
+            std::cout << "IUOUWFHOWIEHFOWEIHF" << std::endl;
+            std::stringstream ss;
+            ss << "HTTP/1.1 " << it->first << " " << error_code[it->first] << "\r\n";
+            ss << "Location: " << it->second << "\r\n";
+            ss << "\r\n";
+            this->_header = ss.str();
+        }
+        else
+        {
+            std::cout << "IUOUWFHOWIEHFOWEIHF" << std::endl;
+            std::stringstream ss;
+            ss << "HTTP/1.1 " << it->first << " " << error_code[it->first] << "\r\n";
+            ss << "\r\n";
+            this->_header = ss.str();
+            this->_content = server->to_return[it->first];
+            this->_contentSize = server->to_return[it->first].length();
+        }
     }
-
 }
 
 void Response::headerFileBuilder(std::string file_type) {
