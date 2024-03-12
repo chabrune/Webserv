@@ -64,7 +64,9 @@ void Response::generateAutoindex(Request & req) {
         buff << "<li><a class=\"text\" href=\"http://" << this->server->getServerName() << ":";
         std::ostringstream tstring;
         tstring << this->server->getPort();
-        buff << tstring.str() << req.getPathToFile() << "/" << entry->d_name << "\">./" << entry->d_name << "</a></li>\n";
+        buff << tstring.str() << req.getPathToFile();
+        req.getPathToFile()[req.getPathToFile().size() - 1] == '/' ? 0 : buff << "/";
+        buff << entry->d_name << "\">./" << entry->d_name << "</a></li>\n";
         entry = readdir(dir);
     }
     buff << "</ul>\n</body>\n</html>\n";
@@ -195,7 +197,7 @@ std::string intToString(int num) {
 
 std::string Response::getCodeHeader(std::string * path, Server* server,  const std::string & uri) {
     (void)server;
-    std::string root = server->getRootFrom(uri) + "/";
+    *path = server->getRootFrom(uri) + "/";
     // if(!server->to_return.empty())
     // {
     //     std::string newPath;
@@ -213,49 +215,50 @@ std::string Response::getCodeHeader(std::string * path, Server* server,  const s
     // }
     if (errno == EACCES || errno == EROFS) {
         try {
-            *path = root + server->getErrorPage(403, uri);
+            *path += server->getErrorPage(403, uri);
         } catch (std::exception &e) {
             *path = __defaultErrorPages[403];
         }
         return ("HTTP/1.1 403 Forbidden\n");
     } else if (errno == ENAMETOOLONG) {
         try {
-            *path = root + server->getErrorPage(414, uri);
+            *path += server->getErrorPage(414, uri);
         } catch (std::exception &e) {
             *path = __defaultErrorPages[414];
         }
         return ("HTTP/1.1 414 Uri Too Long\n");
     } else if (errno == ENOENT) {
         try {
-            *path = root + server->getErrorPage(404, uri);
+            *path += server->getErrorPage(404, uri);
         } catch (std::exception &e) {
             *path = __defaultErrorPages[404];
+            std::cout << RED << *path << RESET << std::endl;
         }
         return ("HTTP/1.1 404 Not Found\n");
     }else if (errno == ENOTDIR || errno == EINVAL || errno == EROFS || errno == ISDIRECTORY) {
         try {
-            *path = root + server->getErrorPage(400, uri);
+            *path += server->getErrorPage(400, uri);
         } catch (std::exception &e) {
             *path = __defaultErrorPages[400];
         }
         return ("HTTP/1.1 400 Bad Request\n");
     }else if (errno == ETXTBSY) {
         try {
-            *path = root + server->getErrorPage(409, uri);
+            *path += server->getErrorPage(409, uri);
         } catch (std::exception &e) {
             *path = __defaultErrorPages[409];
         }
         return ("HTTP/1.1 409 Conflict\n");
     }else if (errno == NOTALLOWEDMETHOD) {
         try {
-            *path = root + server->getErrorPage(405, uri);
+            *path += server->getErrorPage(405, uri);
         } catch (std::exception &e) {
             *path = __defaultErrorPages[403];
         }
         return ("HTTP/1.1 405 Method Not Allowed\n");
     } else {
         try {
-            *path = root + server->getErrorPage(500, uri);
+            *path += server->getErrorPage(500, uri);
         } catch (std::exception &e) {
             *path = __defaultErrorPages[500];
         }

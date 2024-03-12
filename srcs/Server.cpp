@@ -96,17 +96,14 @@ std::vector<std::string> & Server::getAllowedMethodsFrom(const std::string &path
 std::string Server::getErrorPage(int err, const std::string & path) {
     std::string res;
     Location * location = getLocationFrom(path);
-    if (location) {
-        try {
-            res = location->errors_pages[err];
-            return res;
-        }
-        catch (std::exception &e) {}
+    if (location && location->errors_pages.find(err) != location->errors_pages.end()) {
+        res = location->errors_pages[err];
+        return res;
     }
-    try {
+    if (this->errors_pages.find(err) != this->errors_pages.end()) {
         res = this->errors_pages[err];
         return res;
-    } catch (std::exception &e) {
+    } else {
         throw std::exception();
     }
 }

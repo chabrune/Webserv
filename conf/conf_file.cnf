@@ -1,7 +1,7 @@
 server {
     root ressources
     listen 8081
-    server_name k0r3p4
+    server_name k0r2p6
     index /cyber.html
     allow GET
     return 301 https://wwww.google.com
@@ -9,13 +9,11 @@ server {
 
 server {
     listen 8080
-    server_name k0r3p4
+    server_name k0r2p6
     root ressources
     client_max_body_size 3000000
-    index /cyber.html
-    error_page 404 default/404.html
     cgi .py ./test/py-cgi
-    autoindex off
+    autoindex on
     allow GET POST DELETE
 
     location /assets {
