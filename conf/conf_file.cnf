@@ -1,7 +1,7 @@
 server {
     root ressources
     listen 8081
-    server_name k0r3p4
+    server_name localhost
     index /cyber.html
     allow GET
     return 301 https://www.youtube.com
@@ -9,12 +9,11 @@ server {
 
 server {
     listen 8080
-    server_name k0r3p4
+    server_name localhost
     root ressources
     client_max_body_size 3000000
-    index /cyber.html
-    error_page 404 default/404.html
     cgi .py ./test/py-cgi
+    index /cyber.html
     autoindex off
     allow GET POST DELETE
 

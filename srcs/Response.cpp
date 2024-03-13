@@ -47,25 +47,84 @@ bool findStatusCode(std::map<int, std::string>::iterator itf, std::map<int, std:
 void Response::handleReturn(Server *server)
 {
     std::map<int, std::string> error_code;
+    error_code[100] = "Continue";
+    error_code[101] = "Switching Protocols";
+    error_code[200] = "OK";
+    error_code[201] = "Created";
+    error_code[202] = "Accepted";
+    error_code[203] = "Non-Authoritative Information";
+    error_code[204] = "No Content";
+    error_code[205] = "Reset Content";
+    error_code[206] = "Partial Content";
     error_code[300] = "Multiple Choices";
     error_code[301] = "Moved Permanently";
     error_code[302] = "Found";
     error_code[303] = "See Other";
     error_code[304] = "Not Modified";
     error_code[305] = "Use Proxy";
-    error_code[306] = "Switch Proxy";
     error_code[307] = "Temporary Redirect";
-    error_code[308] = "Permanent Redirect";
+    error_code[400] = "Bad Request";
+    error_code[401] = "Unauthorized";
+    error_code[402] = "Payment Required";
+    error_code[403] = "Forbidden";
+    error_code[404] = "Not Found";
+    error_code[405] = "Method Not Allowed";
+    error_code[406] = "Not Acceptable";
+    error_code[407] = "Proxy Authentication Required";
+    error_code[408] = "Request Timeout";
+    error_code[409] = "Conflict";
+    error_code[410] = "Gone";
+    error_code[411] = "Length Required";
+    error_code[412] = "Precondition Failed";
+    error_code[413] = "Payload Too Large";
+    error_code[414] = "URI Too Long";
+    error_code[415] = "Unsupported Media Type";
+    error_code[416] = "Range Not Satisfiable";
+    error_code[417] = "Expectation Failed";
+    error_code[418] = "I'm a teapot";
+    error_code[421] = "Misdirected Request";
+    error_code[422] = "Unprocessable Entity";
+    error_code[423] = "Locked";
+    error_code[424] = "Failed Dependency";
+    error_code[426] = "Upgrade Required";
+    error_code[428] = "Precondition Required";
+    error_code[429] = "Too Many Requests";
+    error_code[431] = "Request Header Fields Too Large";
+    error_code[500] = "Internal Server Error";
+    error_code[501] = "Not Implemented";
+    error_code[502] = "Bad Gateway";
+    error_code[503] = "Service Unavailable";
+    error_code[504] = "Gateway Timeout";
+    error_code[505] = "HTTP Version Not Supported";
+    error_code[506] = "Variant Also Negotiates";
+    error_code[507] = "Insufficient Storage";
+    error_code[508] = "Loop Detected";
+    error_code[510] = "Not Extended";
     if (findStatusCode(server->to_return.begin(), error_code)) 
     {
         std::map<int, std::string>::iterator it = server->to_return.begin();
-        std::stringstream ss;
-        ss << "HTTP/1.1 " << it->first << " " << error_code[it->first] << "\r\n";
-        ss << "Location: " << it->second << "\r\n";
-        ss << "\r\n";
-        this->_header = ss.str();
+        if(it->first == 301 || it->first == 302 || it->first == 303 || it->first == 307)
+        {
+            if(it->second.find("http://") == std::string::npos && it->second.find("https://") == std::string::npos)
+                return;
+            std::cout << "IUOUWFHOWIEHFOWEIHF" << std::endl;
+            std::stringstream ss;
+            ss << "HTTP/1.1 " << it->first << " " << error_code[it->first] << "\r\n";
+            ss << "Location: " << it->second << "\r\n";
+            ss << "\r\n";
+            this->_header = ss.str();
+        }
+        else
+        {
+            std::cout << "IUOUWFHOWIEHFOWEIHF" << std::endl;
+            std::stringstream ss;
+            ss << "HTTP/1.1 " << it->first << " " << error_code[it->first] << "\r\n";
+            ss << "\r\n";
+            this->_header = ss.str();
+            this->_content = server->to_return[it->first];
+            this->_contentSize = server->to_return[it->first].length();
+        }
     }
-
 }
 
 void Response::headerFileBuilder(std::string file_type) {
@@ -93,17 +152,22 @@ void Response::generateAutoindex(Request & req) {
    if (!dir && DEBUG)
        std::cerr << RED << "can't open dir" << RESET << std::endl;
     std::stringstream buff;
-    buff << "<!DOCTYPE html>\n<html>\n<head>\n<title>Index of " << this->_uri << "</title>\n<style>.text{font-family: 'Cyber', sans-serif;}</style></head>\n<body>\n<h1 class=\"text\">Index of " << this->_uri << "</h1>\n<ul>\n";
+
+    // WARNING!!! MOST BEAUTIFUL LINE IN THE WORLD
+    buff << "<!DOCTYPE html>\n<html>\n<head>\n<title>Index of " << this->_uri << "</title>\n<style>* {box-sizing: border-box;}  html {height: 150%;width: 100%;background: linear-gradient(0deg, rgb(39, 16, 16) 0%, rgb(93, 35, 55) 100%);}  .cybr-btn{margin-top: 50px;width: 500px;--primary: hsl(var(--primary-hue), 85%, calc(var(--primary-lightness, 50) * 1%));--shadow-primary: hsl(var(--shadow-primary-hue), 90%, 50%);--primary-hue: -15;--primary-lightness: 50;--color: hsl(0, 0%, 100%);--font-size: 26px;--shadow-primary-hue: 180;--label-size: 9px;--shadow-secondary-hue: 60;--shadow-secondary: hsl(var(--shadow-secondary-hue), 90%, 60%);--clip: polygon(0 0, 100% 0, 100% 100%, 95% 100%, 95% 90%, 85% 90%, 85% 100%, 8% 100%, 0 70%);--border: 4px;--shimmy-distance: 5;--clip-one: polygon(0 2%, 100% 2%, 100% 95%, 95% 95%, 95% 90%, 85% 90%, 85% 95%, 8% 95%, 0 70%);--clip-two: polygon(0 78%, 100% 78%, 100% 100%, 95% 100%, 95% 90%, 85% 90%, 85% 100%, 8% 100%, 0 78%);--clip-three: polygon(0 44%, 100% 44%, 100% 54%, 95% 54%, 95% 54%, 85% 54%, 85% 54%, 8% 54%, 0 54%);--clip-four: polygon(0 0, 100% 0, 100% 0, 95% 0, 95% 0, 85% 0, 85% 0, 8% 0, 0 0);--clip-five: polygon(0 0, 100% 0, 100% 0, 95% 0, 95% 0, 85% 0, 85% 0, 8% 0, 0 0);--clip-six: polygon(0 40%, 100% 40%, 100% 85%, 95% 85%, 95% 85%, 85% 85%, 85% 85%, 8% 85%, 0 70%);--clip-seven: polygon(0 63%, 100% 63%, 100% 80%, 95% 80%, 95% 80%, 85% 80%, 85% 80%, 8% 80%, 0 70%);font-family: 'Cyber', sans-serif;color: var(--color);background: transparent;text-transform: uppercase;font-size: var(--font-size);outline: transparent;letter-spacing: 2px;position: relative;font-weight: 700;border: 0;min-width: 300px;height: 75px;line-height: 75px;}  .cybr-btn:after, .cybr-btn:before {content: '';position: absolute;top: 0;left: 0;right: 0;bottom: 0;clip-path: var(--clip);z-index: -1;}  .cybr-btn:before {background: var(--shadow-primary);transform: translate(var(--border), 0);}.cybr-btn:after {background: var(--primary);}  .cybr-btn__glitch {position: absolute;top: calc(var(--border) * -1);left: calc(var(--border) * -1);right: calc(var(--border) * -1);bottom: calc(var(--border) * -1);background: var(--shadow-primary);text-shadow: 2px 2px var(--shadow-primary), -2px -2px var(--shadow-secondary);clip-path: var(--clip);animation: glitch 2s infinite;}  .cybr-btn:hover .cybr-btn__glitch {display: block;}.cybr-btn__glitch:before {content: '';position: absolute;top: calc(var(--border) * 1);right: calc(var(--border) * 1);bottom: calc(var(--border) * 1);left: calc(var(--border) * 1);clip-path: var(--clip);background: var(--primary);z-index: -1;}@keyframes glitch { 0% {clip-path: var(--clip-one);} 2%, 8% {clip-path: var(--clip-two);transform: translate(calc(var(--shimmy-distance) * -1%), 0);} 6% {clip-path: var(--clip-two);transform: translate(calc(var(--shimmy-distance) * 1%), 0);} 9% {clip-path: var(--clip-two);transform: translate(0, 0);} 10% {clip-path: var(--clip-three);transform: translate(calc(var(--shimmy-distance) * 1%), 0);} 13% {clip-path: var(--clip-three);transform: translate(0, 0);} 14%, 21% {clip-path: var(--clip-four);transform: translate(calc(var(--shimmy-distance) * 1%), 0);} 25% {clip-path: var(--clip-five);transform: translate(calc(var(--shimmy-distance) * 1%), 0);} 30% {clip-path: var(--clip-five);transform: translate(calc(var(--shimmy-distance) * -1%), 0);} 35%, 45% {clip-path: var(--clip-six);transform: translate(calc(var(--shimmy-distance) * -1%));} 40% {clip-path: var(--clip-six);transform: translate(calc(var(--shimmy-distance) * 1%));} 50% {clip-path: var(--clip-six);transform: translate(0, 0);} 55% {clip-path: var(--clip-seven);transform: translate(calc(var(--shimmy-distance) * 1%), 0);} 60% {clip-path: var(--clip-seven);transform: translate(0, 0);} 31%, 61%, 100% {clip-path: var(--clip-four);} }  .autoindex-title {font-family: 'Cyber', sans-serif;font-size: 25px;color: #fefefe;margin-top: 100px;}.container {display: flex;justify-content: center;}.index {font-size: 20px;display: flex;flex-direction: column;text-decoration: none;font-family: 'Cyber', sans-serif;color: whitesmoke;list-style-type: none;}.index a {color: inherit;text-decoration: none;}  .index li {position: relative;color: #ffffff;background-color: #3C0D0F;border-radius: 10px 2px;padding: 10px;border: 2px solid #AA2824;margin: 10px;right: 3%;min-width: 450px;filter: drop-shadow(0 0 0.25rem #a01336);transition: background-color 1s ease;}.index li::before, .index li::after {content: '';position: absolute;top: 0;bottom: 0;width: 0%;background: linear-gradient(to right, transparent, #AA2824);transition: width 1s ease;z-index: -1;}.index li::before{left: 0;}.index li::after{right: 0;}.index li:hover::before,.index li:hover::after {width: 50%;}.index li:hover {filter: drop-shadow(0 0 0.75rem #a01336);background-color: #AA2824;}</style></head>\n<body><center><h1 class=\"cybr-btn\">Webserv, a 42 project<span aria-hidden class=\"cybr-btn__glitch\">Webserv, a 42 project</span></h1><h2 class=\"autoindex-title\">Autoindex of ressources/assets</h2></center><div class=\"container\"><ul class=\"index\">";
+
     struct dirent *entry;
     entry = readdir(dir);
     while (entry != NULL) {
-        buff << "<li><a class=\"text\" href=\"http://" << this->server->getServerName() << ":";
+        buff << "<a class=\"text\" href=\"http://" << this->server->getServerName() << ":";
         std::ostringstream tstring;
         tstring << this->server->getPort();
-        buff << tstring.str() << req.getPathToFile() << "/" << entry->d_name << "\">./" << entry->d_name << "</a></li>\n";
+        buff << tstring.str() << req.getPathToFile();
+        req.getPathToFile()[req.getPathToFile().size() - 1] == '/' ? 0 : buff << "/";
+        buff << entry->d_name << "\"><li>./" << entry->d_name << "</li></a>\n";
         entry = readdir(dir);
     }
-    buff << "</ul>\n</body>\n</html>\n";
+    buff << "</ul></div></body></html>";
     closedir(dir);
 
     this->_content = buff.str();
@@ -231,7 +295,7 @@ std::string intToString(int num) {
 
 std::string Response::getCodeHeader(std::string * path, Server* server,  const std::string & uri) {
     (void)server;
-    std::string root = server->getRootFrom(uri) + "/";
+    *path = server->getRootFrom(uri) + "/";
     // if(!server->to_return.empty())
     // {
     //     std::string newPath;
@@ -249,49 +313,50 @@ std::string Response::getCodeHeader(std::string * path, Server* server,  const s
     // }
     if (errno == EACCES || errno == EROFS) {
         try {
-            *path = root + server->getErrorPage(403, uri);
+            *path += server->getErrorPage(403, uri);
         } catch (std::exception &e) {
             *path = __defaultErrorPages[403];
         }
         return ("HTTP/1.1 403 Forbidden\n");
     } else if (errno == ENAMETOOLONG) {
         try {
-            *path = root + server->getErrorPage(414, uri);
+            *path += server->getErrorPage(414, uri);
         } catch (std::exception &e) {
             *path = __defaultErrorPages[414];
         }
         return ("HTTP/1.1 414 Uri Too Long\n");
     } else if (errno == ENOENT) {
         try {
-            *path = root + server->getErrorPage(404, uri);
+            *path += server->getErrorPage(404, uri);
         } catch (std::exception &e) {
             *path = __defaultErrorPages[404];
+            std::cout << RED << *path << RESET << std::endl;
         }
         return ("HTTP/1.1 404 Not Found\n");
     }else if (errno == ENOTDIR || errno == EINVAL || errno == EROFS || errno == ISDIRECTORY) {
         try {
-            *path = root + server->getErrorPage(400, uri);
+            *path += server->getErrorPage(400, uri);
         } catch (std::exception &e) {
             *path = __defaultErrorPages[400];
         }
         return ("HTTP/1.1 400 Bad Request\n");
     }else if (errno == ETXTBSY) {
         try {
-            *path = root + server->getErrorPage(409, uri);
+            *path += server->getErrorPage(409, uri);
         } catch (std::exception &e) {
             *path = __defaultErrorPages[409];
         }
         return ("HTTP/1.1 409 Conflict\n");
     }else if (errno == NOTALLOWEDMETHOD) {
         try {
-            *path = root + server->getErrorPage(405, uri);
+            *path += server->getErrorPage(405, uri);
         } catch (std::exception &e) {
             *path = __defaultErrorPages[403];
         }
         return ("HTTP/1.1 405 Method Not Allowed\n");
     } else {
         try {
-            *path = root + server->getErrorPage(500, uri);
+            *path += server->getErrorPage(500, uri);
         } catch (std::exception &e) {
             *path = __defaultErrorPages[500];
         }
