@@ -22,6 +22,7 @@ class Response {
         void headerGenBuilder(std::string file_type);
         void headerFileBuilder(std::string file_type);
         void generateAutoindex(Request & req);
+        void redirectWellSlashed(const std::string & uri);
         void cgiBuilder(const Request &request);
 		bool isCgi(const std::string &file_type);
         void pipeCreatorAndExec(char **argv);

@@ -22,4 +22,10 @@ server {
         autoindex on
         allow GET POST PUT HEAD
     }
+
+    location /assets/ali {
+        root experiment/expe_ali/site
+        allow GET POST
+        index index.html
+    }
 }

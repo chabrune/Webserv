@@ -39,6 +39,18 @@ class Request {
             }
         };
 
+        class dirDoesNotEndWithSlash : public requestError {
+            const char *what() const throw() {
+                return ("uri to dir must end with '/'");
+            }
+        };
+
+        class invalidSlash: public requestError {
+            const char *what() const throw() {
+                return ("consecutives slash in uri");
+            }
+        };
+
 	private:
         void parseRequest(Server *server, std::string &str);
 		void setFileType();

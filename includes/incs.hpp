@@ -42,6 +42,7 @@
 // errno custom values
 # define ISDIRECTORY 500
 # define NOTALLOWEDMETHOD 501
+# define MISSINGSLASH 502
 
 class   requestError : public std::exception {};
 

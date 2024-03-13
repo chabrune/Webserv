@@ -24,7 +24,7 @@ Response::Response(Server & server, Request &request) : _contentFile(0), server(
 
     this->_contentFile = new std::ifstream;
 	this->_contentFile->open(tester.c_str(), MimeUtils::getOpenMode(request.getExtension()));
-	if (!this->_contentFile->is_open()) {
+	if (!this->_contentFile->is_open() && DEBUG) {
 		std::cerr << RED << "Error: " << strerror(errno) << RESET << std::endl;
 		return;
 	}
@@ -143,11 +143,12 @@ void Response::headerGenBuilder(std::string file_type) {
     if (this->_isGenerated) {
         file_type = "text/html";
     }
-    header_tmp << "HTTP/1.1 200 OK\nContent-Type: " << file_type << "\nContent-Length: " << this->_content << "\r\n\r\n";
+    header_tmp << "HTTP/1.1 200 OK\nContent-Type: " << file_type << "\nContent-Length: " << this->_content.size() << "\n\n";
     this->_header = header_tmp.str();
 }
 
 void Response::generateAutoindex(Request & req) {
+   this->_uri.erase(this->_uri.size() - 1);
    DIR* dir = opendir(this->_uri.c_str());
    if (!dir && DEBUG)
        std::cerr << RED << "can't open dir" << RESET << std::endl;
@@ -163,8 +164,12 @@ void Response::generateAutoindex(Request & req) {
         std::ostringstream tstring;
         tstring << this->server->getPort();
         buff << tstring.str() << req.getPathToFile();
-        req.getPathToFile()[req.getPathToFile().size() - 1] == '/' ? 0 : buff << "/";
-        buff << entry->d_name << "\"><li>./" << entry->d_name << "</li></a>\n";
+        buff << (req.getPathToFile()[req.getPathToFile().size() - 1] == '/' ? "" : "/");
+        buff << entry->d_name;
+        buff << (entry->d_type == DT_DIR ? "/" : "");
+        buff << "\"><li>";
+        buff << (entry->d_type == DT_DIR ? "" : "./");
+        buff << entry->d_name << "</li></a>\n";
         entry = readdir(dir);
     }
     buff << "</ul></div></body></html>";
@@ -172,7 +177,7 @@ void Response::generateAutoindex(Request & req) {
 
     this->_content = buff.str();
     headerGenBuilder("text/html");
-    this->_isGenerated= true;
+    this->_isGenerated = true;
     if (DEBUG)
         std::cout << "Autoindex Generated" << std::endl;
 }
@@ -295,7 +300,8 @@ std::string intToString(int num) {
 
 std::string Response::getCodeHeader(std::string * path, Server* server,  const std::string & uri) {
     (void)server;
-    *path = server->getRootFrom(uri) + "/";
+    if (path)
+        *path = server->getRootFrom(uri) + "/";
     // if(!server->to_return.empty())
     // {
     //     std::string newPath;
@@ -311,7 +317,9 @@ std::string Response::getCodeHeader(std::string * path, Server* server,  const s
     //     *path = newPath;
     //     return("HTTP/1.1 404 Not Found\n");
     // }
-    if (errno == EACCES || errno == EROFS) {
+    if (errno == MISSINGSLASH) {
+        return ("HTTP/1.1 301 Moved Permanently\n");
+    } else if (errno == EACCES || errno == EROFS) {
         try {
             *path += server->getErrorPage(403, uri);
         } catch (std::exception &e) {
@@ -330,7 +338,6 @@ std::string Response::getCodeHeader(std::string * path, Server* server,  const s
             *path += server->getErrorPage(404, uri);
         } catch (std::exception &e) {
             *path = __defaultErrorPages[404];
-            std::cout << RED << *path << RESET << std::endl;
         }
         return ("HTTP/1.1 404 Not Found\n");
     }else if (errno == ENOTDIR || errno == EINVAL || errno == EROFS || errno == ISDIRECTORY) {
@@ -364,13 +371,22 @@ std::string Response::getCodeHeader(std::string * path, Server* server,  const s
     }
 }
 
+void Response::redirectWellSlashed(const std::string & uri) {
+    this->_header = getCodeHeader(0, 0, uri);
+    this->_header += ("Location: " + uri + "/\n");
+    this->_isGenerated = true;
+}
+
 void Response::handleRequestError(Server* server, const std::string & uri) {
     std::stringstream tmphead;
     std::string codePath;
 
     if (DEBUG)
         std::cout << RED << "Sending error code, reason: " << errno << RESET << std::endl;
-
+    if (errno == MISSINGSLASH) {
+        redirectWellSlashed(uri);
+        return;
+    }
     tmphead << getCodeHeader(&codePath, server, uri);
     if (this->_contentFile)
         delete this->_contentFile;
