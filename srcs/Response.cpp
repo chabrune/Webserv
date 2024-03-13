@@ -81,14 +81,15 @@ bool Response::findLocationStatusCode(Server *server, std::string ptf)
 bool Response::handleReturn(Server *server, Request& request)
 {
     std::string ptf = request.getPathToFile();
+    // std::cout << GREEN << "TA SOEUR EN SLIP" << RESET << std::endl;
     if (findServerStatusCode(server->to_return.begin())) 
     {
-        this->_isGenerated = true;
+        // std::cout << GREEN << "TA SOEUR EN CALBAR" << RESET << std::endl;
         std::map<unsigned int, std::string>::iterator it = server->to_return.begin();
         if(it->first == 301 || it->first == 302 || it->first == 303 || it->first == 307)
         {
             if(it->second.find("http://") == std::string::npos && it->second.find("https://") == std::string::npos)
-                return false;
+                return(this->_isGenerated = false);
             std::stringstream ss;
             ss << "HTTP/1.1 " << it->first << " " << __defaultErrorCodes.errorCodes[it->first] << "\r\n";
             ss << "Location: " << it->second << "\r\n";
@@ -97,7 +98,6 @@ bool Response::handleReturn(Server *server, Request& request)
         }
         else
         {
-            std::cout << "IUOUWFHOWIEHFOWEIHF" << std::endl;
             std::stringstream ss;
             ss << "HTTP/1.1 " << it->first << " " << __defaultErrorCodes.errorCodes[it->first] << "\r\n";
             ss << "\r\n";
@@ -105,24 +105,24 @@ bool Response::handleReturn(Server *server, Request& request)
             this->_content = server->to_return[it->first];
             this->_contentSize = server->to_return[it->first].length();
         }
+        return(this->_isGenerated = true);
     }
     if(findLocationStatusCode(server, ptf))
     {
-        this->_isGenerated = true;
+        // std::cout << GREEN << "TA SOEUR EN SUEUR" << RESET << std::endl;
         Location* location = server->getLocationFrom(ptf);
         if(!location)
-        {
-            this->_isGenerated = false;
-            return false;
-        }
+            return(this->_isGenerated = false);
+        // std::cout << GREEN << location->path << "TA SOEUR EN SUEUR" << ptf << RESET << std::endl;
         std::map<unsigned int, std::string>::iterator it = location->to_return.begin();
         if (location->path == ptf)
         {
+            // std::cout << GREEN << "TA SOEUR EN SUEUR" << RESET << std::endl;
             if(it->first == 301 || it->first == 302 || it->first == 303 || it->first == 307)
             {
                 std::cout << RED << it->first << it->second << std::endl;
                 if(it->second.find("http://") == std::string::npos && it->second.find("https://") == std::string::npos)
-                    return false;
+                    return(this->_isGenerated = false);
                 std::stringstream ss;
                 ss << "HTTP/1.1 " << it->first << " " << __defaultErrorCodes.errorCodes[it->first] << "\r\n";
                 ss << "Location: " << it->second << "\r\n";
@@ -138,9 +138,8 @@ bool Response::handleReturn(Server *server, Request& request)
                 this->_content = server->to_return[it->first];
                 this->_contentSize = server->to_return[it->first].length();
             }
+            return(this->_isGenerated = true);
         }
-        else
-            this->_isGenerated = false;
     }
     else
         this->_isGenerated = false;
