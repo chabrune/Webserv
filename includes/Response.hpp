@@ -15,8 +15,9 @@ class Response {
         std::string &getUri();
         bool getGenerated();
         void handleRequestError(Server* server, const std::string & uri);
-        bool handleReturn(Server *server);
-        bool findStatusCode(std::map<unsigned int, std::string>::iterator itf, std::map<unsigned int, std::string>& error_code);
+        bool handleReturn(Server *server, Request& request);
+        bool findServerStatusCode(std::map<unsigned int, std::string>::iterator itf);
+        bool findLocationStatusCode(Server *server, std::string ptf);
         bool findReturnLocations(Server* server);
 
         std::ifstream *_contentFile; //For local files

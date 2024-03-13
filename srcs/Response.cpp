@@ -9,15 +9,14 @@ Response::Response(Server & server, Request &request) : _contentFile(0), server(
 	    std::cout << "New response is under building.." << std::endl;
     std::string tester = server.getRootFrom(request.getPathToFile()) + request.subLocation(server.getLocationFrom(request.getPathToFile()));
     this->_uri = tester.c_str();
+    if(!server.to_return.empty() || findReturnLocations(&server))
+    {
+        if(handleReturn(&server, request))
+            return;
+    }
     if (request.getIsDir()) {
         generateAutoindex(request);
         return;
-    }
-    std::cout << this->_uri << " YOLO BANZAI PEPITO" << std::endl;
-    if(!server.to_return.empty() || findReturnLocations(&server))
-    {
-        if(handleReturn(&server))
-            return;
     }
 	if (isCgi(request.getFileType())) {
         cgiBuilder(request);
@@ -38,12 +37,13 @@ Response::Response(Server & server, Request &request) : _contentFile(0), server(
 	    std::cout << "Response created. Header:" << std::endl << this->_header;
 }
 
-bool Response::findStatusCode(std::map<unsigned int, std::string>::iterator itf, std::map<unsigned int, std::string>& error_code)
+bool Response::findServerStatusCode(std::map<unsigned int, std::string>::iterator itf)
 {
     std::map<unsigned int, std::string>::iterator it = __defaultErrorCodes.errorCodes.find(itf->first);
-    return it != error_code.end();
+    return it != __defaultErrorCodes.errorCodes.end();
 }
 
+//Jpense que ca n'ira pas voir pour modif
 bool Response::findReturnLocations(Server* server)
 {
     std::vector<Location*>::iterator itl = server->locations.begin();
@@ -55,9 +55,31 @@ bool Response::findReturnLocations(Server* server)
     return false;
 }
 
-bool Response::handleReturn(Server *server)
+
+bool Response::findLocationStatusCode(Server *server, std::string ptf)
 {
-    if (findStatusCode(server->to_return.begin(), __defaultErrorCodes.errorCodes)) 
+    bool uri, found;
+    std::vector<Location*>::iterator itl = server->locations.begin();
+    for(; itl != server->locations.end(); itl++)
+    {
+        std::map<unsigned int, std::string>::iterator it = (*itl)->to_return.begin();
+        for (; it != (*itl)->to_return.end(); it++) 
+        {
+            std::map<unsigned int, std::string>::iterator it2 = __defaultErrorCodes.errorCodes.find(it->first);
+            if (it2 != __defaultErrorCodes.errorCodes.end())
+                found = true;
+            if(!(*itl)->path.empty())
+                if(ptf.find((*itl)->path) == 0)
+                    uri = true;
+        } 
+    }
+    return (uri && found);
+}
+
+bool Response::handleReturn(Server *server, Request& request)
+{
+    std::string ptf = request.getPathToFile();
+    if (findServerStatusCode(server->to_return.begin())) 
     {
         this->_isGenerated = true;
         std::map<unsigned int, std::string>::iterator it = server->to_return.begin();
@@ -80,6 +102,42 @@ bool Response::handleReturn(Server *server)
             this->_content = server->to_return[it->first];
             this->_contentSize = server->to_return[it->first].length();
         }
+    }
+    if(findLocationStatusCode(server, ptf))
+    {
+        this->_isGenerated = true;
+        Location* location = server->getLocationFrom(ptf);
+        if(!location)
+        {
+            this->_isGenerated = false;
+            return false;
+        }
+        std::map<unsigned int, std::string>::iterator it = location->to_return.begin();
+        if (location->path == ptf)
+        {
+            if(it->first == 301 || it->first == 302 || it->first == 303 || it->first == 307)
+            {
+                std::cout << RED << it->first << it->second << std::endl;
+                if(it->second.find("http://") == std::string::npos && it->second.find("https://") == std::string::npos)
+                    return false;
+                std::stringstream ss;
+                ss << "HTTP/1.1 " << it->first << " " << __defaultErrorCodes.errorCodes[it->first] << "\r\n";
+                ss << "Location: " << it->second << "\r\n";
+                ss << "\r\n";
+                this->_header = ss.str();
+            }
+            else
+            {
+                std::stringstream ss;
+                ss << "HTTP/1.1 " << it->first << " " << __defaultErrorCodes.errorCodes[it->first] << "\r\n";
+                ss << "\r\n";
+                this->_header = ss.str();
+                this->_content = server->to_return[it->first];
+                this->_contentSize = server->to_return[it->first].length();
+            }
+        }
+        else
+            this->_isGenerated = false;
     }
     else
         this->_isGenerated = false;
