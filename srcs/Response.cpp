@@ -1,5 +1,6 @@
 #include "../includes/Response.hpp"
 
+defaultErrorCodes __defaultErrorCodes;
 defaultErrorPages __defaultErrorPages;
 
 Response::Response() : _contentFile(0), _isGenerated(false) {}
@@ -42,13 +43,6 @@ bool Response::findStatusCode(std::map<unsigned int, std::string>::iterator itf,
 {
     std::map<unsigned int, std::string>::iterator it = __defaultErrorCodes.errorCodes.find(itf->first);
     return it != error_code.end();
-}
-
-bool Response::isCgi(const std::string &file_type) {
-    //temp system
-    if (file_type.find("py") != std::string::npos)
-        return true;
-    return false;
 }
 
 bool Response::findReturnLocations(Server* server)

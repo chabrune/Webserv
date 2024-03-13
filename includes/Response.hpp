@@ -31,7 +31,6 @@ class Response {
         void generateAutoindex(Request & req);
         void redirectWellSlashed(const std::string & uri);
         void cgiBuilder(const Request &request);
-		bool isCgi(const std::string &file_type);
         void pipeCreatorAndExec(char **argv);
         void closeAllPipe();
         std::string getCodeHeader(std::string * path, Server* server, const std::string & uri);
