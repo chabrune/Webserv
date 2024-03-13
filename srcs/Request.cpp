@@ -38,8 +38,8 @@ void Request::parseRequest(Server *server, std::string &str) {
 
 	this->method = str.substr(0, first_space_index);
 	this->path_to_file = str.substr(first_space_index + 1, str.find_first_of(' ', first_space_index + 1) - (first_space_index + 1));
-    while (this->path_to_file.size() > 1 && this->path_to_file[this->path_to_file.size() - 1] == '/') {
-        this->path_to_file.erase(this->path_to_file.size() - 1);
+    while (this->path_to_file.size() > 2 && this->path_to_file[this->path_to_file.size() - 2] == '/') {
+        this->path_to_file.erase(this->path_to_file.size() - 2);
     }
 	//If the path to file = / set the default page (index.html for example), define in the server config.
 	if (this->path_to_file == "/") {
@@ -84,6 +84,17 @@ void Request::tryAccess(Server *server) {
     struct stat filestat;
     if (stat(tester.c_str(), &filestat) == 0) {
         if (S_ISDIR(filestat.st_mode)){
+            if (this->path_to_file[this->path_to_file.size() - 1] != '/') {
+                errno = MISSINGSLASH;
+                this->isDir = true;
+                throw dirDoesNotEndWithSlash();
+            }
+            if (!server->getIndexFrom(this->path_to_file).empty()) {
+                this->path_to_file += "/" + server->getIndexFrom(this->path_to_file);
+                std::cout << MAGENTA << this->path_to_file << RESET << std::endl;
+                this->file_type = "text/html";
+                return;
+            }
             this->isDir = true;
             if (!server->getAutoindexFrom(this->path_to_file)) {
                 errno = ISDIRECTORY;

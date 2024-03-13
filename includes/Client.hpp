@@ -11,6 +11,7 @@ class Client {
     private:
         void sendGeneratedContent();
         void sendInfileContent();
+        void sendCgiContent();
     public:
         Client(int fd, sockaddr_in addr, Server *server);
         ~Client();

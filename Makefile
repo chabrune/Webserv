@@ -9,7 +9,8 @@ SRCS  = srcs/Client.cpp \
 		srcs/ServerConf.cpp \
 		srcs/MimeUtils.cpp \
 		srcs/Response.cpp \
-		srcs/Request.cpp
+		srcs/Request.cpp \
+		srcs/Cgi.cpp
 
 OBJS  = $(SRCS:.cpp=.o)
 
@@ -18,7 +19,7 @@ FLAGS = -Wall -Wextra -Werror -std=c++98
 .cpp.o:
 				@c++ $(FLAGS) -c $< -o $(<:.cpp=.o)
 
-all:			$(YOLO)
+all:			$(NAME)
 
 $(NAME):		$(OBJS)
 				@c++ $(FLAGS) $(OBJS) -o $(NAME)

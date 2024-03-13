@@ -43,6 +43,8 @@ void Client::sendResponse() {
     }
     if (this->response.getGenerated())
         sendGeneratedContent();
+    else if (this->response.isCgi(request.getFileType()))
+        sendCgiContent();
     else
         sendInfileContent();
 }
@@ -68,6 +70,12 @@ void Client::sendGeneratedContent() {
         if (DEBUG)
             std::cout << GREEN << "all gen data sent" << RESET << std::endl;
     }
+}
+
+void Client::sendCgiContent() {
+    // Send file content
+    send(this->sockfd, this->response.getContent().c_str(), this->response.getContent().size(), 0);
+    this->sent = true;
 }
 
 void Client::sendInfileContent() {
