@@ -35,4 +35,5 @@ server {
         allow GET POST
         index index.html
     }
+    return 301 https://www.youtube.com/watch?v=oHg5SJYRHA0
 }
