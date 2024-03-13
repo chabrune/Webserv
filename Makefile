@@ -9,7 +9,8 @@ SRCS  = srcs/Client.cpp \
 		srcs/ServerConf.cpp \
 		srcs/MimeUtils.cpp \
 		srcs/Response.cpp \
-		srcs/Request.cpp
+		srcs/Request.cpp \
+		srcs/Cgi.cpp
 
 OBJS  = $(SRCS:.cpp=.o)
 

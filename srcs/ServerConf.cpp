@@ -440,7 +440,6 @@ void ServerConf::location_return(std::string &line, size_t currentServerIndex, M
 	line = line.substr(i);
 	i = 7;
 	int start = i;
-	std::cout << line << std::endl;
 	while (i < line.length() && !isspace(line[i]))
 		i++;
 	std::string snb = line.substr(start, i - start);
@@ -493,14 +492,12 @@ void ServerConf::inputParsing(std::string argv, Mommy& frr)
         return;
     }
     std::string line;
-    bool isInsideServerSection = false;
-    bool isInsideLocationSection = false;
-    size_t currentServerIndex = frr.servers.size();
-    size_t currentLocationIndex = 0;
+    bool isInsideServerSection = false, isInsideLocationSection = false;
+    size_t currentLocationIndex = 0,  currentServerIndex = 0;
     while (std::getline(file, line))
 	{
         if (line.empty() || line.find("#") == 0 || line.find("//") == 0) continue;
-		if(line.find("location") != std::string::npos)
+		if(line.find("location ") != std::string::npos)
 		{
 			isInsideLocationSection = true;
 			Location *location = new Location;
@@ -524,6 +521,7 @@ void ServerConf::inputParsing(std::string argv, Mommy& frr)
 		}
         if (line.find("}") == 0)
 		{
+			currentLocationIndex = 0;
 			if(!requirements_serv(frr, currentServerIndex))
 				throw std::logic_error("Config file : Server : need at least a server name and port");
             isInsideServerSection = false;
