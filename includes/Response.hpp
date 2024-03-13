@@ -15,7 +15,10 @@ class Response {
         std::string &getUri();
         bool getGenerated();
         void handleRequestError(Server* server, const std::string & uri);
-        void handleReturn(Server *server);
+        bool handleReturn(Server *server);
+        bool findStatusCode(std::map<unsigned int, std::string>::iterator itf, std::map<unsigned int, std::string>& error_code);
+        bool findReturnLocations(Server* server);
+
         std::ifstream *_contentFile; //For local files
         long long _contentSize;
 	private:
