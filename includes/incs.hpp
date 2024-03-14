@@ -43,6 +43,7 @@
 # define ISDIRECTORY 500
 # define NOTALLOWEDMETHOD 501
 # define MISSINGSLASH 502
+#define INVALIDSLASH 503
 
 class   requestError : public std::exception {};
 class   taMereEnSlip : public std::exception {};

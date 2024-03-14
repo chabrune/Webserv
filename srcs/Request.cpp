@@ -1,4 +1,5 @@
 #include "../includes/Request.hpp"
+#include "../includes/utils.hpp"
 
 Request::Request() : isDir(false) {}
 
@@ -38,9 +39,9 @@ void Request::parseRequest(Server *server, std::string &str) {
 
 	this->method = str.substr(0, first_space_index);
 	this->path_to_file = str.substr(first_space_index + 1, str.find_first_of(' ', first_space_index + 1) - (first_space_index + 1));
-    while (this->path_to_file.size() > 2 && this->path_to_file[this->path_to_file.size() - 2] == '/') {
-        this->path_to_file.erase(this->path_to_file.size() - 2);
-    }
+//    while (this->path_to_file.size() > 2 && this->path_to_file[this->path_to_file.size() - 2] == '/') {
+//        this->path_to_file.erase(this->path_to_file.size() - 2);
+//    }
 	//If the path to file = / set the default page (index.html for example), define in the server config.
 	if (this->path_to_file == "/") {
         if (!server->getIndexFrom(this->path_to_file).empty())
@@ -89,9 +90,12 @@ void Request::tryAccess(Server *server) {
                 this->isDir = true;
                 throw dirDoesNotEndWithSlash();
             }
-            if (!server->getIndexFrom(this->path_to_file).empty()) {
-                this->path_to_file += "/" + server->getIndexFrom(this->path_to_file);
-                std::cout << MAGENTA << this->path_to_file << RESET << std::endl;
+            std::cout << "path: " << erasesSidesChar(this->path_to_file, '/')<< " root: " << erasesSidesChar(server->getPathFrom(this->path_to_file), '/') << std::endl;
+            if (!server->getIndexFrom(this->path_to_file).empty() &&
+                    erasesSidesChar(this->path_to_file, '/') == erasesSidesChar(server->getPathFrom(this->path_to_file), '/')) {
+                std::cout << MAGENTA << "yep" << RESET << std::endl;
+                this->path_to_file += this->path_to_file[this->path_to_file.size() - 1] == '/' ? "" : "/";
+                this->path_to_file += server->getIndexFrom(this->path_to_file);
                 this->file_type = "text/html";
                 return;
             }
@@ -104,10 +108,21 @@ void Request::tryAccess(Server *server) {
     }
 }
 
+int isWellSlashed(std::string & str) {
+    for (size_t i = 0; str[i + 1]; i++) {
+        if (str[i] == '/' && str[i + 1] == '/')
+            return -1;
+    }
+    return 0;
+}
+
 void Request::isAllowed(Server *server) {
+    if (isWellSlashed(this->path_to_file) == -1) {
+        errno = INVALIDSLASH;
+        throw invalidSlash();
+    }
     if (DEBUG)
         std::cout << GREEN << "start check meths" << RESET << std::endl;
-    //this->path_to_file[this->path_to_file.length() - 1] == '/' ? 0 : this->path_to_file += "/";
     std::vector<std::string> & methods = server->getAllowedMethodsFrom(this->path_to_file);
     std::vector<std::string>::iterator it = methods.begin();
     while (it != methods.end()) {

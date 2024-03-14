@@ -58,7 +58,7 @@ void Client::sendGeneratedContent() {
     // Send non-file content
     long sent = send(this->sockfd, &buffer[0], size, 0);
     if (sent == -1) {
-        std::cerr << RED << "❗ connexion lost for " << GREEN << *this << RESET << std::endl;
+        std::cerr << RED << "❗ connection lost for " << GREEN << *this << RESET << std::endl;
         this->sent = true;
         return;
     } else if (sent != size) {
@@ -88,7 +88,7 @@ void Client::sendInfileContent() {
     this->response._contentFile->read(buffer, size);
     long sent = send(this->sockfd, buffer, size, 0);
     if (sent == -1) {
-        std::cerr << RED << "❗ connexion lost for " << GREEN << *this << RESET << std::endl;
+        std::cerr << RED << "❗ connection lost for " << GREEN << *this << RESET << std::endl;
         this->sent = true;
         return;
     } else if (sent != size) {

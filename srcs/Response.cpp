@@ -1,4 +1,5 @@
 #include "../includes/Response.hpp"
+#include "../includes/utils.hpp"
 
 defaultErrorCodes __defaultErrorCodes;
 defaultErrorPages __defaultErrorPages;
@@ -334,7 +335,7 @@ std::string Response::getCodeHeader(std::string * path, Server* server,  const s
     //     *path = newPath;
     //     return("HTTP/1.1 404 Not Found\n");
     // }
-    if (errno == MISSINGSLASH) {
+    if (errno == MISSINGSLASH || errno == INVALIDSLASH) {
         return ("HTTP/1.1 301 Moved Permanently\n");
     } else if (errno == EACCES || errno == EROFS) {
         try {
@@ -390,8 +391,21 @@ std::string Response::getCodeHeader(std::string * path, Server* server,  const s
 }
 
 void Response::redirectWellSlashed(const std::string & uri) {
+    std::string newuri = uri;
     this->_header = getCodeHeader(0, 0, uri);
-    this->_header += ("Location: " + uri + "/\n");
+    if (errno == INVALIDSLASH) {
+        size_t i = 0;
+        while (i + 1 < newuri.size()) {
+            if (newuri[i] == '/' && newuri[i + 1] == '/') {
+                newuri.erase(i, 1);
+            } else {
+                i++;
+            }
+        }
+    } else {
+        newuri += "/";
+    }
+    this->_header += ("Location: " + newuri + "\n");
     this->_isGenerated = true;
 }
 
@@ -401,7 +415,7 @@ void Response::handleRequestError(Server* server, const std::string & uri) {
 
     if (DEBUG)
         std::cout << RED << "Sending error code, reason: " << errno << RESET << std::endl;
-    if (errno == MISSINGSLASH) {
+    if (errno == MISSINGSLASH || errno == INVALIDSLASH) {
         redirectWellSlashed(uri);
         return;
     }
