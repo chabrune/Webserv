@@ -1,4 +1,5 @@
 #include "../includes/Request.hpp"
+#include "../includes/utils.hpp"
 
 Request::Request() : isDir(false) {}
 
@@ -68,15 +69,6 @@ void Request::setFileType() {
 		this->file_type = "javascript";
 	this->extension = this->file_type;
 	this->file_type.insert(0, MimeUtils::getTypeOfContent(this->file_type) + "/");
-}
-
-std::string erasesSidesChar(std::string str, char c) {
-    std::string res = str;
-    if (!res.empty() && res[0] == c)
-        res.erase(0, 1);
-    if (!res.empty() && res[res.size() - 1] == c)
-        res.erase(res.size() - 1, 1);
-    return (res);
 }
 
 void Request::tryAccess(Server *server) {

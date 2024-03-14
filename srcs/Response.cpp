@@ -1,4 +1,5 @@
 #include "../includes/Response.hpp"
+#include "../includes/utils.hpp"
 
 defaultErrorCodes __defaultErrorCodes;
 defaultErrorPages __defaultErrorPages;
