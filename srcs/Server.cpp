@@ -110,3 +110,11 @@ std::string Server::getErrorPage(int err, const std::string & path) {
         throw std::exception();
     }
 }
+
+std::string Server::getPathFrom(const std::string & path) {
+    Location * location = getLocationFrom(path);
+    if (location) {
+        return (location->path);
+    }
+    return ("/");
+}
