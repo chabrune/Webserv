@@ -24,7 +24,7 @@ class Request {
 		class returnTest : public taMereEnSlip
 		{
 			const char* what() const throw() {
-				return ("TA MERE EN SLIP");
+				return("OK");
 			}
 		};
 		class recvFailure : public requestError {

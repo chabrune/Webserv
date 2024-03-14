@@ -74,17 +74,28 @@ bool Response::findLocationStatusCode(Server *server, std::string ptf)
     return (uri && found);
 }
 
+//VOIR NGINX POUR CODE INEXISTANT EX : 999 // POUR L'INSTANT INGORER
 bool Response::handleReturn(Server *server, Request& request)
 {
-    if(!server->to_return.empty() && findReturnLocations(server))
+    // std::cout << GREEN << "TA SOEUR EN PYJAMA" << RESET << std::endl;
+    if(!server->to_return.empty() && !findReturnLocations(server))
             return (this->_isGenerated = false);
     std::string ptf = request.getPathToFile();
-    std::cout << GREEN << "TA SOEUR EN SLIP" << RESET << std::endl;
+    // std::cout << GREEN << "TA SOEUR EN SLIP" << RESET << std::endl;
     if (findServerStatusCode(server->to_return.begin())) 
     {
-        std::cout << GREEN << "TA SOEUR EN CALBAR" << RESET << std::endl;
+        // std::cout << GREEN << "TA SOEUR EN CALBAR" << RESET << std::endl;
         std::map<unsigned int, std::string>::iterator it = server->to_return.begin();
-        if(it->first == 301 || it->first == 302 || it->first == 303 || it->first == 307)
+        if(it->first != 301 && it->first != 302 && it->first != 303 && it->first != 307)
+        {
+            std::stringstream ss;
+            ss << "HTTP/1.1 " << it->first << " " << __defaultErrorCodes.errorCodes[it->first] << "\r\n";
+            ss << "\r\n";
+            this->_header = ss.str();
+            this->_content = server->to_return[it->first];
+            this->_contentSize = server->to_return[it->first].length();
+        }
+        else if(it->first == 301 || it->first == 302 || it->first == 303 || it->first == 307)
         {
             if(it->second.find("http://") == std::string::npos && it->second.find("https://") == std::string::npos)
                 return(this->_isGenerated = false);
@@ -94,15 +105,6 @@ bool Response::handleReturn(Server *server, Request& request)
             ss << "\r\n";
             this->_header = ss.str();
         }
-        else
-        {
-            std::stringstream ss;
-            ss << "HTTP/1.1 " << it->first << " " << __defaultErrorCodes.errorCodes[it->first] << "\r\n";
-            ss << "\r\n";
-            this->_header = ss.str();
-            this->_content = server->to_return[it->first];
-            this->_contentSize = server->to_return[it->first].length();
-        }
         this->_isGenerated = true;
         throw taMereEnSlip();
     }
@@ -111,14 +113,22 @@ bool Response::handleReturn(Server *server, Request& request)
         Location* location = server->getLocationFrom(ptf);
         if(!location)
             return(this->_isGenerated = false);
-        std::cout << GREEN << location->path << "TA SOEUR EN SUEUR" << ptf << RESET << std::endl;
+        // std::cout << GREEN << location->path << "TA SOEUR EN SUEUR" << ptf << RESET << std::endl;
         std::map<unsigned int, std::string>::iterator it = location->to_return.begin();
-        if (location->path == ptf)
+        if (erasesSidesChar(location->path, '/') == erasesSidesChar(ptf, '/'))
         {
-            std::cout << GREEN << "TA SOEUR EN SUEUR" << RESET << std::endl;
-            if(it->first == 301 || it->first == 302 || it->first == 303 || it->first == 307)
+            // std::cout << GREEN << "TA SOEUR EN SUEUR" << RESET << std::endl;
+            if(it->first != 301 && it->first != 302 && it->first != 303 && it->first != 307)
             {
-                std::cout << RED << it->first << it->second << std::endl;
+                std::stringstream ss;
+                ss << "HTTP/1.1 " << it->first << " " << __defaultErrorCodes.errorCodes[it->first] << "\r\n";
+                ss << "\r\n";
+                this->_header = ss.str();
+                this->_content = it->second;
+                this->_contentSize = it->second.length();
+            }
+            else if(it->first == 301 || it->first == 302 || it->first == 303 || it->first == 307)
+            {
                 if(it->second.find("http://") == std::string::npos && it->second.find("https://") == std::string::npos)
                     return(this->_isGenerated = false);
                 std::stringstream ss;
@@ -127,17 +137,8 @@ bool Response::handleReturn(Server *server, Request& request)
                 ss << "\r\n";
                 this->_header = ss.str();
             }
-            else
-            {
-                std::stringstream ss;
-                ss << "HTTP/1.1 " << it->first << " " << __defaultErrorCodes.errorCodes[it->first] << "\r\n";
-                ss << "\r\n";
-                this->_header = ss.str();
-                this->_content = server->to_return[it->first];
-                this->_contentSize = server->to_return[it->first].length();
-            }
-            throw taMereEnSlip();
             this->_isGenerated = true;
+            throw taMereEnSlip();
         }
     }
     else

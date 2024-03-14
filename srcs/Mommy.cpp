@@ -103,7 +103,6 @@ void Mommy::run(void) {
                             catch(taMereEnSlip &e)
                             {
                                 it->second->readyToSend = true;
-                                std::cout << GREEN << e.what() << "HREEE  E WHAT LOL ERESSE " << RESET << std::endl;
                             }
                             catch (requestError &e) 
                             {
