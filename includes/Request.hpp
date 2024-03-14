@@ -21,7 +21,12 @@ class Request {
         void tryAccess(Server *server);
         void isAllowed(Server *server);
         std::string subLocation(Location *location);
-
+		class returnTest : public taMereEnSlip
+		{
+			const char* what() const throw() {
+				return ("TA MERE EN SLIP");
+			}
+		};
 		class recvFailure : public requestError {
 			const char * what() const throw() {
 				return ("-failed to read / empty request");

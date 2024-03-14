@@ -45,6 +45,7 @@
 # define MISSINGSLASH 502
 
 class   requestError : public std::exception {};
+class   taMereEnSlip : public std::exception {};
 
 enum Methods
 {

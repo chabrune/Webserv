@@ -9,11 +9,6 @@ Response::Response(Server & server, Request &request) : _contentFile(0), server(
 	    std::cout << "New response is under building.." << std::endl;
     std::string tester = server.getRootFrom(request.getPathToFile()) + request.subLocation(server.getLocationFrom(request.getPathToFile()));
     this->_uri = tester.c_str();
-    if(!server.to_return.empty() || findReturnLocations(&server))
-    {
-        if(handleReturn(&server, request))
-            return;
-    }
     if (request.getIsDir()) {
         generateAutoindex(request);
         return;
@@ -80,11 +75,13 @@ bool Response::findLocationStatusCode(Server *server, std::string ptf)
 
 bool Response::handleReturn(Server *server, Request& request)
 {
+    if(!server->to_return.empty() && findReturnLocations(server))
+            return (this->_isGenerated = false);
     std::string ptf = request.getPathToFile();
-    // std::cout << GREEN << "TA SOEUR EN SLIP" << RESET << std::endl;
+    std::cout << GREEN << "TA SOEUR EN SLIP" << RESET << std::endl;
     if (findServerStatusCode(server->to_return.begin())) 
     {
-        // std::cout << GREEN << "TA SOEUR EN CALBAR" << RESET << std::endl;
+        std::cout << GREEN << "TA SOEUR EN CALBAR" << RESET << std::endl;
         std::map<unsigned int, std::string>::iterator it = server->to_return.begin();
         if(it->first == 301 || it->first == 302 || it->first == 303 || it->first == 307)
         {
@@ -105,19 +102,19 @@ bool Response::handleReturn(Server *server, Request& request)
             this->_content = server->to_return[it->first];
             this->_contentSize = server->to_return[it->first].length();
         }
-        return(this->_isGenerated = true);
+        this->_isGenerated = true;
+        throw taMereEnSlip();
     }
     if(findLocationStatusCode(server, ptf))
     {
-        // std::cout << GREEN << "TA SOEUR EN SUEUR" << RESET << std::endl;
         Location* location = server->getLocationFrom(ptf);
         if(!location)
             return(this->_isGenerated = false);
-        // std::cout << GREEN << location->path << "TA SOEUR EN SUEUR" << ptf << RESET << std::endl;
+        std::cout << GREEN << location->path << "TA SOEUR EN SUEUR" << ptf << RESET << std::endl;
         std::map<unsigned int, std::string>::iterator it = location->to_return.begin();
         if (location->path == ptf)
         {
-            // std::cout << GREEN << "TA SOEUR EN SUEUR" << RESET << std::endl;
+            std::cout << GREEN << "TA SOEUR EN SUEUR" << RESET << std::endl;
             if(it->first == 301 || it->first == 302 || it->first == 303 || it->first == 307)
             {
                 std::cout << RED << it->first << it->second << std::endl;
@@ -138,7 +135,8 @@ bool Response::handleReturn(Server *server, Request& request)
                 this->_content = server->to_return[it->first];
                 this->_contentSize = server->to_return[it->first].length();
             }
-            return(this->_isGenerated = true);
+            throw taMereEnSlip();
+            this->_isGenerated = true;
         }
     }
     else
