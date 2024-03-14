@@ -378,7 +378,7 @@ std::string Response::getCodeHeader(std::string * path, Server* server,  const s
         try {
             *path += server->getErrorPage(405, uri);
         } catch (std::exception &e) {
-            *path = __defaultErrorPages[403];
+            *path = __defaultErrorPages[405];
         }
         return ("HTTP/1.1 405 Method Not Allowed\n");
     } else {
