@@ -43,7 +43,7 @@ void Server::setup(void)
 }
 
 Location * Server::getLocationFrom(const std::string &path) {
-//    std::cout << MAGENTA << "loc: " << this->locations.back()->path << " path: " << path << RESET << std::endl;
+    Location * res = NULL;
     for (std::vector<Location*>::iterator it = this->locations.begin(); it != this->locations.end(); it++) {
         std::string itpath = (*it)->path;
         std::string tmppath = path;
@@ -52,10 +52,13 @@ Location * Server::getLocationFrom(const std::string &path) {
         if (itpath.length() > 1)
             itpath[itpath.length() - 1] == '/' ? itpath : itpath += "/";
         if (tmppath.length() >= itpath.length() && tmppath.compare(0, itpath.length(), itpath) == 0) {
-            return (*it);
+            if (!res || itpath.size() > res->path.size())
+                res = *it;
         }
     }
-    return (0);
+//    if (res)
+//        std::cout << MAGENTA << "location: " << res->path << RESET << std::endl;
+    return (res);
 }
 
 std::string & Server::getRootFrom(const std::string & path) {
@@ -106,4 +109,12 @@ std::string Server::getErrorPage(int err, const std::string & path) {
     } else {
         throw std::exception();
     }
+}
+
+std::string Server::getPathFrom(const std::string & path) {
+    Location * location = getLocationFrom(path);
+    if (location) {
+        return (location->path);
+    }
+    return ("/");
 }

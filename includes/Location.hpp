@@ -18,7 +18,7 @@ class Location
         std::string index;
         std::map<int, std::string> errors_pages;
         unsigned long max_body_size;
-        std::map<int, std::string> to_return; // Set what to return
+        std::map<unsigned int, std::string> to_return; // Set what to return
         bool autoindex;
         bool isReturn;
 };

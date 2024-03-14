@@ -21,6 +21,7 @@ class Server : public ServerConf
         bool getAutoindexFrom(const std::string & path);
         std::string & getIndexFrom(const std::string & path);
         std::string getErrorPage(int err, const std::string & path);
+        std::string getPathFrom(const std::string & path);
 
         class socketCreationError : public std::exception {
             const char * what() const throw() {

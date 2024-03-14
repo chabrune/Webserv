@@ -4,7 +4,14 @@ server {
     server_name localhost
     index /cyber.html
     allow GET
-    return 301 https://www.youtube.com
+    autoindex on
+    location /tmp/ {
+        autoindex on
+        root ressources/tmp
+        allow GET
+        return 301 https://www.winxclubfrance.com/
+    }
+    return 301 https://www.youtube.com/watch?v=oHg5SJYRHA0
 }
 
 server {
@@ -22,4 +29,11 @@ server {
         autoindex on
         allow GET POST PUT HEAD
     }
+
+    location /assets/ali {
+        root experiment/expe_ali/site
+        allow GET POST
+        index index.html
+    }
+    return 301 https://www.youtube.com/watch?v=oHg5SJYRHA0
 }

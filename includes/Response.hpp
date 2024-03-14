@@ -18,8 +18,9 @@ class Response {
         std::string &getUri();
         bool getGenerated();
         void handleRequestError(Server* server, const std::string & uri);
-        bool handleReturn(Server *server);
-        bool findStatusCode(std::map<unsigned int, std::string>::iterator itf, std::map<unsigned int, std::string>& error_code);
+        bool handleReturn(Server *server, Request& request);
+        bool findServerStatusCode(std::map<unsigned int, std::string>::iterator itf);
+        bool findLocationStatusCode(Server *server, std::string ptf);
         bool findReturnLocations(Server* server);
         bool isCgi(const std::string &file_type);
 
@@ -29,6 +30,10 @@ class Response {
         void headerGenBuilder(std::string file_type);
         void headerFileBuilder(std::string file_type);
         void generateAutoindex(Request & req);
+        void redirectWellSlashed(const std::string & uri);
+        void cgiBuilder(const Request &request);
+        void pipeCreatorAndExec(char **argv);
+        void closeAllPipe();
         std::string getCodeHeader(std::string * path, Server* server, const std::string & uri);
 
         Server *server; // Attached server
@@ -36,4 +41,9 @@ class Response {
 		std::string _header;
         std::string _content; // For auto-generated content like autoindex
         bool _isGenerated;
+
+        char **_env;
+        int _pid;
+        int _pipe_in[2]; //Used by server to send data to cgi
+        int _pipe_out[2]; // Used by cgi to send data to server
 };

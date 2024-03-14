@@ -1,7 +1,8 @@
 #include "../includes/Response.hpp"
+#include "../includes/utils.hpp"
 
-defaultErrorPages __defaultErrorPages;
 defaultErrorCodes __defaultErrorCodes;
+defaultErrorPages __defaultErrorPages;
 
 Response::Response() : _contentFile(0), _isGenerated(false) {}
 Response::Response(Server & server, Request &request) : _contentFile(0), server(&server), _isGenerated(false) {
@@ -13,12 +14,6 @@ Response::Response(Server & server, Request &request) : _contentFile(0), server(
         generateAutoindex(request);
         return;
     }
-    std::cout << this->_uri << " YOLO BANZAI PEPITO" << std::endl;
-    if(!server.to_return.empty() || findReturnLocations(&server))
-    {
-        if(handleReturn(&server))
-            return;
-    }
 	if (isCgi(request.getFileType())) {
         Cgi(*this, request);
 
@@ -28,7 +23,7 @@ Response::Response(Server & server, Request &request) : _contentFile(0), server(
 
     this->_contentFile = new std::ifstream;
 	this->_contentFile->open(tester.c_str(), MimeUtils::getOpenMode(request.getExtension()));
-	if (!this->_contentFile->is_open()) {
+	if (!this->_contentFile->is_open() && DEBUG) {
 		std::cerr << RED << "Error: " << strerror(errno) << RESET << std::endl;
 		return;
 	}
@@ -41,19 +36,13 @@ Response::Response(Server & server, Request &request) : _contentFile(0), server(
 	    std::cout << "Response created. Header:" << std::endl << this->_header;
 }
 
-bool Response::findStatusCode(std::map<unsigned int, std::string>::iterator itf, std::map<unsigned int, std::string>& error_code)
+bool Response::findServerStatusCode(std::map<unsigned int, std::string>::iterator itf)
 {
     std::map<unsigned int, std::string>::iterator it = __defaultErrorCodes.errorCodes.find(itf->first);
-    return it != error_code.end();
+    return it != __defaultErrorCodes.errorCodes.end();
 }
 
-bool Response::isCgi(const std::string &file_type) {
-    //temp system
-    if (file_type.find("py") != std::string::npos)
-        return true;
-    return false;
-}
-
+//Jpense que ca n'ira pas voir pour modif
 bool Response::findReturnLocations(Server* server)
 {
     std::vector<Location*>::iterator itl = server->locations.begin();
@@ -65,23 +54,40 @@ bool Response::findReturnLocations(Server* server)
     return false;
 }
 
-bool Response::handleReturn(Server *server)
+
+bool Response::findLocationStatusCode(Server *server, std::string ptf)
 {
-    if (findStatusCode(server->to_return.begin(), __defaultErrorCodes.errorCodes)) 
+    bool uri, found;
+    std::vector<Location*>::iterator itl = server->locations.begin();
+    for(; itl != server->locations.end(); itl++)
     {
-        this->_isGenerated = true;
-        std::map<unsigned int, std::string>::iterator it = server->to_return.begin();
-        if(it->first == 301 || it->first == 302 || it->first == 303 || it->first == 307)
+        std::map<unsigned int, std::string>::iterator it = (*itl)->to_return.begin();
+        for (; it != (*itl)->to_return.end(); it++) 
         {
-            if(it->second.find("http://") == std::string::npos && it->second.find("https://") == std::string::npos)
-                return false;
-            std::stringstream ss;
-            ss << "HTTP/1.1 " << it->first << " " << __defaultErrorCodes.errorCodes[it->first] << "\r\n";
-            ss << "Location: " << it->second << "\r\n";
-            ss << "\r\n";
-            this->_header = ss.str();
-        }
-        else
+            std::map<unsigned int, std::string>::iterator it2 = __defaultErrorCodes.errorCodes.find(it->first);
+            if (it2 != __defaultErrorCodes.errorCodes.end())
+                found = true;
+            if(!(*itl)->path.empty())
+                if(ptf.find((*itl)->path) == 0)
+                    uri = true;
+        } 
+    }
+    return (uri && found);
+}
+
+//VOIR NGINX POUR CODE INEXISTANT EX : 999 // POUR L'INSTANT INGORER
+bool Response::handleReturn(Server *server, Request& request)
+{
+    // std::cout << GREEN << "TA SOEUR EN PYJAMA" << RESET << std::endl;
+    if(!server->to_return.empty() && !findReturnLocations(server))
+            return (this->_isGenerated = false);
+    std::string ptf = request.getPathToFile();
+    // std::cout << GREEN << "TA SOEUR EN SLIP" << RESET << std::endl;
+    if (findServerStatusCode(server->to_return.begin())) 
+    {
+        // std::cout << GREEN << "TA SOEUR EN CALBAR" << RESET << std::endl;
+        std::map<unsigned int, std::string>::iterator it = server->to_return.begin();
+        if(it->first != 301 && it->first != 302 && it->first != 303 && it->first != 307)
         {
             std::stringstream ss;
             ss << "HTTP/1.1 " << it->first << " " << __defaultErrorCodes.errorCodes[it->first] << "\r\n";
@@ -89,6 +95,51 @@ bool Response::handleReturn(Server *server)
             this->_header = ss.str();
             this->_content = server->to_return[it->first];
             this->_contentSize = server->to_return[it->first].length();
+        }
+        else if(it->first == 301 || it->first == 302 || it->first == 303 || it->first == 307)
+        {
+            if(it->second.find("http://") == std::string::npos && it->second.find("https://") == std::string::npos)
+                return(this->_isGenerated = false);
+            std::stringstream ss;
+            ss << "HTTP/1.1 " << it->first << " " << __defaultErrorCodes.errorCodes[it->first] << "\r\n";
+            ss << "Location: " << it->second << "\r\n";
+            ss << "\r\n";
+            this->_header = ss.str();
+        }
+        this->_isGenerated = true;
+        throw taMereEnSlip();
+    }
+    if(findLocationStatusCode(server, ptf))
+    {
+        Location* location = server->getLocationFrom(ptf);
+        if(!location)
+            return(this->_isGenerated = false);
+        // std::cout << GREEN << location->path << "TA SOEUR EN SUEUR" << ptf << RESET << std::endl;
+        std::map<unsigned int, std::string>::iterator it = location->to_return.begin();
+        if (erasesSidesChar(location->path, '/') == erasesSidesChar(ptf, '/'))
+        {
+            // std::cout << GREEN << "TA SOEUR EN SUEUR" << RESET << std::endl;
+            if(it->first != 301 && it->first != 302 && it->first != 303 && it->first != 307)
+            {
+                std::stringstream ss;
+                ss << "HTTP/1.1 " << it->first << " " << __defaultErrorCodes.errorCodes[it->first] << "\r\n";
+                ss << "\r\n";
+                this->_header = ss.str();
+                this->_content = it->second;
+                this->_contentSize = it->second.length();
+            }
+            else if(it->first == 301 || it->first == 302 || it->first == 303 || it->first == 307)
+            {
+                if(it->second.find("http://") == std::string::npos && it->second.find("https://") == std::string::npos)
+                    return(this->_isGenerated = false);
+                std::stringstream ss;
+                ss << "HTTP/1.1 " << it->first << " " << __defaultErrorCodes.errorCodes[it->first] << "\r\n";
+                ss << "Location: " << it->second << "\r\n";
+                ss << "\r\n";
+                this->_header = ss.str();
+            }
+            this->_isGenerated = true;
+            throw taMereEnSlip();
         }
     }
     else
@@ -112,11 +163,12 @@ void Response::headerGenBuilder(std::string file_type) {
     if (this->_isGenerated) {
         file_type = "text/html";
     }
-    header_tmp << "HTTP/1.1 200 OK\nContent-Type: " << file_type << "\nContent-Length: " << this->_content << "\r\n\r\n";
+    header_tmp << "HTTP/1.1 200 OK\nContent-Type: " << file_type << "\nContent-Length: " << this->_content.size() << "\n\n";
     this->_header = header_tmp.str();
 }
 
 void Response::generateAutoindex(Request & req) {
+   this->_uri.erase(this->_uri.size() - 1);
    DIR* dir = opendir(this->_uri.c_str());
    if (!dir && DEBUG)
        std::cerr << RED << "can't open dir" << RESET << std::endl;
@@ -133,7 +185,11 @@ void Response::generateAutoindex(Request & req) {
         tstring << this->server->getPort();
         buff << tstring.str() << req.getPathToFile();
         buff << (req.getPathToFile()[req.getPathToFile().size() - 1] == '/' ? "" : "/");
-        buff << entry->d_name << "\"><li>./" << entry->d_name << "</li></a>\n";
+        buff << entry->d_name;
+        buff << (entry->d_type == DT_DIR ? "/" : "");
+        buff << "\"><li>";
+        buff << (entry->d_type == DT_DIR ? "" : "./");
+        buff << entry->d_name << "</li></a>\n";
         entry = readdir(dir);
     }
     buff << "</ul></div></body></html>";
@@ -146,9 +202,126 @@ void Response::generateAutoindex(Request & req) {
         std::cout << "Autoindex Generated" << std::endl;
 }
 
+//env example
+/*AUTH_TYPE=Basic
+CONTENT_LENGTH=
+CONTENT_TYPE=
+DOCUMENT_ROOT=./
+GATEWAY_INTERFACE=CGI/1.1
+HTTP_COOKIE=
+PATH_INFO=
+PATH_TRANSLATED=.//
+QUERY_STRING=
+REDIRECT_STATUS=200
+REMOTE_ADDR=localhost:8002
+REQUEST_METHOD=GET
+REQUEST_URI=/cgi-bin/acc.py
+        SCRIPT_FILENAME=acc.py
+SCRIPT_NAME=cgi-bin/acc.py
+SERVER_NAME=localhost
+SERVER_PORT=8002
+SERVER_PROTOCOL=HTTP/1.1
+SERVER_SOFTWARE=AMANIX*/
+
+void Response::cgiBuilder(const Request &request) {
+    std::string runner = "/usr/bin/python3";
+    std::string script = "experiment/expe_ali/site/testpy.py";
+    std::string scriptname = "testpy.py";
+
+    //argv builder
+    char **argv = new char*[3];
+    for (int i = 0; i < 3; i++)
+        argv[i] = new char[50];
+    strcpy(argv[0], runner.c_str());  // Path to runner
+    strcpy(argv[1], script.c_str());  // Path to script
+    argv[2] = 0;
+
+    //env builder
+    std::map<std::string, std::string> env_as_map;
+    env_as_map["AUTH_TYPE="] = "Basic";
+    env_as_map["CONTENT_LENGTH="] = "";
+    env_as_map["CONTENT_TYPE="] = "";       //request.getFileType();
+    env_as_map["GATEWAY_INTERFACE="] = "CGI/1.1";
+    env_as_map["SCRIPT_NAME="] = script.c_str();
+    env_as_map["SCRIPT_FILENAME="] = scriptname.c_str();
+    //this->_env["PATH_TRANSLATED"] = it_loc->getRootLocation() + (this->_env["PATH_INFO"] == "" ? "/" : this->_env["PATH_INFO"]);
+    //this->_env["QUERY_STRING"] = decode(req.getQuery());
+    //this->_env["REMOTE_ADDR"] = req.getHeader("host");
+    env_as_map["SERVER_NAME="] = "localhost";
+    env_as_map["SERVER_PORT="] = "8080";
+    env_as_map["REQUEST_METHOD="] = request.getMethod();
+    //this->_env["HTTP_COOKIE"] = req.getHeader("cookie");
+    //this->_env["DOCUMENT_ROOT"] = it_loc->getRootLocation();
+    //this->_env["REQUEST_URI"] = req.getPath() + req.getQuery();*
+    env_as_map["SERVER_PROTOCOL="] = "HTTP/1.1";
+    env_as_map["REDIRECT_STATUS="] = "200";
+    env_as_map["SERVER_SOFTWARE="] = "AMANIX";
+
+    this->_env = new char*[env_as_map.size() + 1];
+    std::map<std::string, std::string>::const_iterator it = env_as_map.begin();
+    for (int i = 0; it != env_as_map.end(); it++, i++) {
+        std::string key_and_value = it->first + it->second;
+        this->_env[i] = strdup(key_and_value.c_str());
+    }
+    this->_env[env_as_map.size()] = 0;
+
+    pipeCreatorAndExec(argv);
+    //chdir("experiment/expe_ali/site/");
+
+    //readfrom pipe
+    char t[1024];
+    read(_pipe_out[0], t, 1024);
+    std::cout << "res= " << t << std::endl;
+    closeAllPipe();
+}
+
+bool Response::isCgi(const std::string &file_type) {
+	//temp system
+	if (file_type.find("py") != std::string::npos)
+		return true;
+	return false;
+}
+
+void Response::pipeCreatorAndExec(char **argv) {
+    if (pipe(this->_pipe_out) < 0) {
+        std::cout << "pipe1 marche po" << std::endl;
+        exit(1);
+    }
+    if (pipe(this->_pipe_in) < 0) {
+        std::cout << "pipe2 marche po" << std::endl;
+        exit(1);
+    }
+    _pid = fork();
+    if (_pid < 0) {
+        std::cout << "fork marche po" << std::endl;
+        exit(1);
+    }
+
+    if (_pid == 0) {
+        dup2(_pipe_in[0], STDIN_FILENO);
+        dup2(_pipe_out[1], STDOUT_FILENO);
+        closeAllPipe();
+        exit(execve(argv[0], argv, this->_env));
+    }
+}
+
+void Response::closeAllPipe() {
+    close(_pipe_in[0]);
+    close(_pipe_in[1]);
+    close(_pipe_out[0]);
+    close(_pipe_out[1]);
+}
+
+std::string intToString(int num) {
+    std::ostringstream oss;
+    oss << num;
+    return oss.str();
+}
+
 std::string Response::getCodeHeader(std::string * path, Server* server,  const std::string & uri) {
     (void)server;
-    *path = server->getRootFrom(uri) + "/";
+    if (path)
+        *path = server->getRootFrom(uri) + "/";
     // if(!server->to_return.empty())
     // {
     //     std::string newPath;
@@ -164,14 +337,16 @@ std::string Response::getCodeHeader(std::string * path, Server* server,  const s
     //     *path = newPath;
     //     return("HTTP/1.1 404 Not Found\n");
     // }
-    if (errno == EACCES || errno == EROFS) {
+    if (errno == MISSINGSLASH || errno == INVALIDSLASH) {
+        return ("HTTP/1.1 301 Moved Permanently\n");
+    } else if (errno == EACCES || errno == EROFS) {
         try {
             *path += server->getErrorPage(403, uri);
         } catch (std::exception &e) {
             *path = __defaultErrorPages[403];
         }
         return ("HTTP/1.1 403 Forbidden\n");
-    } else if (errno == ENAMETOOLONG) {
+    } else if (errno == ENAMETOOLONG || errno == TOOLONGREQUEST) {
         try {
             *path += server->getErrorPage(414, uri);
         } catch (std::exception &e) {
@@ -183,7 +358,6 @@ std::string Response::getCodeHeader(std::string * path, Server* server,  const s
             *path += server->getErrorPage(404, uri);
         } catch (std::exception &e) {
             *path = __defaultErrorPages[404];
-            std::cout << RED << *path << RESET << std::endl;
         }
         return ("HTTP/1.1 404 Not Found\n");
     }else if (errno == ENOTDIR || errno == EINVAL || errno == EROFS || errno == ISDIRECTORY) {
@@ -204,7 +378,7 @@ std::string Response::getCodeHeader(std::string * path, Server* server,  const s
         try {
             *path += server->getErrorPage(405, uri);
         } catch (std::exception &e) {
-            *path = __defaultErrorPages[403];
+            *path = __defaultErrorPages[405];
         }
         return ("HTTP/1.1 405 Method Not Allowed\n");
     } else {
@@ -217,13 +391,35 @@ std::string Response::getCodeHeader(std::string * path, Server* server,  const s
     }
 }
 
+void Response::redirectWellSlashed(const std::string & uri) {
+    std::string newuri = uri;
+    this->_header = getCodeHeader(0, 0, uri);
+    if (errno == INVALIDSLASH) {
+        size_t i = 0;
+        while (i + 1 < newuri.size()) {
+            if (newuri[i] == '/' && newuri[i + 1] == '/') {
+                newuri.erase(i, 1);
+            } else {
+                i++;
+            }
+        }
+    } else {
+        newuri += "/";
+    }
+    this->_header += ("Location: " + newuri + "\n");
+    this->_isGenerated = true;
+}
+
 void Response::handleRequestError(Server* server, const std::string & uri) {
     std::stringstream tmphead;
     std::string codePath;
 
     if (DEBUG)
         std::cout << RED << "Sending error code, reason: " << errno << RESET << std::endl;
-
+    if (errno == MISSINGSLASH || errno == INVALIDSLASH) {
+        redirectWellSlashed(uri);
+        return;
+    }
     tmphead << getCodeHeader(&codePath, server, uri);
     if (this->_contentFile)
         delete this->_contentFile;

@@ -39,7 +39,7 @@ Client * Mommy::acceptRequest(int fd, Server *server) {
     if (!cli)
         throw std::bad_alloc();
     this->clients[cliFd] = cli;
-    std::cout << BLUE << "✅ new connexion from " << GREEN << *cli << BLUE << " on " << GREEN << server->getServerName() << ":" << server->getPort() << RESET << std::endl;
+    std::cout << BLUE << "✅ new connection from " << GREEN << *cli << BLUE << " on " << GREEN << server->getServerName() << ":" << server->getPort() << RESET << std::endl;
     return cli;
 }
 
@@ -67,12 +67,13 @@ void Mommy::run(void) {
                     } 
                     catch (Request::tooLongRequest &e) 
                     {
-                        std::cerr << RED << "ALLLLEEEEEEEERRRRRRRRRRRTTTTTTTTTTT"<< RESET << std::endl;
+                       cli->request.tooLong = true;
                     } 
                     catch (std::exception &e) 
                     {
                         if (cli) 
                         {
+                            std::cout << YELLOW << "❌ connection closed for " << GREEN << *(cli) << RESET << std::endl;
                             FD_CLR((*it)->sockfd, &this->lset);
                             this->clients.erase(cli->sockfd);
                             close(cli->sockfd);
@@ -93,11 +94,16 @@ void Mommy::run(void) {
                             try 
                             {
                                 it->second->request.isAllowed(it->second->server);
+                                it->second->response.handleReturn(it->second->server, it->second->request);
                                 it->second->request.tryAccess(it->second->server);
                                 it->second->response = Response(*it->second->server, it->second->request);
                                 it->second->readyToSend = true;
                                 //send(it->second->sockfd, &(it->second->response.getResponse()[0]), it->second->response.getResponseSize(), 0);
-                            } 
+                            }
+                            catch(taMereEnSlip &e)
+                            {
+                                it->second->readyToSend = true;
+                            }
                             catch (requestError &e) 
                             {
                                 it->second->response.handleRequestError(it->second->server, it->second->request.getPathToFile());

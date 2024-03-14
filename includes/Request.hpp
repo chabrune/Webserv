@@ -10,6 +10,7 @@ class Request {
         ~Request();
 
         long len;
+        bool tooLong;
 
 		const std::string &getMethod() const;
 		const std::string &getPathToFile() const;
@@ -21,7 +22,12 @@ class Request {
         void tryAccess(Server *server);
         void isAllowed(Server *server);
         std::string subLocation(Location *location);
-
+		class returnTest : public taMereEnSlip
+		{
+			const char* what() const throw() {
+				return("OK");
+			}
+		};
 		class recvFailure : public requestError {
 			const char * what() const throw() {
 				return ("-failed to read / empty request");
@@ -36,6 +42,18 @@ class Request {
         class accessError : public requestError {
             const char *what() const throw() {
                 return ("can't access file or directory");
+            }
+        };
+
+        class dirDoesNotEndWithSlash : public requestError {
+            const char *what() const throw() {
+                return ("uri to dir must end with '/'");
+            }
+        };
+
+        class invalidSlash: public requestError {
+            const char *what() const throw() {
+                return ("consecutives slash in uri");
             }
         };
 
