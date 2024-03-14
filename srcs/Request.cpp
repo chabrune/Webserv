@@ -12,7 +12,7 @@ Request::Request(Server *server, int sockfd) : isDir(false) {
 	if (this->len <= 0)
 		throw recvFailure();
 	else if (this->len >= HTTP_BUFFER_SIZE)
-		throw tooLongRequest();
+        throw tooLongRequest();
     if (DEBUG)
 	    std::cout << "No errors found, starting to parse.." << std::endl;
 	this->parseRequest(server, buffer);
@@ -117,6 +117,10 @@ int isWellSlashed(std::string & str) {
 }
 
 void Request::isAllowed(Server *server) {
+    if (this->tooLong) {
+        errno = TOOLONGREQUEST;
+        throw tooLongRequest();
+    }
     if (isWellSlashed(this->path_to_file) == -1) {
         errno = INVALIDSLASH;
         throw invalidSlash();
