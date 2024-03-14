@@ -21,6 +21,7 @@ Response::Response(Server & server, Request &request) : _contentFile(0), server(
     }
 	if (isCgi(request.getFileType())) {
         Cgi(*this, request);
+
         headerFileBuilder("text/html");
         return;
 	}
