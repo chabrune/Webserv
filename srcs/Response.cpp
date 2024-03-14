@@ -346,7 +346,7 @@ std::string Response::getCodeHeader(std::string * path, Server* server,  const s
             *path = __defaultErrorPages[403];
         }
         return ("HTTP/1.1 403 Forbidden\n");
-    } else if (errno == ENAMETOOLONG) {
+    } else if (errno == ENAMETOOLONG || errno == TOOLONGREQUEST) {
         try {
             *path += server->getErrorPage(414, uri);
         } catch (std::exception &e) {
@@ -358,7 +358,6 @@ std::string Response::getCodeHeader(std::string * path, Server* server,  const s
             *path += server->getErrorPage(404, uri);
         } catch (std::exception &e) {
             *path = __defaultErrorPages[404];
-            std::cout << RED << *path << RESET << std::endl;
         }
         return ("HTTP/1.1 404 Not Found\n");
     }else if (errno == ENOTDIR || errno == EINVAL || errno == EROFS || errno == ISDIRECTORY) {

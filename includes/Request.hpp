@@ -10,6 +10,7 @@ class Request {
         ~Request();
 
         long len;
+        bool tooLong;
 
 		const std::string &getMethod() const;
 		const std::string &getPathToFile() const;

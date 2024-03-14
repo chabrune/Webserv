@@ -67,7 +67,7 @@ void Mommy::run(void) {
                     } 
                     catch (Request::tooLongRequest &e) 
                     {
-                        std::cerr << RED << "ALLLLEEEEEEEERRRRRRRRRRRTTTTTTTTTTT"<< RESET << std::endl;
+                       cli->request.tooLong = true;
                     } 
                     catch (std::exception &e) 
                     {
