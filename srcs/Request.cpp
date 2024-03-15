@@ -17,7 +17,7 @@ Request::Request(Server *server, int sockfd) : isDir(false) {
 	    std::cout << "No errors found, starting to parse.." << std::endl;
 	this->parseRequest(server, buffer);
     if (DEBUG)
-	    std::cout << "New request created. Method: " << this->method << " file path: " << this->path_to_file << " host: " << this->host  << " keep-alive: " << this->keepalive << std::endl;
+	    std::cout << "New request created. Method: " << this->method << " file path: " << this->path_to_file << " file type: " << this->file_type << " host: " << this->host  << " keep-alive: " << this->keepalive << std::endl;
 }
 
 Request::~Request() {}
@@ -47,7 +47,7 @@ void Request::parseRequest(Server *server, std::string &str) {
         if (!server->getIndexFrom(this->path_to_file).empty())
             this->path_to_file = server->getIndexFrom(this->path_to_file);
     }
-	setFileType();
+    defineFileType();
 
 	//remove the first line (we already have the necessary information)
 	str.erase(0, str.find_first_of('\n') + 1);
@@ -59,12 +59,8 @@ void Request::parseRequest(Server *server, std::string &str) {
 		this->keepalive = true;
 }
 
-void Request::setFileType() {
+void Request::defineFileType() {
 	this->file_type = this->path_to_file.substr(this->path_to_file.find_first_of('.') + 1, this->path_to_file.length());
-    if (DEBUG) {
-        std::cout << YELLOW << "file type: " << this->file_type << RESET << std::endl;
-        std::cout << YELLOW << this->path_to_file << RESET << std::endl;
-    }
 	if (this->file_type == "js")
 		this->file_type = "javascript";
 	this->extension = this->file_type;
@@ -143,6 +139,10 @@ void Request::isAllowed(Server *server) {
         errno = NOTALLOWEDMETHOD;
         throw requestError();
     }
+}
+
+void Request::setFileType(const std::string &filetype) {
+    this->file_type = filetype;
 }
 
 const std::string &Request::getMethod() const {

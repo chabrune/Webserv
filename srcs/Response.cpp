@@ -8,32 +8,28 @@ Response::Response() : _contentFile(0), _isGenerated(false) {}
 Response::Response(Server & server, Request &request) : _contentFile(0), server(&server), _isGenerated(false) {
     if (DEBUG)
 	    std::cout << "New response is under building.." << std::endl;
-    std::string tester = server.getRootFrom(request.getPathToFile()) + request.subLocation(server.getLocationFrom(request.getPathToFile()));
-    this->_uri = tester.c_str();
-    if (request.getIsDir()) {
+    this->_uri = server.getRootFrom(request.getPathToFile()) + request.subLocation(server.getLocationFrom(request.getPathToFile()));
+    if (request.getIsDir())
         generateAutoindex(request);
+    else if (isCgi(request.getExtension()))
+        Cgi(*this, request);
+    else
+        defaultFileBuilder(request);
+    headerFileBuilder(request.getFileType());
+    if (DEBUG)
+	    std::cout << "Response created. Header:" << std::endl << this->_header;
+}
+
+void Response::defaultFileBuilder(const Request &request) {
+    this->_contentFile = new std::ifstream;
+    this->_contentFile->open(this->_uri.c_str(), MimeUtils::getOpenMode(request.getExtension()));
+    if (!this->_contentFile->is_open() && DEBUG) {
+        std::cerr << RED << "Error: " << strerror(errno) << RESET << std::endl;
         return;
     }
-	if (isCgi(request.getFileType())) {
-        Cgi(*this, request);
-
-        headerFileBuilder("text/html");
-        return;
-	}
-
-    this->_contentFile = new std::ifstream;
-	this->_contentFile->open(tester.c_str(), MimeUtils::getOpenMode(request.getExtension()));
-	if (!this->_contentFile->is_open() && DEBUG) {
-		std::cerr << RED << "Error: " << strerror(errno) << RESET << std::endl;
-		return;
-	}
     this->_contentFile->seekg(0, std::ios::end);
     this->_contentSize = this->_contentFile->tellg();
     this->_contentFile->seekg(0, std::ios::beg);
-
-	headerFileBuilder(request.getFileType());
-    if (DEBUG)
-	    std::cout << "Response created. Header:" << std::endl << this->_header;
 }
 
 bool Response::findServerStatusCode(std::map<unsigned int, std::string>::iterator itf)
@@ -202,120 +198,11 @@ void Response::generateAutoindex(Request & req) {
         std::cout << "Autoindex Generated" << std::endl;
 }
 
-//env example
-/*AUTH_TYPE=Basic
-CONTENT_LENGTH=
-CONTENT_TYPE=
-DOCUMENT_ROOT=./
-GATEWAY_INTERFACE=CGI/1.1
-HTTP_COOKIE=
-PATH_INFO=
-PATH_TRANSLATED=.//
-QUERY_STRING=
-REDIRECT_STATUS=200
-REMOTE_ADDR=localhost:8002
-REQUEST_METHOD=GET
-REQUEST_URI=/cgi-bin/acc.py
-        SCRIPT_FILENAME=acc.py
-SCRIPT_NAME=cgi-bin/acc.py
-SERVER_NAME=localhost
-SERVER_PORT=8002
-SERVER_PROTOCOL=HTTP/1.1
-SERVER_SOFTWARE=AMANIX*/
-
-void Response::cgiBuilder(const Request &request) {
-    std::string runner = "/usr/bin/python3";
-    std::string script = "experiment/expe_ali/site/testpy.py";
-    std::string scriptname = "testpy.py";
-
-    //argv builder
-    char **argv = new char*[3];
-    for (int i = 0; i < 3; i++)
-        argv[i] = new char[50];
-    strcpy(argv[0], runner.c_str());  // Path to runner
-    strcpy(argv[1], script.c_str());  // Path to script
-    argv[2] = 0;
-
-    //env builder
-    std::map<std::string, std::string> env_as_map;
-    env_as_map["AUTH_TYPE="] = "Basic";
-    env_as_map["CONTENT_LENGTH="] = "";
-    env_as_map["CONTENT_TYPE="] = "";       //request.getFileType();
-    env_as_map["GATEWAY_INTERFACE="] = "CGI/1.1";
-    env_as_map["SCRIPT_NAME="] = script.c_str();
-    env_as_map["SCRIPT_FILENAME="] = scriptname.c_str();
-    //this->_env["PATH_TRANSLATED"] = it_loc->getRootLocation() + (this->_env["PATH_INFO"] == "" ? "/" : this->_env["PATH_INFO"]);
-    //this->_env["QUERY_STRING"] = decode(req.getQuery());
-    //this->_env["REMOTE_ADDR"] = req.getHeader("host");
-    env_as_map["SERVER_NAME="] = "localhost";
-    env_as_map["SERVER_PORT="] = "8080";
-    env_as_map["REQUEST_METHOD="] = request.getMethod();
-    //this->_env["HTTP_COOKIE"] = req.getHeader("cookie");
-    //this->_env["DOCUMENT_ROOT"] = it_loc->getRootLocation();
-    //this->_env["REQUEST_URI"] = req.getPath() + req.getQuery();*
-    env_as_map["SERVER_PROTOCOL="] = "HTTP/1.1";
-    env_as_map["REDIRECT_STATUS="] = "200";
-    env_as_map["SERVER_SOFTWARE="] = "AMANIX";
-
-    this->_env = new char*[env_as_map.size() + 1];
-    std::map<std::string, std::string>::const_iterator it = env_as_map.begin();
-    for (int i = 0; it != env_as_map.end(); it++, i++) {
-        std::string key_and_value = it->first + it->second;
-        this->_env[i] = strdup(key_and_value.c_str());
-    }
-    this->_env[env_as_map.size()] = 0;
-
-    pipeCreatorAndExec(argv);
-    //chdir("experiment/expe_ali/site/");
-
-    //readfrom pipe
-    char t[1024];
-    read(_pipe_out[0], t, 1024);
-    std::cout << "res= " << t << std::endl;
-    closeAllPipe();
-}
-
-bool Response::isCgi(const std::string &file_type) {
+bool Response::isCgi(const std::string &extension) {
 	//temp system
-	if (file_type.find("py") != std::string::npos)
+	if (extension == "py")
 		return true;
 	return false;
-}
-
-void Response::pipeCreatorAndExec(char **argv) {
-    if (pipe(this->_pipe_out) < 0) {
-        std::cout << "pipe1 marche po" << std::endl;
-        exit(1);
-    }
-    if (pipe(this->_pipe_in) < 0) {
-        std::cout << "pipe2 marche po" << std::endl;
-        exit(1);
-    }
-    _pid = fork();
-    if (_pid < 0) {
-        std::cout << "fork marche po" << std::endl;
-        exit(1);
-    }
-
-    if (_pid == 0) {
-        dup2(_pipe_in[0], STDIN_FILENO);
-        dup2(_pipe_out[1], STDOUT_FILENO);
-        closeAllPipe();
-        exit(execve(argv[0], argv, this->_env));
-    }
-}
-
-void Response::closeAllPipe() {
-    close(_pipe_in[0]);
-    close(_pipe_in[1]);
-    close(_pipe_out[0]);
-    close(_pipe_out[1]);
-}
-
-std::string intToString(int num) {
-    std::ostringstream oss;
-    oss << num;
-    return oss.str();
 }
 
 std::string Response::getCodeHeader(std::string * path, Server* server,  const std::string & uri) {

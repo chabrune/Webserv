@@ -93,12 +93,11 @@ void Mommy::run(void) {
                         {
                             try 
                             {
-                                it->second->request.isAllowed(it->second->server);
+                                //it->second->request.isAllowed(it->second->server);
                                 it->second->response.handleReturn(it->second->server, it->second->request);
                                 it->second->request.tryAccess(it->second->server);
                                 it->second->response = Response(*it->second->server, it->second->request);
                                 it->second->readyToSend = true;
-                                //send(it->second->sockfd, &(it->second->response.getResponse()[0]), it->second->response.getResponseSize(), 0);
                             }
                             catch(taMereEnSlip &e)
                             {

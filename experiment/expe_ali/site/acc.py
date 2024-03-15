@@ -7,7 +7,6 @@ import hashlib
 import pickle
 import sys
 
-
 #tmp file for testing cgi from https://github.com/Kaydooo/Webserv_42/blob/main/cgi-bin/acc.py
 class Session:
     def __init__(self, name):
@@ -60,7 +59,7 @@ def printLogin():
     print("<html> ")
     print("<head>")
     print("<meta charset=\"UTF-8\" name=\"viewport\" content=\"width=device-width, initial-scale=1\">")
-    print("<link rel=\"stylesheet\" href=\"/assets/css/accstyle.css\">")
+    print("<link rel=\"stylesheet\" href=\"/css/accstyle.css\">")
     print("<title> Login Page </title>")
     print("</head>")
     print("<body>  ")

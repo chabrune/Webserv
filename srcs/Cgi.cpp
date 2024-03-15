@@ -9,29 +9,10 @@ Cgi::Cgi(Response &response, Request &request) {
     char t[1024];
     read(_pipe_out[0], t, 1024);
     response.setContent(t);
+    response._contentSize = response.getContent().size();
+    request.setFileType("text/html");
     closeAllPipe();
 }
-
-//env example
-/*AUTH_TYPE=Basic
-CONTENT_LENGTH=
-CONTENT_TYPE=
-DOCUMENT_ROOT=./
-GATEWAY_INTERFACE=CGI/1.1
-HTTP_COOKIE=
-PATH_INFO=
-PATH_TRANSLATED=.//
-QUERY_STRING=
-REDIRECT_STATUS=200
-REMOTE_ADDR=localhost:8002
-REQUEST_METHOD=GET
-REQUEST_URI=/cgi-bin/acc.py
-        SCRIPT_FILENAME=acc.py
-SCRIPT_NAME=cgi-bin/acc.py
-SERVER_NAME=localhost
-SERVER_PORT=8002
-SERVER_PROTOCOL=HTTP/1.1
-SERVER_SOFTWARE=AMANIX*/
 
 void Cgi::cgiBuilder(const Request &request) {
     std::string runner = "/usr/bin/python3";
@@ -83,11 +64,13 @@ void Cgi::pipeCreatorAndExec() {
     if (_pid == 0) {
         dup2(_pipe_in[0], STDIN_FILENO);
         dup2(_pipe_out[1], STDOUT_FILENO);
+        //std::cout << "Testing in\n";
         closeAllPipe();
         //chdir("experiment/expe_ali/site/");
 
         exit(execve(this->_argv[0], const_cast<char **>(this->_argv.data()), const_cast<char **>(this->_env.data())));
     }
+    wait(0);
 }
 
 void Cgi::closeAllPipe() {

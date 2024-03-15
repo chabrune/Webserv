@@ -22,11 +22,12 @@ class Response {
         bool findServerStatusCode(std::map<unsigned int, std::string>::iterator itf);
         bool findLocationStatusCode(Server *server, std::string ptf);
         bool findReturnLocations(Server* server);
-        bool isCgi(const std::string &file_type);
+        bool isCgi(const std::string &extension);
 
         std::ifstream *_contentFile; //For local files
         long long _contentSize;
 	private:
+        void defaultFileBuilder(const Request &request);
         void headerGenBuilder(std::string file_type);
         void headerFileBuilder(std::string file_type);
         void generateAutoindex(Request & req);

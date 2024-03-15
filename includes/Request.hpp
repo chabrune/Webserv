@@ -12,6 +12,7 @@ class Request {
         long len;
         bool tooLong;
 
+        void setFileType(const std::string &filetype);
 		const std::string &getMethod() const;
 		const std::string &getPathToFile() const;
 		const std::string &getFileType() const;
@@ -59,7 +60,7 @@ class Request {
 
 	private:
         void parseRequest(Server *server, std::string &str);
-		void setFileType();
+		void defineFileType();
 		std::string method; //GET, POST..
 		std::string path_to_file;
 		std::string file_type; //text/css, text/js, image/jpg...
