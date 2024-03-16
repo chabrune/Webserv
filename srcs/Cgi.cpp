@@ -1,9 +1,9 @@
 #include "../includes/Cgi.hpp"
 
-Cgi::Cgi(Response &response, Request &request) {
+Cgi::Cgi(Response &response, Request &request, const Server &server) {
     if (DEBUG)
         std::cout << "New Cgi is under building.." << std::endl;
-    cgiBuilder(request);
+    cgiBuilder(request, server);
     pipeCreatorAndExec();
     //readfrom pipe
     char t[1024];
@@ -12,15 +12,18 @@ Cgi::Cgi(Response &response, Request &request) {
     response._contentSize = response.getContent().size();
     request.setFileType("text/html");
     closeAllPipe();
+    if (DEBUG)
+        std::cout << "Successfully cgi execution." << std::endl;
 }
 
-void Cgi::cgiBuilder(const Request &request) {
+void Cgi::cgiBuilder(const Request &request, const Server &server) {
     std::string runner = "/usr/bin/python3";
-    std::string script = "experiment/expe_ali/site/testpy.py";
-    std::string scriptname = "testpy.py";
+    std::string script = "experiment/expe_ali/site/acc.py";
+    this->_script_name = request.getPathToFile().substr(1, request.getPathToFile().size());
+    std::stringstream intConvertor;
 
     this->_argv.push_back(strdup(runner.c_str()));
-    this->_argv.push_back(strdup(script.c_str()));
+    this->_argv.push_back(strdup(this->_script_name.c_str()));
     this->_argv.push_back(0);
 
     _env.push_back(strdup("AUTH_TYPE=Basic"));
@@ -28,15 +31,14 @@ void Cgi::cgiBuilder(const Request &request) {
     _env.push_back(strdup("CONTENT_TYPE="));
     _env.push_back(strdup("GATEWAY_INTERFACE=CGI/1.1"));
     _env.push_back(strdup(("SCRIPT_NAME=" + script).c_str()));
-    _env.push_back(strdup(("SCRIPT_FILENAME=" + scriptname).c_str()));
     //this->_env["PATH_TRANSLATED"] = it_loc->getRootLocation() + (this->_env["PATH_INFO"] == "" ? "/" : this->_env["PATH_INFO"]);
     //this->_env["QUERY_STRING"] = decode(req.getQuery());
-    //this->_env["REMOTE_ADDR"] = req.getHeader("host");
-    _env.push_back(strdup("SERVER_NAME=localhost"));
-    _env.push_back(strdup("SERVER_PORT=8080"));
+    //this->_env["REMOTE_ADDR"] = //ip du client
+    _env.push_back(strdup(("SERVER_NAME=" + server.getServerName()).c_str()));
+    intConvertor << server.getPort();
+    _env.push_back(strdup(("SERVER_PORT=" + intConvertor.str()).c_str()));
     _env.push_back(strdup(("REQUEST_METHOD=" + request.getMethod()).c_str()));
     //this->_env["HTTP_COOKIE"] = req.getHeader("cookie");
-    //this->_env["DOCUMENT_ROOT"] = it_loc->getRootLocation();
     //this->_env["REQUEST_URI"] = req.getPath() + req.getQuery();*
     _env.push_back(strdup("SERVER_PROTOCOL=HTTP/1.1"));
     _env.push_back(strdup("REDIRECT_STATUS=200"));
@@ -64,10 +66,8 @@ void Cgi::pipeCreatorAndExec() {
     if (_pid == 0) {
         dup2(_pipe_in[0], STDIN_FILENO);
         dup2(_pipe_out[1], STDOUT_FILENO);
-        //std::cout << "Testing in\n";
         closeAllPipe();
-        //chdir("experiment/expe_ali/site/");
-
+        chdir("experiment/expe_ali/site/");
         exit(execve(this->_argv[0], const_cast<char **>(this->_argv.data()), const_cast<char **>(this->_env.data())));
     }
     wait(0);

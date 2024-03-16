@@ -12,7 +12,7 @@ Response::Response(Server & server, Request &request) : _contentFile(0), server(
     if (request.getIsDir())
         generateAutoindex(request);
     else if (isCgi(request.getExtension()))
-        Cgi(*this, request);
+        Cgi(*this, request, server);
     else
         defaultFileBuilder(request);
     headerFileBuilder(request.getFileType());
