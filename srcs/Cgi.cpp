@@ -5,12 +5,7 @@ Cgi::Cgi(Response &response, Request &request, const Server &server) {
         std::cout << "New Cgi is under building.." << std::endl;
     cgiBuilder(request, server);
     pipeCreatorAndExec();
-    //readfrom pipe
-    char t[1024];
-    read(_pipe_out[0], t, 1024);
-    response.setContent(t);
-    response._contentSize = response.getContent().size();
-    request.setFileType("text/html");
+    readPipeValue(response, request);
     closeAllPipe();
     if (DEBUG)
         std::cout << "Successfully cgi execution." << std::endl;
@@ -71,6 +66,23 @@ void Cgi::pipeCreatorAndExec() {
         exit(execve(this->_argv[0], const_cast<char **>(this->_argv.data()), const_cast<char **>(this->_env.data())));
     }
     wait(0);
+}
+
+void Cgi::readPipeValue(Response &response, Request &request) {
+    std::string buffer;
+    buffer.resize(1024);
+    //char c;
+
+    read(_pipe_out[0], &buffer[0], 1024);
+    /*while (read(_pipe_out[0], &c, 1) > 0) {
+        buffer += c;
+    }*/
+    size_t first_line_index = buffer.find_first_of('\n');
+    request.setFileType(buffer.substr(14, first_line_index - 14));
+    buffer.erase(0, first_line_index + 1);
+    response.setContent(buffer);
+    response._contentSize = buffer.size();
+    std::cout << buffer << std::endl;
 }
 
 void Cgi::closeAllPipe() {

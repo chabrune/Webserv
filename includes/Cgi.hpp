@@ -12,6 +12,7 @@ public:
 private:
     void cgiBuilder(const Request &request, const Server &server);
     void pipeCreatorAndExec();
+    void readPipeValue(Response &response, Request &request);
     void closeAllPipe();
 
     std::string _cgi_executor; //Example "/usr/bin/python3";
