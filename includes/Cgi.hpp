@@ -6,6 +6,7 @@
 class Request;
 class Server;
 class AResponse;
+class Get;
 
 class Cgi {
 public:
@@ -17,7 +18,6 @@ private:
     void readPipeValue(AResponse &response, Request &request);
     void closeAllPipe();
 
-    std::string _cgi_executor; //Example "/usr/bin/python3";
     std::string _script_path; //Example "experiment/expe_ali/site/my_file.py";
     std::string _script_name; //Example "my_file.py";
 

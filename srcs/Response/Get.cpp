@@ -4,9 +4,13 @@
 
 Get::Get(Server &server, Request &request) : AResponse(server, request) {
     try {
-        if (request.getIsDir()) {
+        if (request.getIsDir())
             generateAutoindex(request);
-        } else {
+        else if (server.isCgi(request.getExtension())) {
+            Cgi(*this, request, server);
+            headerFileBuilder(request.getFileType());
+        }
+        else {
             defaultFileBuilder(request);
             headerFileBuilder(request.getFileType());
         }

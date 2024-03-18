@@ -2,6 +2,7 @@
 
 #include "../incs.hpp"
 #include "../Request.hpp"
+#include "../Cgi.hpp"
 
 class Client;
 class Cgi;

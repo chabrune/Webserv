@@ -15,12 +15,11 @@ Cgi::Cgi(AResponse &response, Request &request, Server &server) {
 }
 
 void Cgi::cgiBuilder(const Request &request, Server &server) {
-    const std::string &runner = server.getCgiPathFromExtension(request.getExtension());
     std::string script = "experiment/expe_ali/site/acc.py";
     this->_script_name = request.getPathToFile().substr(1, request.getPathToFile().size());
     std::stringstream intConvertor;
 
-    this->_argv.push_back(strdup(runner.c_str()));
+    this->_argv.push_back(strdup(server.getCgiPathFromExtension(request.getExtension()).c_str()));
     this->_argv.push_back(strdup(this->_script_name.c_str()));
     this->_argv.push_back(0);
 
@@ -85,7 +84,6 @@ void Cgi::readPipeValue(AResponse &response, Request &request) {
     buffer.erase(0, first_line_index + 1);
     response.setContent(buffer);
     response.setContentSize(buffer.size());
-    std::cout << buffer << std::endl;
 }
 
 void Cgi::closeAllPipe() {
@@ -96,11 +94,9 @@ void Cgi::closeAllPipe() {
 }
 
 Cgi::~Cgi() {
-    for (std::vector<const char *>::iterator it = this->_argv.begin(); it != _argv.end(); it++) {
+    for (std::vector<const char *>::iterator it = this->_argv.begin(); it != _argv.end(); it++)
         free(const_cast<char*>(*it));
-    }
 
-    for (std::vector<const char *>::iterator it = this->_env.begin(); it != _env.end(); it++) {
+    for (std::vector<const char *>::iterator it = this->_env.begin(); it != _env.end(); it++)
         free(const_cast<char*>(*it));
-    }
 }

@@ -60,9 +60,9 @@ void Request::parseRequest(Server *server, std::string &str) {
 }
 
 void Request::defineFileType() {
-	this->file_type = this->path_to_file.substr(this->path_to_file.find_first_of('.') + 1, this->path_to_file.length());
+    this->setFileType(this->path_to_file.substr(this->path_to_file.find_first_of('.') + 1, this->path_to_file.length()));
 	if (this->file_type == "js")
-		this->file_type = "javascript";
+        this->setFileType("javascript");
 	this->extension = this->file_type;
 	this->file_type.insert(0, MimeUtils::getTypeOfContent(this->file_type) + "/");
 }
