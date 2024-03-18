@@ -1,13 +1,15 @@
 #pragma once
 
 #include "incs.hpp"
-#include "Response/Get.hpp"
-#include "Response/Post.hpp"
-#include "Response/Delete.hpp"
+#include "Server.hpp"
+
+class Request;
+class Server;
+class AResponse;
 
 class Cgi {
 public:
-    Cgi(AResponse &response, Request &request, const Server &server);
+    Cgi(AResponse &response, Request &request, Server &server);
     ~Cgi();
 private:
     void cgiBuilder(const Request &request, Server &server);

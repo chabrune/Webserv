@@ -1,7 +1,9 @@
 #include "../includes/Cgi.hpp"
 #include "../includes/Server.hpp"
+#include "../includes/Request.hpp"
+#include "../includes/Response/AResponse.hpp"
 
-Cgi::Cgi(AResponse &response, Request &request, const Server &server) {
+Cgi::Cgi(AResponse &response, Request &request, Server &server) {
     if (DEBUG)
         std::cout << "New Cgi is under building.." << std::endl;
     cgiBuilder(request, server);
@@ -94,11 +96,11 @@ void Cgi::closeAllPipe() {
 }
 
 Cgi::~Cgi() {
-    for (std::vector<const char *>::iterator it = this->_argv.begin(); it != _argv.end(); it++)
+    for (std::vector<const char *>::iterator it = this->_argv.begin(); it != _argv.end(); it++) {
         free(const_cast<char*>(*it));
     }
 
-    for (std::vector<const char *>::iterator it = this->_env.begin(); it != _env.end(); it++)
+    for (std::vector<const char *>::iterator it = this->_env.begin(); it != _env.end(); it++) {
         free(const_cast<char*>(*it));
     }
 }
