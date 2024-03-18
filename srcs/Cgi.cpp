@@ -1,6 +1,6 @@
 #include "../includes/Cgi.hpp"
 
-Cgi::Cgi(Response &response, Request &request, const Server &server) {
+Cgi::Cgi(Response &response, Request &request, Server &server) {
     if (DEBUG)
         std::cout << "New Cgi is under building.." << std::endl;
     cgiBuilder(request, server);
@@ -11,8 +11,8 @@ Cgi::Cgi(Response &response, Request &request, const Server &server) {
         std::cout << "Successfully cgi execution." << std::endl;
 }
 
-void Cgi::cgiBuilder(const Request &request, const Server &server) {
-    std::string runner = "/usr/bin/python3";
+void Cgi::cgiBuilder(const Request &request, Server &server) {
+    const std::string &runner = server.getCgiPathFromExtension(request.getExtension());
     std::string script = "experiment/expe_ali/site/acc.py";
     this->_script_name = request.getPathToFile().substr(1, request.getPathToFile().size());
     std::stringstream intConvertor;
@@ -82,7 +82,6 @@ void Cgi::readPipeValue(Response &response, Request &request) {
     buffer.erase(0, first_line_index + 1);
     response.setContent(buffer);
     response._contentSize = buffer.size();
-    std::cout << buffer << std::endl;
 }
 
 void Cgi::closeAllPipe() {
@@ -93,11 +92,9 @@ void Cgi::closeAllPipe() {
 }
 
 Cgi::~Cgi() {
-    for (std::vector<const char *>::iterator it = this->_argv.begin(); it != _argv.end(); it++) {
+    for (std::vector<const char *>::iterator it = this->_argv.begin(); it != _argv.end(); it++)
         free(const_cast<char*>(*it));
-    }
 
-    for (std::vector<const char *>::iterator it = this->_env.begin(); it != _env.end(); it++) {
+    for (std::vector<const char *>::iterator it = this->_env.begin(); it != _env.end(); it++)
         free(const_cast<char*>(*it));
-    }
 }

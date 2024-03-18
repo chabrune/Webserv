@@ -43,7 +43,7 @@ void Client::sendResponse() {
     }
     if (this->response.getGenerated())
         sendGeneratedContent();
-    else if (this->response.isCgi(request.getExtension()))
+    else if (this->server->isCgi(request.getExtension()))
         sendCgiContent();
     else
         sendInfileContent();

@@ -7,10 +7,10 @@ class Response;
 
 class Cgi {
 public:
-    Cgi(Response &response, Request &request, const Server &server);
+    Cgi(Response &response, Request &request, Server &server);
     ~Cgi();
 private:
-    void cgiBuilder(const Request &request, const Server &server);
+    void cgiBuilder(const Request &request, Server &server);
     void pipeCreatorAndExec();
     void readPipeValue(Response &response, Request &request);
     void closeAllPipe();
