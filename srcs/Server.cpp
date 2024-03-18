@@ -39,7 +39,7 @@ void Server::setup(void)
         throw sockListeningError();
     //fcntl(this->sockfd, SO_SNDTIMEO);
     //fcntl(this->sockfd, F_SETFL, O_NONBLOCK);
-    std::cout << GREEN << "-listener socket for " << BLUE << getServerName() << ":" << getPort() << " ready" << RESET << std::endl;
+    std::cout << GREEN << "-listener socket for " << BLUE << getServerName() << ":" << getPort() << GREEN << " ready" << RESET << std::endl;
 }
 
 Location * Server::getLocationFrom(const std::string &path) {
