@@ -6,15 +6,19 @@
 	<script src="./test.js" defer></script>
 </head>
 <body>
+	<script type="py" src="./clock.py" async></script>
 	<p >This is text made with html</p>
 	<p class="css">This is blue text made with css</p>
 	<p id="js-script"></p>
 	<img src="./tree.jpg" />
-	<form action="acc.py" method="POST">
-		<input type="text" name="first_name">
-		<input type="text" name="last_name">
-		<input type="submit" value="go">
-	</form>
-	<a class="nav__link__dop" method="POST" href="/testpy.py">Account</a>
+	<a href="acc.py">
+		<button style="background-color: blue; color: white;height:200px;width:200px;">Click here to login or register for free</button>
+	</a>
+	<a href="testpy.py">
+		<button>Click here to debug</button>
+	</a>
+	<a href="clock.py">
+		<button>Click here to see the time</button>
+	</a>
 </body>
 </html>

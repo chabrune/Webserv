@@ -1,4 +1,6 @@
 import os
+import sys
+
 
 print("<html>")
 print("<head>")
@@ -8,8 +10,7 @@ print("<body>")
 print("<h2>Hello World! This is my first CGI program</h2>")
 print("</body>")
 print("</html>")
-# open("ooooo", "r") as file:
-#    print(file.readlines())
-#
+with open("ooooo", "r") as file:
+    print(file.readlines())
 for key, value in os.environ.items():
     print(f"{key}={value}")

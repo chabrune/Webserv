@@ -145,7 +145,7 @@ void ServerConf::serv_return(std::string &line, size_t currentServerIndex, Mommy
 	while (i < line.length() && isspace(line[i]))
 		i++;
 	start = i;
-	while (i < line.length() && !isspace(line[i]))
+	while (i < line.length())
 		i++;
 	std::string path = line.substr(start, i - start);
 	if(line != "return " + snb + " " + path)
@@ -447,7 +447,7 @@ void ServerConf::location_return(std::string &line, size_t currentServerIndex, M
 	while (i < line.length() && isspace(line[i]))
 		i++;
 	start = i;
-	while (i < line.length() && !isspace(line[i]))
+	while (i < line.length())
 		i++;
 	std::string path = line.substr(start, i - start);
 	if(line != "return " + snb + " " + path)

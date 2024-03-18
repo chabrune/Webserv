@@ -47,6 +47,7 @@
 # define TOOLONGREQUEST 504
 
 class   requestError : public std::exception {};
+class   taMereEnSlip : public std::exception {};
 
 enum Methods
 {
