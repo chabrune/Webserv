@@ -181,25 +181,23 @@ void ServerConf::serv_error_page(std::string &line, size_t currentServerIndex, M
 void ServerConf::serv_CGI(std::string &line, size_t currentServerIndex, Mommy& frr)
 {
 	size_t i = 0;
+
 	for (; i < line.length() && std::isspace(static_cast<unsigned char>(line[i])); i++) {}
 	line = line.substr(i);
 	i = 4;
-	int start = i;
+	int start = i + 1;
 	while (i < line.length() && !isspace(line[i]))
 			i++;
 	std::string cgi_extension = line.substr(start, i - start);
-	if(cgi_extension[0] != '.' || cgi_extension != ".py")
-		throw std::logic_error("Config file : Server : Check cgi");
-	frr.servers[currentServerIndex]->cgi_extensions.push_back(cgi_extension);
 	while(isspace(line[i]))
 		i++;
 	start = i;
 	while (i < line.length() && !isspace(line[i]))
 		i++;
 	std::string cgi_path = line.substr(start, i - start);
-	if(line != "cgi " + cgi_extension + " " + cgi_path)
+    if(line != "cgi ." + cgi_extension + " " + cgi_path)
 		throw std::logic_error("Config file : Server : Check cgi");
-	frr.servers[currentServerIndex]->cgi_paths.push_back(cgi_path);
+    frr.servers[currentServerIndex]->cgi_values[cgi_extension] = cgi_path;
 }
 
 void ServerConf::serv_allowed_methods(std::string &line, size_t currentServerIndex, Mommy& frr)
@@ -568,6 +566,14 @@ void ServerConf::inputParsing(std::string argv, Mommy& frr)
 		else if(isInsideLocationSection && line.find("return ") != std::string::npos)
 			location_return(line, currentServerIndex, frr, currentLocationIndex);
     }
+}
+
+bool ServerConf::isCgi(const std::string &extension) const {
+    for (std::map<std::string, std::string>::const_iterator it = this->cgi_values.begin(); it != this->cgi_values.end() ;it++) {
+        if (it->first == extension)
+            return true;
+    }
+    return false;
 }
 
 // void ServerConf::testparsing(Mommy& frr)

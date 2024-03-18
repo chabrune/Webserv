@@ -4,4 +4,5 @@ server {
     server_name localhost
     index /index.html
     allow GET POST
+    cgi .py /usr/bin/python3
 }

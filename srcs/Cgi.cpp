@@ -12,8 +12,8 @@ Cgi::Cgi(AResponse &response, Request &request, const Server &server) {
         std::cout << "Successfully cgi execution." << std::endl;
 }
 
-void Cgi::cgiBuilder(const Request &request, const Server &server) {
-    std::string runner = "/usr/bin/python3";
+void Cgi::cgiBuilder(const Request &request, Server &server) {
+    const std::string &runner = server.getCgiPathFromExtension(request.getExtension());
     std::string script = "experiment/expe_ali/site/acc.py";
     this->_script_name = request.getPathToFile().substr(1, request.getPathToFile().size());
     std::stringstream intConvertor;
@@ -94,11 +94,11 @@ void Cgi::closeAllPipe() {
 }
 
 Cgi::~Cgi() {
-    for (std::vector<const char *>::iterator it = this->_argv.begin(); it != _argv.end(); it++) {
+    for (std::vector<const char *>::iterator it = this->_argv.begin(); it != _argv.end(); it++)
         free(const_cast<char*>(*it));
     }
 
-    for (std::vector<const char *>::iterator it = this->_env.begin(); it != _env.end(); it++) {
+    for (std::vector<const char *>::iterator it = this->_env.begin(); it != _env.end(); it++)
         free(const_cast<char*>(*it));
     }
 }
