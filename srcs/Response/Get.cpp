@@ -3,14 +3,18 @@
 #include "../../includes/Server.hpp"
 
 Get::Get(Server &server, Request &request) : AResponse(server, request) {
-    if (request.getIsDir()) {
-        generateAutoindex(request);
-    } else {
-        defaultFileBuilder(request);
-        headerFileBuilder(request.getFileType());
+    try {
+        if (request.getIsDir()) {
+            generateAutoindex(request);
+        } else {
+            defaultFileBuilder(request);
+            headerFileBuilder(request.getFileType());
+        }
+    } catch (std::exception &e) {
+        handleRequestError(&server, this->getUri());
     }
     if (DEBUG)
-        std::cout << "Response created. Header:" << std::endl << this->_header;
+        std::cout << "Response created. Header:" << std::endl << MAGENTA << this->_header << RESET;
 }
 
 void Get::headerFileBuilder(std::string file_type) {
@@ -134,10 +138,11 @@ bool Get::handleReturn(Server *server, Request& request)
 }
 
 void Get::generateAutoindex(Request & req) {
-    this->_uri.erase(this->_uri.size() - 1);
     DIR* dir = opendir(this->_uri.c_str());
-    if (!dir && DEBUG)
-        std::cerr << RED << "can't open dir" << RESET << std::endl;
+    if (!dir && DEBUG) {
+        std::cerr << RED << "can't open autoindex dir" << RESET << std::endl;
+        throw std::exception();
+    }
     std::stringstream buff;
 
     // WARNING!!! MOST BEAUTIFUL LINE IN THE WORLD

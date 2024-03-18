@@ -26,9 +26,11 @@ Request::~Request() {}
 std::string Request::subLocation(Location *location) {
     if (!location || this->path_to_file.length() < location->path.length())
         return (this->path_to_file);
-    std::string lpath = location->path + "/";
-    if (this->path_to_file.compare(0, lpath.length()-1, location->path) == 0) {
-        return (this->path_to_file.substr(lpath.length()-1));
+    std::string lpath = location->path;
+    std::cout << RED << "bef: " << this->path_to_file << " & " << lpath << RESET << std::endl;
+    if (this->path_to_file.compare(0, lpath.length(), location->path) == 0) {
+        std::cout << RED << "aft: " << this->path_to_file.substr(lpath.length()) << RESET << std::endl;
+        return (this->path_to_file.substr(lpath.length()));
     }
     return (this->path_to_file);
 }
@@ -40,9 +42,6 @@ void Request::parseRequest(Server *server, std::string &str) {
 
 	this->method = str.substr(0, first_space_index);
 	this->path_to_file = str.substr(first_space_index + 1, str.find_first_of(' ', first_space_index + 1) - (first_space_index + 1));
-//    while (this->path_to_file.size() > 2 && this->path_to_file[this->path_to_file.size() - 2] == '/') {
-//        this->path_to_file.erase(this->path_to_file.size() - 2);
-//    }
 	//If the path to file = / set the default page (index.html for example), define in the server config.
 	if (this->path_to_file == "/") {
         if (!server->getIndexFrom(this->path_to_file).empty())
@@ -71,6 +70,7 @@ void Request::defineFileType() {
 void Request::tryAccess(Server *server) {
     std::string tester = server->getRootFrom(this->getPathToFile()) + this->subLocation(server->getLocationFrom(this->getPathToFile()));
     //std::cout << YELLOW << this->subLocation(server->getLocationFrom(this->getPathToFile())) << RESET << std::endl;
+    std::cout << RED << tester.c_str() << RESET << std::endl;
     if (access(tester.c_str(), F_OK) != 0)
     {
         throw accessError();
