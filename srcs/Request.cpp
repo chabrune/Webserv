@@ -90,7 +90,6 @@ void Request::tryAccess(Server *server) {
                 this->isDir = true;
                 throw dirDoesNotEndWithSlash();
             }
-            std::cout << "path: " << erasesSidesChar(this->path_to_file, '/')<< " root: " << erasesSidesChar(server->getPathFrom(this->path_to_file), '/') << std::endl;
             if (!server->getIndexFrom(this->path_to_file).empty() &&
                     erasesSidesChar(this->path_to_file, '/') == erasesSidesChar(server->getPathFrom(this->path_to_file), '/')) {
                 std::cout << MAGENTA << "yep" << RESET << std::endl;
