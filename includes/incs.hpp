@@ -45,6 +45,7 @@
 # define MISSINGSLASH 502
 # define INVALIDSLASH 503
 # define TOOLONGREQUEST 504
+# define BADHEADER 505
 
 class   requestError : public std::exception {};
 class   taMereEnSlip : public std::exception {};

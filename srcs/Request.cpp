@@ -1,5 +1,6 @@
 #include "../includes/Request.hpp"
 #include "../includes/utils.hpp"
+#include "../includes/Server.hpp"
 
 Request::Request() : isDir(false) {}
 
@@ -88,7 +89,6 @@ void Request::tryAccess(Server *server) {
             }
             if (!server->getIndexFrom(this->path_to_file).empty() &&
                     erasesSidesChar(this->path_to_file, '/') == erasesSidesChar(server->getPathFrom(this->path_to_file), '/')) {
-                std::cout << MAGENTA << "yep" << RESET << std::endl;
                 this->path_to_file += this->path_to_file[this->path_to_file.size() - 1] == '/' ? "" : "/";
                 this->path_to_file += server->getIndexFrom(this->path_to_file);
                 this->file_type = "text/html";

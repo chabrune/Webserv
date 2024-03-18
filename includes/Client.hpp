@@ -1,7 +1,8 @@
+
 #pragma once
 
 #include "Request.hpp"
-#include "Response.hpp"
+#include "Response/AResponse.hpp"
 #include "Server.hpp"
 #include "incs.hpp"
 
@@ -19,7 +20,7 @@ class Client {
         int sockfd;
         sockaddr_in addr;
         Server *server; // Attached server
-        Response response;
+        AResponse response;
         Request request;
 
         void readRequest();

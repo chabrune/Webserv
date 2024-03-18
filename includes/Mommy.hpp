@@ -5,6 +5,7 @@
 
 class Server;
 class Client;
+class requestError;
 
 class Mommy
 {
@@ -24,6 +25,7 @@ class Mommy
         void run(void);
         int load_LFdSet(void); // Loading listeners socks fd's
         Client * acceptRequest(int fd, Server *server);
+        void treatRequest(Server * server, Client * cli);
 
         class selectError : public std::exception {
             const char * what() const throw() {
@@ -33,6 +35,12 @@ class Mommy
         class acceptError : public std::exception {
             const char *what() const throw() {
                 return ("connexion received but failed");
+            }
+        };
+
+        class badHeader : public requestError {
+            const char *what() const throw() {
+                return ("bad header");
             }
         };
 };

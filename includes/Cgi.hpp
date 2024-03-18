@@ -1,18 +1,21 @@
 #pragma once
 
 #include "incs.hpp"
-#include "Response.hpp"
+#include "Response/AResponse.hpp"
+#include "Response/Get.hpp"
+#include "Response/Post.hpp"
+#include "Response/Delete.hpp"
 
-class Response;
+class AResponse;
 
 class Cgi {
 public:
-    Cgi(Response &response, Request &request, const Server &server);
+    Cgi(AResponse &response, Request &request, const Server &server);
     ~Cgi();
 private:
     void cgiBuilder(const Request &request, const Server &server);
     void pipeCreatorAndExec();
-    void readPipeValue(Response &response, Request &request);
+    void readPipeValue(AResponse &response, Request &request);
     void closeAllPipe();
 
     std::string _cgi_executor; //Example "/usr/bin/python3";

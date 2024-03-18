@@ -1,7 +1,8 @@
 #pragma once
 
 #include "incs.hpp"
-#include "Server.hpp"
+class Server;
+class Location;
 
 class Request {
     public:

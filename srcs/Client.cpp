@@ -4,8 +4,8 @@
 Client::Client(int fd, sockaddr_in addr, Server *server) : sockfd(fd), addr(addr), server(server), readyToSend(false), headerSent(false), sent(false), contentSent(0) { }
 
 Client::~Client() {
-    if (this->response._contentFile)
-        delete this->response._contentFile;
+    if (this->response.getContentFile())
+        delete this->response.getContentFile();
 }
 
 std::ostream & operator<<(std::ostream & out, const Client & cli) {
@@ -43,8 +43,6 @@ void Client::sendResponse() {
     }
     if (this->response.getGenerated())
         sendGeneratedContent();
-    else if (this->response.isCgi(request.getExtension()))
-        sendCgiContent();
     else
         sendInfileContent();
 }
@@ -83,9 +81,9 @@ void Client::sendInfileContent() {
     memset(buffer, 0, SND_BUFFER_SIZE + 1);
 
     // Send file content
-    long size = std::min(static_cast<long long>(SND_BUFFER_SIZE), this->response._contentSize - this->contentSent);
-    this->response._contentFile->seekg(this->contentSent);
-    this->response._contentFile->read(buffer, size);
+    long size = std::min(static_cast<long long>(SND_BUFFER_SIZE), this->response.getContentSize() - this->contentSent);
+    this->response.getContentFile()->seekg(this->contentSent);
+    this->response.getContentFile()->read(buffer, size);
     long sent = send(this->sockfd, buffer, size, 0);
     if (sent == -1) {
         std::cerr << RED << "❗ connection lost for " << GREEN << *this << RESET << std::endl;
@@ -95,7 +93,7 @@ void Client::sendInfileContent() {
         size = sent;
     }
     this->contentSent += size;
-    if (this->contentSent >= this->response._contentSize) {
+    if (this->contentSent >= this->response.getContentSize()) {
         this->sent = true;
         if (DEBUG)
             std::cout << GREEN << "all data sent" << RESET << std::endl;

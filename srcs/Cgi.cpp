@@ -1,6 +1,7 @@
 #include "../includes/Cgi.hpp"
+#include "../includes/Server.hpp"
 
-Cgi::Cgi(Response &response, Request &request, const Server &server) {
+Cgi::Cgi(AResponse &response, Request &request, const Server &server) {
     if (DEBUG)
         std::cout << "New Cgi is under building.." << std::endl;
     cgiBuilder(request, server);
@@ -68,7 +69,7 @@ void Cgi::pipeCreatorAndExec() {
     wait(0);
 }
 
-void Cgi::readPipeValue(Response &response, Request &request) {
+void Cgi::readPipeValue(AResponse &response, Request &request) {
     std::string buffer;
     buffer.resize(1024);
     //char c;
@@ -81,7 +82,7 @@ void Cgi::readPipeValue(Response &response, Request &request) {
     request.setFileType(buffer.substr(14, first_line_index - 14));
     buffer.erase(0, first_line_index + 1);
     response.setContent(buffer);
-    response._contentSize = buffer.size();
+    response.setContentSize(buffer.size());
     std::cout << buffer << std::endl;
 }
 

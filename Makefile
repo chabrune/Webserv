@@ -8,7 +8,10 @@ SRCS  = srcs/Client.cpp \
 		srcs/Server.cpp \
 		srcs/ServerConf.cpp \
 		srcs/MimeUtils.cpp \
-		srcs/Response.cpp \
+		srcs/Response/AResponse.cpp \
+		srcs/Response/Get.cpp \
+		srcs/Response/Post.cpp \
+		srcs/Response/Delete.cpp \
 		srcs/Request.cpp \
 		srcs/Cgi.cpp \
 		srcs/utils.cpp

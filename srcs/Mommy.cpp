@@ -1,4 +1,7 @@
 #include "../includes/Mommy.hpp"
+#include "../includes/Response/Get.hpp"
+#include "../includes/Response/Post.hpp"
+#include "../includes/Response/Delete.hpp"
 
 Mommy::Mommy() {
     this->timeout.tv_sec = 1;
@@ -41,6 +44,22 @@ Client * Mommy::acceptRequest(int fd, Server *server) {
     this->clients[cliFd] = cli;
     std::cout << BLUE << "✅ new connection from " << GREEN << *cli << BLUE << " on " << GREEN << server->getServerName() << ":" << server->getPort() << RESET << std::endl;
     return cli;
+}
+
+void Mommy::treatRequest(Server *server, Client *cli) {
+    if (cli->request.getMethod() == "GET") {
+        cli->response.handleReturn(server, cli->request);
+        cli->request.tryAccess(server);
+        cli->response = Get(*server, cli->request);
+        cli->readyToSend = true;
+    } else if (cli->request.getPathToFile() == "POST") {
+
+    } else if (cli->request.getPathToFile() == "DELETE") {
+
+    } else {
+        errno = BADHEADER;
+        throw badHeader();
+    }
 }
 
 void Mommy::run(void) {
@@ -91,13 +110,10 @@ void Mommy::run(void) {
                     {
                         if (!it->second->readyToSend) 
                         {
-                            try 
+                            try
                             {
-                                //it->second->request.isAllowed(it->second->server);
-                                it->second->response.handleReturn(it->second->server, it->second->request);
-                                it->second->request.tryAccess(it->second->server);
-                                it->second->response = Response(*it->second->server, it->second->request);
-                                it->second->readyToSend = true;
+                                it->second->request.isAllowed(it->second->server);
+                                this->treatRequest(it->second->server, it->second);
                             }
                             catch(taMereEnSlip &e)
                             {
@@ -116,7 +132,7 @@ void Mommy::run(void) {
                         }
                         if (it->second->readyToSend && !it->second->sent) 
                         {
-                            try 
+                            try
                             {
                                 it->second->sendResponse();
                             } 
