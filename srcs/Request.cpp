@@ -69,8 +69,6 @@ void Request::defineFileType() {
 
 void Request::tryAccess(Server *server) {
     std::string tester = server->getRootFrom(this->getPathToFile()) + this->subLocation(server->getLocationFrom(this->getPathToFile()));
-    //std::cout << YELLOW << this->subLocation(server->getLocationFrom(this->getPathToFile())) << RESET << std::endl;
-    std::cout << RED << tester.c_str() << RESET << std::endl;
     if (access(tester.c_str(), F_OK) != 0)
     {
         throw accessError();

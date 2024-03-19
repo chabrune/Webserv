@@ -13,24 +13,6 @@ std::ostream & operator<<(std::ostream & out, const Client & cli) {
     return out;
 }
 
-/*void Client::readRequest() {
-    //std::vector<char> buffer(HTTP_BUFFER_SIZE);
-	std::string buffer;
-	buffer.resize(HTTP_BUFFER_SIZE);
-    this->req.len = recv(this->sockfd, &(buffer[0]), HTTP_BUFFER_SIZE, 0);
-    if (this->req.len <= 0) {
-        throw recvFailure();
-    }
-    else if (this->req.len >= HTTP_BUFFER_SIZE) {
-        throw tooLongRequest();
-    }
-	Request r = Request(buffer);
-	//this->req.content = buffer;
-    //this->req.content.append(buffer.begin(), buffer.end());
-    //std::cout << BLUE << this->req.content << RESET << std::endl;
-    //std::cout << GREEN << this->req.len << RESET << std::endl;
-}*/
-
 void Client::sendResponse() {
     // Send Header
     if (!this->headerSent) {

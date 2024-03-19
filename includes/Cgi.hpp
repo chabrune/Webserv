@@ -14,12 +14,9 @@ public:
     ~Cgi();
 private:
     void cgiBuilder(const Request &request, Server &server);
-    void pipeCreatorAndExec();
+    void pipeCreatorAndExec(const Server &server);
     void readPipeValue(AResponse &response, Request &request);
     void closeAllPipe();
-
-    std::string _script_path; //Example "experiment/expe_ali/site/my_file.py";
-    std::string _script_name; //Example "my_file.py";
 
     std::vector<const char *> _argv;
     std::vector<const char *> _env;

@@ -7,7 +7,7 @@ Cgi::Cgi(AResponse &response, Request &request, Server &server) {
     if (DEBUG)
         std::cout << "New Cgi is under building.." << std::endl;
     cgiBuilder(request, server);
-    pipeCreatorAndExec();
+    pipeCreatorAndExec(server);
     readPipeValue(response, request);
     closeAllPipe();
     if (DEBUG)
@@ -15,19 +15,19 @@ Cgi::Cgi(AResponse &response, Request &request, Server &server) {
 }
 
 void Cgi::cgiBuilder(const Request &request, Server &server) {
-    std::string script = "experiment/expe_ali/site/acc.py";
-    this->_script_name = request.getPathToFile().substr(1, request.getPathToFile().size());
+    std::string script_full_path = server.getRoot() + request.getPathToFile();
+    std::string script_name = request.getPathToFile().substr(1, request.getPathToFile().size());
     std::stringstream intConvertor;
 
     this->_argv.push_back(strdup(server.getCgiPathFromExtension(request.getExtension()).c_str()));
-    this->_argv.push_back(strdup(this->_script_name.c_str()));
+    this->_argv.push_back(strdup(script_name.c_str()));
     this->_argv.push_back(0);
 
     _env.push_back(strdup("AUTH_TYPE=Basic"));
     _env.push_back(strdup("CONTENT_LENGTH="));
     _env.push_back(strdup("CONTENT_TYPE="));
     _env.push_back(strdup("GATEWAY_INTERFACE=CGI/1.1"));
-    _env.push_back(strdup(("SCRIPT_NAME=" + script).c_str()));
+    _env.push_back(strdup(("SCRIPT_NAME=" + script_full_path).c_str()));
     //this->_env["PATH_TRANSLATED"] = it_loc->getRootLocation() + (this->_env["PATH_INFO"] == "" ? "/" : this->_env["PATH_INFO"]);
     //this->_env["QUERY_STRING"] = decode(req.getQuery());
     //this->_env["REMOTE_ADDR"] = //ip du client
@@ -43,7 +43,7 @@ void Cgi::cgiBuilder(const Request &request, Server &server) {
     _env.push_back(0);
 }
 
-void Cgi::pipeCreatorAndExec() {
+void Cgi::pipeCreatorAndExec(const Server &server) {
     if (pipe(this->_pipe_out) < 0) {
         std::cout << "pipe1 marche po" << std::endl;
         exit(1);
@@ -64,7 +64,7 @@ void Cgi::pipeCreatorAndExec() {
         dup2(_pipe_in[0], STDIN_FILENO);
         dup2(_pipe_out[1], STDOUT_FILENO);
         closeAllPipe();
-        chdir("experiment/expe_ali/site/");
+        chdir(server.getRoot().c_str());
         exit(execve(this->_argv[0], const_cast<char **>(this->_argv.data()), const_cast<char **>(this->_env.data())));
     }
     wait(0);
