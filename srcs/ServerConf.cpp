@@ -197,6 +197,10 @@ void ServerConf::serv_CGI(std::string &line, size_t currentServerIndex, Mommy& f
 	std::string cgi_path = line.substr(start, i - start);
     if(line != "cgi ." + cgi_extension + " " + cgi_path)
 		throw std::logic_error("Config file : Server : Check cgi");
+    if (access(cgi_path.c_str(), F_OK) != 0)
+        throw std::logic_error("Config file : Server : Check cgi access");
+    if (access(cgi_path.c_str(), R_OK) != 0)
+        throw std::logic_error("Config file : Server : Check cgi executable");
     frr.servers[currentServerIndex]->cgi_values[cgi_extension] = cgi_path;
 }
 

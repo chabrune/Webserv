@@ -7,7 +7,7 @@ Cgi::Cgi(AResponse &response, Request &request, Server &server) {
     if (DEBUG)
         std::cout << "New Cgi is under building.." << std::endl;
     cgiBuilder(request, server);
-    pipeCreatorAndExec(server);
+    pipeCreatorAndExec();
     readPipeValue(response, request);
     closeAllPipe();
     if (DEBUG)
@@ -15,8 +15,10 @@ Cgi::Cgi(AResponse &response, Request &request, Server &server) {
 }
 
 void Cgi::cgiBuilder(const Request &request, Server &server) {
-    std::string script_full_path = server.getRoot() + request.getPathToFile();
+    this->_path_full_name = server.getRootFrom(request.getPathToFile());
     std::string script_name = request.getPathToFile().substr(1, request.getPathToFile().size());
+    std::cout << request.getPathToFile() << std::endl;
+    //std::string script_name = "clock.py";
     std::stringstream intConvertor;
 
     this->_argv.push_back(strdup(server.getCgiPathFromExtension(request.getExtension()).c_str()));
@@ -27,7 +29,7 @@ void Cgi::cgiBuilder(const Request &request, Server &server) {
     _env.push_back(strdup("CONTENT_LENGTH="));
     _env.push_back(strdup("CONTENT_TYPE="));
     _env.push_back(strdup("GATEWAY_INTERFACE=CGI/1.1"));
-    _env.push_back(strdup(("SCRIPT_NAME=" + script_full_path).c_str()));
+    _env.push_back(strdup(("SCRIPT_NAME=" + this->_path_full_name).c_str()));
     //this->_env["PATH_TRANSLATED"] = it_loc->getRootLocation() + (this->_env["PATH_INFO"] == "" ? "/" : this->_env["PATH_INFO"]);
     //this->_env["QUERY_STRING"] = decode(req.getQuery());
     //this->_env["REMOTE_ADDR"] = //ip du client
@@ -43,7 +45,7 @@ void Cgi::cgiBuilder(const Request &request, Server &server) {
     _env.push_back(0);
 }
 
-void Cgi::pipeCreatorAndExec(const Server &server) {
+void Cgi::pipeCreatorAndExec() {
     if (pipe(this->_pipe_out) < 0) {
         std::cout << "pipe1 marche po" << std::endl;
         exit(1);
@@ -61,13 +63,17 @@ void Cgi::pipeCreatorAndExec(const Server &server) {
     }
 
     if (_pid == 0) {
+        this->_exit_status = chdir(_path_full_name.c_str());
+        if (DEBUG)
+            std::cout << "Chdir in folder " << _path_full_name << " return result: " << this->_exit_status << std::endl;
+        std::cout << this->_argv[0] << std::endl;
         dup2(_pipe_in[0], STDIN_FILENO);
         dup2(_pipe_out[1], STDOUT_FILENO);
         closeAllPipe();
-        chdir(server.getRoot().c_str());
-        exit(execve(this->_argv[0], const_cast<char **>(this->_argv.data()), const_cast<char **>(this->_env.data())));
+        execve(this->_argv[0], const_cast<char **>(this->_argv.data()), const_cast<char **>(this->_env.data()));
     }
-    wait(0);
+    wait(&this->_exit_status);
+
 }
 
 void Cgi::readPipeValue(AResponse &response, Request &request) {
@@ -75,6 +81,10 @@ void Cgi::readPipeValue(AResponse &response, Request &request) {
     buffer.resize(1024);
     //char c;
 
+    if (this->_exit_status < 0) {
+        std::cout << "error" << std::endl;
+        return;
+    }
     read(_pipe_out[0], &buffer[0], 1024);
     /*while (read(_pipe_out[0], &c, 1) > 0) {
         buffer += c;
