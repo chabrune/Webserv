@@ -65,7 +65,19 @@ void Request::defineFileType() {
 	this->file_type.insert(0, MimeUtils::getTypeOfContent(this->file_type) + "/");
 }
 
-void Request::tryAccess(Server *server) {
+void Request::tryAccess_Delete(Server *server) {
+    std::string tester = server->getRootFrom(this->getPathToFile()) + this->subLocation(server->getLocationFrom(this->getPathToFile()));
+    if (access(tester.c_str(), F_OK) != 0)
+    {
+        throw accessError();
+    }
+    if (access(tester.c_str(), W_OK) != 0)
+    {
+        throw accessError();
+    }
+}
+
+void Request::tryAccess_Get(Server *server) {
     std::string tester = server->getRootFrom(this->getPathToFile()) + this->subLocation(server->getLocationFrom(this->getPathToFile()));
     if (access(tester.c_str(), F_OK) != 0)
     {

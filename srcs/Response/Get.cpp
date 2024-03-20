@@ -4,8 +4,9 @@
 
 Get::Get(Server &server, Request &request) : AResponse(server) {
     try {
-        this->handleReturn(&server, request);
-        request.tryAccess(&server);
+        if (this->handleReturn(&server, request))
+            return;
+        request.tryAccess_Get(&server);
         this->_uri = server.getRootFrom(request.getPathToFile()) + request.subLocation(server.getLocationFrom(request.getPathToFile()));
         if (request.getIsDir())
             generateAutoindex(request);
@@ -104,7 +105,7 @@ bool Get::handleReturn(Server *server, Request& request)
             this->_header = ss.str();
         }
         this->_isGenerated = true;
-        throw taMereEnSlip();
+        return (true);
     }
     if(findLocationStatusCode(server, ptf))
     {
@@ -136,7 +137,7 @@ bool Get::handleReturn(Server *server, Request& request)
                 this->_header = ss.str();
             }
             this->_isGenerated = true;
-            throw taMereEnSlip();
+            return (true);
         }
     }
     else

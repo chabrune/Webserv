@@ -21,7 +21,8 @@ class Request {
 		const std::string &getHost() const;
         const bool &getIsDir() const;
 		bool isKeepalive() const;
-        void tryAccess(Server *server);
+        void tryAccess_Get(Server *server);
+        void tryAccess_Delete(Server *server);
         void isAllowed(Server *server);
         std::string subLocation(Location *location);
 		class returnTest : public taMereEnSlip

@@ -56,7 +56,7 @@ server {
 
     location /autoindex/delete {
         root ressources/delete
-        allow GET
+        allow GET DELETE
         index delete.html
     }
 }

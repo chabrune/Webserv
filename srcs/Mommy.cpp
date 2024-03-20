@@ -50,15 +50,15 @@ void Mommy::treatRequest(Server *server, Client *cli) {
     try {
         if (cli->request.getMethod() == "GET") {
             cli->response = Get(*server, cli->request);
-            cli->readyToSend = true;
         } else if (cli->request.getMethod() == "POST") {
 
         } else if (cli->request.getMethod() == "DELETE") {
-
+            cli->response = Delete(*server, cli->request);
         } else {
             errno = BADHEADER;
             throw badHeader();
         }
+        cli->readyToSend = true;
     } catch (std::exception &e) {
         throw;
     }
