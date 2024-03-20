@@ -4,7 +4,8 @@
 
 Get::Get(Server &server, Request &request) : AResponse(server) {
     try {
-        this->handleReturn(&server, request);
+        if(this->handleReturn(&server, request))
+            return;
         request.tryAccess(&server);
         this->_uri = server.getRootFrom(request.getPathToFile()) + request.subLocation(server.getLocationFrom(request.getPathToFile()));
         if (request.getIsDir())
@@ -65,7 +66,7 @@ bool Get::findLocationStatusCode(Server *server, std::string ptf)
             if (it2 != __defaultErrorCodes.errorCodes.end())
                 found = true;
             if(!(*itl)->path.empty())
-                if(ptf.find((*itl)->path) == 0)
+                if(ptf.find((*itl)->path) == 0 || erasesSidesChar((*itl)->path, '/') == erasesSidesChar(ptf, '/'))
                     uri = true;
         }
     }
@@ -75,7 +76,6 @@ bool Get::findLocationStatusCode(Server *server, std::string ptf)
 //VOIR NGINX POUR CODE INEXISTANT EX : 999 // POUR L'INSTANT INGORER
 bool Get::handleReturn(Server *server, Request& request)
 {
-    // std::cout << GREEN << "TA SOEUR EN PYJAMA" << RESET << std::endl;
     if(!server->to_return.empty() && !findReturnLocations(server))
         return (this->_isGenerated = false);
     std::string ptf = request.getPathToFile();
@@ -103,15 +103,15 @@ bool Get::handleReturn(Server *server, Request& request)
             ss << "\r\n";
             this->_header = ss.str();
         }
-        this->_isGenerated = true;
-        throw taMereEnSlip();
+        return this->_isGenerated = true;
     }
     if(findLocationStatusCode(server, ptf))
     {
         Location* location = server->getLocationFrom(ptf);
+        // std::cout << GREEN << "TA SOEUR EN TMAX" << ptf << RESET << std::endl;
         if(!location)
             return(this->_isGenerated = false);
-        // std::cout << GREEN << location->path << "TA SOEUR EN SUEUR" << ptf << RESET << std::endl;
+        // std::cout << GREEN << "TA SOEUR EN SUEUR" << ptf << RESET << std::endl;
         std::map<unsigned int, std::string>::iterator it = location->to_return.begin();
         if (erasesSidesChar(location->path, '/') == erasesSidesChar(ptf, '/'))
         {
@@ -135,8 +135,7 @@ bool Get::handleReturn(Server *server, Request& request)
                 ss << "\r\n";
                 this->_header = ss.str();
             }
-            this->_isGenerated = true;
-            throw taMereEnSlip();
+            return this->_isGenerated = true;
         }
     }
     else
