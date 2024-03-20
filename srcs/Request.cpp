@@ -27,9 +27,7 @@ std::string Request::subLocation(Location *location) {
     if (!location || this->path_to_file.length() < location->path.length())
         return (this->path_to_file);
     std::string lpath = location->path;
-    std::cout << RED << "bef: " << this->path_to_file << " & " << lpath << RESET << std::endl;
     if (this->path_to_file.compare(0, lpath.length(), location->path) == 0) {
-        std::cout << RED << "aft: " << this->path_to_file.substr(lpath.length()) << RESET << std::endl;
         return (this->path_to_file.substr(lpath.length()));
     }
     return (this->path_to_file);

@@ -47,18 +47,20 @@ Client * Mommy::acceptRequest(int fd, Server *server) {
 }
 
 void Mommy::treatRequest(Server *server, Client *cli) {
-    if (cli->request.getMethod() == "GET") {
-        cli->response.handleReturn(server, cli->request);
-        cli->request.tryAccess(server);
-        cli->response = Get(*server, cli->request);
-        cli->readyToSend = true;
-    } else if (cli->request.getPathToFile() == "POST") {
+    try {
+        if (cli->request.getMethod() == "GET") {
+            cli->response = Get(*server, cli->request);
+            cli->readyToSend = true;
+        } else if (cli->request.getMethod() == "POST") {
 
-    } else if (cli->request.getPathToFile() == "DELETE") {
+        } else if (cli->request.getMethod() == "DELETE") {
 
-    } else {
-        errno = BADHEADER;
-        throw badHeader();
+        } else {
+            errno = BADHEADER;
+            throw badHeader();
+        }
+    } catch (std::exception &e) {
+        throw;
     }
 }
 

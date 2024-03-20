@@ -2,8 +2,11 @@
 #include "../../includes/Response/Get.hpp"
 #include "../../includes/Server.hpp"
 
-Get::Get(Server &server, Request &request) : AResponse(server, request) {
+Get::Get(Server &server, Request &request) : AResponse(server) {
     try {
+        this->handleReturn(&server, request);
+        request.tryAccess(&server);
+        this->_uri = server.getRootFrom(request.getPathToFile()) + request.subLocation(server.getLocationFrom(request.getPathToFile()));
         if (request.getIsDir())
             generateAutoindex(request);
         else if (server.isCgi(request.getExtension())) {
@@ -15,7 +18,7 @@ Get::Get(Server &server, Request &request) : AResponse(server, request) {
             headerFileBuilder(request.getFileType());
         }
     } catch (std::exception &e) {
-        handleRequestError(&server, this->getUri());
+        throw;
     }
     if (DEBUG)
         std::cout << "Response created. Header:" << std::endl << MAGENTA << this->_header << RESET;

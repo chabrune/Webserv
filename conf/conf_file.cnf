@@ -24,16 +24,39 @@ server {
     autoindex off
     allow GET POST DELETE
 
-    location /assets {
-        root ressources/assets
+    location /autoindex {
+        root ressources/autoindex
         autoindex on
-        allow GET POST PUT HEAD
+        allow GET
     }
 
-    location /assets/ali {
+    location /autoindex/assets {
+        root ressources/assets
+        autoindex on
+        allow GET
+    }
+
+    location /autoindex/cgi {
         root experiment/expe_ali/site
         allow GET POST
         index index.html
     }
-    return 301 https://www.youtube.com/watch?v=oHg5SJYRHA0
+
+    location /autoindex/upload {
+         root ressources/upload
+         allow GET POST
+         index upload.html
+    }
+
+    location /autoindex/errors {
+        root ressources/default
+        allow GET
+        autoindex on
+    }
+
+    location /autoindex/delete {
+        root ressources/delete
+        allow GET
+        index delete.html
+    }
 }

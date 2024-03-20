@@ -6,10 +6,9 @@ defaultErrorCodes __defaultErrorCodes;
 defaultErrorPages __defaultErrorPages;
 
 AResponse::AResponse() : _contentFile(0), _isGenerated(false) {}
-AResponse::AResponse(Server & server, Request &request) : server(&server), _contentFile(0), _isGenerated(false) {
+AResponse::AResponse(Server & server) : server(&server), _contentFile(0), _isGenerated(false) {
     if (DEBUG)
 	    std::cout << "New response is under building.." << std::endl;
-    this->_uri = server.getRootFrom(request.getPathToFile()) + request.subLocation(server.getLocationFrom(request.getPathToFile()));
 }
 
 void AResponse::defaultFileBuilder(const Request &request) {

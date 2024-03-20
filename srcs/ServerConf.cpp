@@ -379,7 +379,7 @@ void ServerConf::location_index(std::string &line, size_t currentServerIndex, Mo
 	if(index.length() > 1)
 		if(index[index.length() - 1] == '/')
 			throw std::logic_error("Config file : Location : Check index");
-	if(line != "index " + index || index[0] == '/')
+	if(line != "index " + index)
 		throw std::logic_error("Config file : Location : Check index");
 	frr.servers[currentServerIndex]->locations[currentLocationIndex]->index = index;
 }

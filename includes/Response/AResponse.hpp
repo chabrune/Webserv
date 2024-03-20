@@ -10,7 +10,7 @@ class Cgi;
 class AResponse {
 	public:
         AResponse();
-        AResponse(Server & server, Request &request);
+        AResponse(Server & server);
 
 		std::string &getHeader();
 		std::string &getContent();
@@ -22,7 +22,6 @@ class AResponse {
         void setContentSize(long long size);
         void handleRequestError(Server* server, const std::string & uri);
 
-        virtual bool handleReturn(Server *server, Request& request) {(void)server;(void)request;return false;};
 	protected:
         void defaultFileBuilder(const Request &request);
         void headerGenBuilder(std::string file_type);
