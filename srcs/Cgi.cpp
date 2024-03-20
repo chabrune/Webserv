@@ -16,13 +16,10 @@ Cgi::Cgi(AResponse &response, Request &request, Server &server) {
 
 void Cgi::cgiBuilder(const Request &request, Server &server) {
     this->_path_full_name = server.getRootFrom(request.getPathToFile());
-    std::string script_name = request.getPathToFile().substr(1, request.getPathToFile().size());
-    std::cout << request.getPathToFile() << std::endl;
-    //std::string script_name = "clock.py";
-    std::stringstream intConvertor;
+    std::stringstream int_convertor;
 
     this->_argv.push_back(strdup(server.getCgiPathFromExtension(request.getExtension()).c_str()));
-    this->_argv.push_back(strdup(script_name.c_str()));
+    this->_argv.push_back(strdup(request.getFileName().c_str()));
     this->_argv.push_back(0);
 
     _env.push_back(strdup("AUTH_TYPE=Basic"));
@@ -34,8 +31,8 @@ void Cgi::cgiBuilder(const Request &request, Server &server) {
     //this->_env["QUERY_STRING"] = decode(req.getQuery());
     //this->_env["REMOTE_ADDR"] = //ip du client
     _env.push_back(strdup(("SERVER_NAME=" + server.getServerName()).c_str()));
-    intConvertor << server.getPort();
-    _env.push_back(strdup(("SERVER_PORT=" + intConvertor.str()).c_str()));
+    int_convertor << server.getPort();
+    _env.push_back(strdup(("SERVER_PORT=" + int_convertor.str()).c_str()));
     _env.push_back(strdup(("REQUEST_METHOD=" + request.getMethod()).c_str()));
     //this->_env["HTTP_COOKIE"] = req.getHeader("cookie");
     //this->_env["REQUEST_URI"] = req.getPath() + req.getQuery();*

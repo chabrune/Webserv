@@ -18,19 +18,19 @@ Request::Request(Server *server, int sockfd) : isDir(false) {
 	    std::cout << "No errors found, starting to parse.." << std::endl;
 	this->parseRequest(server, buffer);
     if (DEBUG)
-	    std::cout << "New request created. Method: " << this->method << " file path: " << this->path_to_file << " file type: " << this->file_type << " host: " << this->host  << " keep-alive: " << this->keepalive << std::endl;
+	    std::cout << "New request created. Method: " << this->method << " file path: " << getPathToFile() << " file-name " << getFileName() << " file type: " << this->file_type << " host: " << this->host << " keep-alive: " << this->keepalive << std::endl;
 }
 
 Request::~Request() {}
 
 std::string Request::subLocation(Location *location) {
-    if (!location || this->path_to_file.length() < location->path.length())
-        return (this->path_to_file);
+    if (!location || this->_path_to_file.length() < location->path.length())
+        return (this->_path_to_file);
     std::string lpath = location->path;
-    if (this->path_to_file.compare(0, lpath.length(), location->path) == 0) {
-        return (this->path_to_file.substr(lpath.length()));
+    if (this->_path_to_file.compare(0, lpath.length(), location->path) == 0) {
+        return (this->_path_to_file.substr(lpath.length()));
     }
-    return (this->path_to_file);
+    return (this->_path_to_file);
 }
 
 void Request::parseRequest(Server *server, std::string &str) {
@@ -39,12 +39,12 @@ void Request::parseRequest(Server *server, std::string &str) {
 	this->keepalive = false;
 
 	this->method = str.substr(0, first_space_index);
-	this->path_to_file = str.substr(first_space_index + 1, str.find_first_of(' ', first_space_index + 1) - (first_space_index + 1));
-	//If the path to file = / set the default page (index.html for example), define in the server config.
-	if (this->path_to_file == "/") {
-        if (!server->getIndexFrom(this->path_to_file).empty())
-            this->path_to_file = server->getIndexFrom(this->path_to_file);
+    setPathToFile(str.substr(first_space_index + 1, str.find_first_of(' ', first_space_index + 1) - (first_space_index + 1)));
+	if (this->_path_to_file == "/") {
+        if (!server->getIndexFrom(this->_path_to_file).empty())
+            setPathToFile(server->getIndexFrom(getPathToFile()));
     }
+    setFileName(getPathToFile().substr(getPathToFile().find_last_of('/') + 1, getPathToFile().length()));
     defineFileType();
 
 	//remove the first line (we already have the necessary information)
@@ -52,13 +52,12 @@ void Request::parseRequest(Server *server, std::string &str) {
 
 	first_space_index = str.find_first_of(' ');
 	this->host = str.substr(first_space_index + 1, str.find_first_of('\n') - first_space_index);
-
 	if (str.find("keep-alive") != std::string::npos)
 		this->keepalive = true;
 }
 
 void Request::defineFileType() {
-    this->setFileType(this->path_to_file.substr(this->path_to_file.find_first_of('.') + 1, this->path_to_file.length()));
+    this->setFileType(this->_path_to_file.substr(this->_path_to_file.find_first_of('.') + 1, this->_path_to_file.length()));
 	if (this->file_type == "js")
         this->setFileType("javascript");
 	this->extension = this->file_type;
@@ -90,20 +89,20 @@ void Request::tryAccess_Get(Server *server) {
     struct stat filestat;
     if (stat(tester.c_str(), &filestat) == 0) {
         if (S_ISDIR(filestat.st_mode)){
-            if (this->path_to_file[this->path_to_file.size() - 1] != '/') {
+            if (this->_path_to_file[this->_path_to_file.size() - 1] != '/') {
                 errno = MISSINGSLASH;
                 this->isDir = true;
                 throw dirDoesNotEndWithSlash();
             }
-            if (!server->getIndexFrom(this->path_to_file).empty() &&
-                    erasesSidesChar(this->path_to_file, '/') == erasesSidesChar(server->getPathFrom(this->path_to_file), '/')) {
-                this->path_to_file += this->path_to_file[this->path_to_file.size() - 1] == '/' ? "" : "/";
-                this->path_to_file += server->getIndexFrom(this->path_to_file);
+            if (!server->getIndexFrom(this->_path_to_file).empty() &&
+                erasesSidesChar(this->_path_to_file, '/') == erasesSidesChar(server->getPathFrom(this->_path_to_file), '/')) {
+                this->_path_to_file += this->_path_to_file[this->_path_to_file.size() - 1] == '/' ? "" : "/";
+                this->_path_to_file += server->getIndexFrom(this->_path_to_file);
                 this->file_type = "text/html";
                 return;
             }
             this->isDir = true;
-            if (!server->getAutoindexFrom(this->path_to_file)) {
+            if (!server->getAutoindexFrom(this->_path_to_file)) {
                 errno = ISDIRECTORY;
                 throw accessError();
             }
@@ -124,13 +123,13 @@ void Request::isAllowed(Server *server) {
         errno = TOOLONGREQUEST;
         throw tooLongRequest();
     }
-    if (isWellSlashed(this->path_to_file) == -1) {
+    if (isWellSlashed(this->_path_to_file) == -1) {
         errno = INVALIDSLASH;
         throw invalidSlash();
     }
     if (DEBUG)
         std::cout << GREEN << "start check meths" << RESET << std::endl;
-    std::vector<std::string> & methods = server->getAllowedMethodsFrom(this->path_to_file);
+    std::vector<std::string> & methods = server->getAllowedMethodsFrom(this->_path_to_file);
     std::vector<std::string>::iterator it = methods.begin();
     while (it != methods.end()) {
         if (DEBUG)
@@ -156,8 +155,20 @@ const std::string &Request::getMethod() const {
 	return method;
 }
 
+const std::string &Request::getFileName() const {
+    return _file_name;
+}
+
+void Request::setFileName(const std::string &file_name) {
+    this->_file_name = file_name;
+}
+
 const std::string &Request::getPathToFile() const {
-	return path_to_file;
+	return _path_to_file;
+}
+
+void Request::setPathToFile(const std::string &path_to_file) {
+    this->_path_to_file = path_to_file;
 }
 
 const std::string &Request::getFileType() const {

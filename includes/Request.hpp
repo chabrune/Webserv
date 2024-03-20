@@ -16,6 +16,9 @@ class Request {
         void setFileType(const std::string &filetype);
 		const std::string &getMethod() const;
 		const std::string &getPathToFile() const;
+        void setPathToFile(const std::string &path_to_file);
+        const std::string &getFileName() const;
+        void setFileName(const std::string &file_name);
 		const std::string &getFileType() const;
 		const std::string &getExtension() const;
 		const std::string &getHost() const;
@@ -64,7 +67,8 @@ class Request {
         void parseRequest(Server *server, std::string &str);
 		void defineFileType();
 		std::string method; //GET, POST..
-		std::string path_to_file;
+		std::string _path_to_file;
+        std::string _file_name; //test.html, example.py...
 		std::string file_type; //text/css, text/js, image/jpg...
 		std::string extension; //jpg, png, css...
 		std::string host;
