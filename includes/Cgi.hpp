@@ -14,9 +14,12 @@ public:
     ~Cgi();
 private:
     void cgiBuilder(const Request &request, Server &server);
-    void pipeCreatorAndExec(const Server &server);
+    void pipeCreatorAndExec();
     void readPipeValue(AResponse &response, Request &request);
     void closeAllPipe();
+
+    std::string _path_full_name;
+    int _exit_status;
 
     std::vector<const char *> _argv;
     std::vector<const char *> _env;

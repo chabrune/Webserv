@@ -19,7 +19,7 @@ server {
     server_name localhost
     root ressources
     client_max_body_size 3000000
-    cgi .py ./test/py-cgi
+    cgi .py /usr/bin/python3
     index /cyber.html
     autoindex off
     allow GET POST DELETE
