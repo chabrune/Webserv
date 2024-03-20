@@ -4,9 +4,9 @@
 
 Get::Get(Server &server, Request &request) : AResponse(server) {
     try {
-        if(this->handleReturn(&server, request))
+        if (this->handleReturn(&server, request))
             return;
-        request.tryAccess(&server);
+        request.tryAccess_Get(&server);
         this->_uri = server.getRootFrom(request.getPathToFile()) + request.subLocation(server.getLocationFrom(request.getPathToFile()));
         if (request.getIsDir())
             generateAutoindex(request);

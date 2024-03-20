@@ -9,6 +9,7 @@ class Get : public AResponse {
     public:
         Get(Server & server, Request &request);
 
+    private:
         void headerFileBuilder(std::string file_type);
         bool findServerStatusCode(std::map<unsigned int, std::string>::iterator itf);
         bool findReturnLocations(Server* server);
