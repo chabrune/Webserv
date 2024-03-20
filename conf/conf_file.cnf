@@ -37,7 +37,7 @@ server {
     }
 
     location /autoindex/cgi {
-        root experiment/expe_ali/site
+        root ressources/ali_site
         allow GET POST
         index index.html
     }

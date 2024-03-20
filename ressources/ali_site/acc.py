@@ -51,7 +51,7 @@ def printUserMsg(msg):
     print("<body>")
     print("<h1>", msg ,"</h1>")
     print("</body>")
-    print("<a href=\"/login.html\"> Click here to go back to login page </a>")
+    print("<a href=\"../cgi/acc.py\"> Click here to go back to login page </a>")
     print("</html>")
 
 def printLogin():
@@ -59,12 +59,12 @@ def printLogin():
     print("<html> ")
     print("<head>")
     print("<meta charset=\"UTF-8\" name=\"viewport\" content=\"width=device-width, initial-scale=1\">")
-    print("<link rel=\"stylesheet\" href=\"/css/accstyle.css\">")
+    print("<link rel=\"stylesheet\" href=\"../cgi/css/accstyle.css\">")
     print("<title> Login Page </title>")
     print("</head>")
     print("<body>  ")
     print("<center> <h1> Amanix Login Form </h1> </center> ")
-    print("<form action = \"../cgi-bin/acc.py\" method = \"get\">")
+    print("<form action = \"../cgi/acc.py\" method = \"get\">")
     print("<div class=\"container\"> ")
     print("<label>Username : </label> ")
     print("<input type=\"text\" placeholder=\"Enter Username\" name=\"username\" required>")
@@ -81,8 +81,8 @@ def printLogin():
 
 
 def authUser(name, password):
-    if os.path.exists('cgi-bin/user_database'):
-        with open('cgi-bin/user_database', 'rb') as f:
+    if os.path.exists('cgi/accounts'):
+        with open('cgi/accounts', 'rb') as f:
             database = pickle.load(f)
             if name in database.user_pass and database.user_pass[name] == password:
                 session = Session(database.user_firstname[name])

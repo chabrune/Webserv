@@ -18,7 +18,7 @@ Request::Request(Server *server, int sockfd) : isDir(false) {
 	    std::cout << "No errors found, starting to parse.." << std::endl;
 	this->parseRequest(server, buffer);
     if (DEBUG)
-	    std::cout << "New request created. Method: " << this->method << " file path: " << getPathToFile() << " file-name " << getFileName() << " file type: " << this->file_type << " host: " << this->host << " keep-alive: " << this->keepalive << std::endl;
+	    std::cout << "New request created. Method: " << this->method << " file path: " << getPathToFile() << " file-name " << getFileName() << " query " << getQuery() << " file type: " << this->file_type << " host: " << this->host << std::endl;
 }
 
 Request::~Request() {}
@@ -36,13 +36,16 @@ std::string Request::subLocation(Location *location) {
 void Request::parseRequest(Server *server, std::string &str) {
 	unsigned int first_space_index = str.find_first_of(' ');
 	this->len = str.length();
-	this->keepalive = false;
 
 	this->method = str.substr(0, first_space_index);
     setPathToFile(str.substr(first_space_index + 1, str.find_first_of(' ', first_space_index + 1) - (first_space_index + 1)));
 	if (this->_path_to_file == "/") {
         if (!server->getIndexFrom(this->_path_to_file).empty())
             setPathToFile(server->getIndexFrom(getPathToFile()));
+    }
+    if (getPathToFile().find('?') != std::string::npos) {
+        setQuery(getPathToFile().substr(getPathToFile().find_last_of('?') + 1, getPathToFile().length()));
+        setPathToFile(getPathToFile().substr(0, getPathToFile().find_first_of('?')));
     }
     setFileName(getPathToFile().substr(getPathToFile().find_last_of('/') + 1, getPathToFile().length()));
     defineFileType();
@@ -52,8 +55,6 @@ void Request::parseRequest(Server *server, std::string &str) {
 
 	first_space_index = str.find_first_of(' ');
 	this->host = str.substr(first_space_index + 1, str.find_first_of('\n') - first_space_index);
-	if (str.find("keep-alive") != std::string::npos)
-		this->keepalive = true;
 }
 
 void Request::defineFileType() {
@@ -155,6 +156,14 @@ const std::string &Request::getMethod() const {
 	return method;
 }
 
+const std::string &Request::getPathToFile() const {
+    return _path_to_file;
+}
+
+void Request::setPathToFile(const std::string &path_to_file) {
+    this->_path_to_file = path_to_file;
+}
+
 const std::string &Request::getFileName() const {
     return _file_name;
 }
@@ -163,12 +172,12 @@ void Request::setFileName(const std::string &file_name) {
     this->_file_name = file_name;
 }
 
-const std::string &Request::getPathToFile() const {
-	return _path_to_file;
+const std::string &Request::getQuery() const {
+    return this->_query;
 }
 
-void Request::setPathToFile(const std::string &path_to_file) {
-    this->_path_to_file = path_to_file;
+void Request::setQuery(const std::string &query) {
+    this->_query = query;
 }
 
 const std::string &Request::getFileType() const {
@@ -185,8 +194,4 @@ const bool &Request::getIsDir() const {
 
 const std::string &Request::getHost() const {
 	return host;
-}
-
-bool Request::isKeepalive() const {
-	return keepalive;
 }

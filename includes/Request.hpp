@@ -19,6 +19,8 @@ class Request {
         void setPathToFile(const std::string &path_to_file);
         const std::string &getFileName() const;
         void setFileName(const std::string &file_name);
+        const std::string &getQuery() const;
+        void setQuery(const std::string &query);
 		const std::string &getFileType() const;
 		const std::string &getExtension() const;
 		const std::string &getHost() const;
@@ -69,9 +71,9 @@ class Request {
 		std::string method; //GET, POST..
 		std::string _path_to_file;
         std::string _file_name; //test.html, example.py...
+        std::string _query;
 		std::string file_type; //text/css, text/js, image/jpg...
 		std::string extension; //jpg, png, css...
 		std::string host;
-		bool keepalive;
         bool isDir;
 };

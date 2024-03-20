@@ -28,14 +28,13 @@ void Cgi::cgiBuilder(const Request &request, Server &server) {
     _env.push_back(strdup("GATEWAY_INTERFACE=CGI/1.1"));
     _env.push_back(strdup(("SCRIPT_NAME=" + this->_path_full_name).c_str()));
     //this->_env["PATH_TRANSLATED"] = it_loc->getRootLocation() + (this->_env["PATH_INFO"] == "" ? "/" : this->_env["PATH_INFO"]);
-    //this->_env["QUERY_STRING"] = decode(req.getQuery());
+    _env.push_back(strdup(("QUERY_STRING=" + request.getQuery()).c_str()));
     //this->_env["REMOTE_ADDR"] = //ip du client
     _env.push_back(strdup(("SERVER_NAME=" + server.getServerName()).c_str()));
     int_convertor << server.getPort();
     _env.push_back(strdup(("SERVER_PORT=" + int_convertor.str()).c_str()));
     _env.push_back(strdup(("REQUEST_METHOD=" + request.getMethod()).c_str()));
     //this->_env["HTTP_COOKIE"] = req.getHeader("cookie");
-    //this->_env["REQUEST_URI"] = req.getPath() + req.getQuery();*
     _env.push_back(strdup("SERVER_PROTOCOL=HTTP/1.1"));
     _env.push_back(strdup("REDIRECT_STATUS=200"));
     _env.push_back(strdup("SERVER_SOFTWARE=AMANIX"));
