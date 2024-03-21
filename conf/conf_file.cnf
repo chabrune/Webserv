@@ -23,6 +23,7 @@ server {
     index /cyber.html
     autoindex off
     allow GET POST DELETE
+    allow_uploads /uploads
 
     location /autoindex {
         root ressources/autoindex
@@ -58,5 +59,11 @@ server {
         root ressources/delete
         allow GET DELETE
         index delete.html
+    }
+
+    location /autoindex/fireworks {
+        root ressources/fireworks
+        allow GET DELETE
+        index fireworks.html
     }
 }

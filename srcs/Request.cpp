@@ -75,6 +75,25 @@ void Request::tryAccess_Delete(Server *server) {
     {
         throw accessError();
     }
+    struct stat filestat;
+    if (stat(tester.c_str(), &filestat) != 0) {
+        throw requestError();
+    } else {
+        if (S_ISDIR(filestat.st_mode)) {
+            DIR *dir = opendir(tester.c_str());
+            if (!dir)
+                throw requestError();
+            struct dirent *entry;
+            while ((entry = readdir(dir)) != NULL) {
+                if (std::string(entry->d_name) != "." && std::string(entry->d_name) != "..") {
+                    closedir(dir);
+                    errno = DIRNOTEMPTY;
+                    throw dirNotEmpty();
+                }
+            }
+            closedir(dir);
+        }
+    }
 }
 
 void Request::tryAccess_Get(Server *server) {

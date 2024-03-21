@@ -73,7 +73,7 @@ std::string AResponse::getCodeHeader(std::string * path, Server* server,  const 
             *path = __defaultErrorPages[409];
         }
         return ("HTTP/1.1 409 Conflict\n");
-    }else if (errno == NOTALLOWEDMETHOD) {
+    }else if (errno == NOTALLOWEDMETHOD || errno == DIRNOTEMPTY) {
         try {
             *path += server->getErrorPage(405, uri);
         } catch (std::exception &e) {
