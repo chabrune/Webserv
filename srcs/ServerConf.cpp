@@ -154,6 +154,21 @@ void ServerConf::serv_return(std::string &line, size_t currentServerIndex, Mommy
 	frr.servers[currentServerIndex]->to_return[nb] = path;
 }
 
+void ServerConf::serv_upload(std::string &line, size_t currentServerIndex, Mommy& frr)
+{
+	size_t i = 0;
+	for (; i < line.length() && std::isspace(static_cast<unsigned char>(line[i])); i++) {}
+	line = line.substr(i);
+	i = 13;
+	int start = i;
+	while (i < line.length() && !isspace(line[i]))
+		i++;
+	std::string path = line.substr(start, i - start);
+	if(line != "allow_upload " + path)
+		throw std::logic_error("Config file : Server : Check upload path");
+	frr.servers[currentServerIndex]->upload_path = path;
+}
+
 void ServerConf::serv_error_page(std::string &line, size_t currentServerIndex, Mommy& frr)
 {
 	size_t i = 0;
@@ -477,6 +492,21 @@ void ServerConf::location_autoindex(std::string &line, size_t currentServerIndex
 		frr.servers[currentServerIndex]->locations[currentLocationIndex]->autoindex = false;
 }
 
+void ServerConf::location_upload(std::string &line, size_t currentServerIndex, Mommy& frr, size_t currentLocationIndex)
+{
+	size_t i = 0;
+	for (; i < line.length() && std::isspace(static_cast<unsigned char>(line[i])); i++) {}
+	line = line.substr(i);
+	i = 13;
+	int start = i;
+	while (i < line.length() && !isspace(line[i]))
+		i++;
+	std::string path = line.substr(start, i - start);
+	if(line != "allow_upload " + path)
+		throw std::logic_error("Config file : Location : Check upload path");
+	frr.servers[currentServerIndex]->locations[currentLocationIndex]->upload_path = path;
+}
+
 bool ServerConf::requirements_serv(Mommy& frr, size_t currentServerIndex)
 {
 	if(currentServerIndex < frr.servers.size())
@@ -535,6 +565,8 @@ void ServerConf::inputParsing(std::string argv, Mommy& frr)
             serv_name_line(line, currentServerIndex, frr);
 		else if(isInsideServerSection && !isInsideLocationSection && line.find("listen ") != std::string::npos)
             serv_port(line, currentServerIndex, frr);
+		else if(isInsideServerSection && !isInsideLocationSection && line.find("allow_upload ") != std::string::npos)
+            serv_upload(line, currentServerIndex, frr);
 		else if(isInsideServerSection && !isInsideLocationSection && line.find("root ") != std::string::npos)
 			serv_root(line, currentServerIndex, frr);
 		else if(isInsideServerSection && !isInsideLocationSection && line.find("client_max_body_size ") != std::string::npos)
@@ -553,6 +585,8 @@ void ServerConf::inputParsing(std::string argv, Mommy& frr)
 			serv_autoindex(line, currentServerIndex, frr);
 		else if(isInsideLocationSection && line.find("root ") != std::string::npos)
 			location_root(line, currentServerIndex, frr, currentLocationIndex);
+		else if(isInsideLocationSection && line.find("allow_upload ") != std::string::npos)
+			location_upload(line, currentServerIndex, frr, currentLocationIndex);
 		else if(isInsideLocationSection && line.find("allow ") != std::string::npos)
 			location_allowed_methods(line, currentServerIndex, frr, currentLocationIndex);
 		else if(isInsideLocationSection && line.find("cgi_path ") != std::string::npos)
@@ -579,73 +613,3 @@ bool ServerConf::isCgi(const std::string &extension) const {
     }
     return false;
 }
-
-// void ServerConf::testparsing(Mommy& frr)
-// {
-// 	std::cout << "--------SERVER DATA--------" << std::endl << std::endl;
-// 	std::cout << "PORT SERVER[0] : " << frr.servers[0]->port << std::endl;
-// 	std::cout << "RETURN SERVER[1] : " << frr.servers[0]->to_return << std::endl;
-// 	std::cout << "PORT SERVER[1] : " << frr.servers[1]->port << std::endl;
-// 	std::cout << "SERVER_NAME[1] : " << frr.servers[1]->server_name << std::endl;
-// 	std::cout << "ROOT SERVER[1] : " << frr.servers[1]->root << std::endl;
-// 	std::cout << "MAX_BODY_SIZE SERVER[1] : " << frr.servers[1]->max_body_size << std::endl;
-// 	std::cout << "ERROR_PAGE SERVER[1] : " << frr.servers[1]->errors_pages[404] << std::endl;
-// 	std::cout << "CGI_EXT SERVER[1] : " << frr.servers[1]->cgi_extensions[0] << std::endl;
-// 	std::cout << "CGI_PATHS SERVER[1] : " << frr.servers[1]->cgi_paths[0] << std::endl;
-// 	std::cout << "AUTOINDEX[1] : " << frr.servers[1]->autoindex << std::endl;
-// 	std::vector<std::string>::iterator it, itend;
-// 	it = frr.servers[1]->allowed_methods.begin();
-// 	itend = frr.servers[1]->allowed_methods.end();
-// 	std::cout << "ALLOWED_METHODS SERVER[1] : ";
-// 	while(it != itend)
-// 	{
-// 		std::cout << *it << " ";
-// 		++it;
-// 	}
-// 	std::cout << std::endl << std::endl;
-// 	std::cout << "--------LOCATION DATA--------" << std::endl << std::endl;
-// 	std::cout << "LOCATION[0] : " << std::endl;
-// 	std::cout << "PATH LOCATION[0] : " << frr.servers[1]->locations[0]->path << std::endl;
-// 	it = frr.servers[1]->locations[0]->allowed_methods.begin();
-// 	itend = frr.servers[1]->locations[0]->allowed_methods.end();
-// 	std::cout << "ALLOWED METHODS LOCATION[0] : ";
-// 	while(it != itend)
-// 	{
-// 		std::cout << *it << " ";
-// 		++it;
-// 	}
-// 	std::cout << std::endl;
-// 	std::cout << "AUTOINDEX LOCATION[0] : " << frr.servers[1]->locations[0]->autoindex << std::endl << std::endl;
-// 	std::cout << "LOCATION[1] : " << std::endl;
-// 	std::cout << "PATH LOCATION[1] : " << frr.servers[1]->locations[1]->path << std::endl;
-// 	std::cout << "AUTOINDEX LOCATION[1] : " << frr.servers[1]->locations[1]->autoindex << std::endl;
-// 	std::cout << "INDEX LOCATION[1] : " << frr.servers[1]->locations[1]->index << std::endl;
-// 	std::cout << "ALLOWED METHODS LOCATION[1] : ";
-// 	it = frr.servers[1]->locations[1]->allowed_methods.begin();
-// 	itend = frr.servers[1]->locations[1]->allowed_methods.end();
-// 	while(it != itend)
-// 	{
-// 		std::cout << *it << " ";
-// 		++it;
-// 	}
-// 	std::cout << std::endl;
-// 	std::cout << "ERROR_PAGE LOCATION[1] : " << frr.servers[1]->locations[1]->errors_pages[404] << std::endl;
-// 	std::cout << "MAX_BODY_SIZE LOCATION[1] : " << frr.servers[1]->locations[1]->max_body_size << std::endl << std::endl;
-// 	std::cout << "LOCATION[2] : " << std::endl;
-// 	std::cout << "PATH LOCATION[2] : " << frr.servers[1]->locations[2]->path << std::endl;
-// 	std::cout << "RETURN LOCATION[2] : " << frr.servers[1]->locations[2]->to_return << std::endl << std::endl;
-// 	std::cout << "LOCATION[3] : " << std::endl;
-// 	std::cout << "PATH LOCATION[3] : " << frr.servers[1]->locations[3]->path << std::endl;
-// 	std::cout << "ROOT LOCATION[3] : " << frr.servers[1]->locations[3]->root << std::endl;
-// 	std::cout << "INDEX LOCATION[3] : " << frr.servers[1]->locations[3]->index << std::endl;
-// 	std::cout << "CGI_PATHS LOCATION[3] : ";
-// 	it = frr.servers[1]->locations[3]->cgi_paths.begin();
-// 	itend = frr.servers[1]->locations[3]->cgi_paths.end();
-// 	while(it != itend)
-// 	{
-// 		std::cout << *it << " ";
-// 		++it;
-// 	}
-// 	std::cout << std::endl;
-// 	std::cout << "CGI_EXT LOCATION[3] : " << frr.servers[1]->locations[3]->cgi_extensions[0] << std::endl << std::endl;
-// }

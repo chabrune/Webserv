@@ -51,7 +51,7 @@ void Mommy::treatRequest(Server *server, Client *cli) {
         if (cli->request.getMethod() == "GET") {
             cli->response = Get(*server, cli->request);
         } else if (cli->request.getMethod() == "POST") {
-
+            cli->response = Post(*server, cli->request);
         } else if (cli->request.getMethod() == "DELETE") {
             cli->response = Delete(*server, cli->request);
         } else {

@@ -5,9 +5,11 @@ server {
     index /cyber.html
     allow GET
     autoindex on
-    location /tmp/ {
+    allow_upload /path
+    location /tmp {
         autoindex on
         root ressources/tmp
+        allow_upload /upload
         allow GET
         return 301 https://www.winxclubfrance.com/
     }

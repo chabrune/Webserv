@@ -21,4 +21,5 @@ class Location
         std::map<unsigned int, std::string> to_return; // Set what to return
         bool autoindex;
         bool isReturn;
+        std::string upload_path;
 };
