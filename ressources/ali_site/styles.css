@@ -1,23 +1,26 @@
 body {
-	font-family: Arial, sans-serif;
-	background-color: #f0f0f0;
+    margin-left: 1.5vw;
+    margin-top: 1.4vh;
+    -webkit-user-select: none;
 }
 
-img {
-	max-width: 100%;
-	height: auto;
-	border: 2px solid #333;
+#character {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
 }
 
-.css {
-	color: blue;
-	font-size: 18px;
-	font-weight: bold;
+.square {
+    width: 64px; /* Adjust the size of squares as needed */
+    height: 64px;
+    border: 1px solid #000;
+    float: left;
 }
 
-body {
-	background-size: 40px 40px;
-	background-image:
-		linear-gradient(to right, grey 1px, transparent 1px),
-		linear-gradient(to bottom, grey 1px, transparent 1px);
+.clearfix::after {
+    content: "";
+    display: table;
+    clear: both;
 }

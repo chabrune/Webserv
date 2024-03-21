@@ -12,11 +12,18 @@ class Cgi {
 public:
     Cgi(AResponse &response, Request &request, Server &server);
     ~Cgi();
+
+    const std::string &getPathFullName() const;
+    void setPathFullName(const std::string &path_full_name);
+    const std::vector<const char *> &getArgv() const;
+    void setArgv(const std::vector<const char *> &argv);
+
 private:
-    void cgiBuilder(const Request &request, Server &server);
+    void cgiBuilder(Request &request, Server &server);
     void pipeCreatorAndExec();
     void readPipeValue(AResponse &response, Request &request);
     void closeAllPipe();
+
 
     std::string _path_full_name;
     int _exit_status;
@@ -27,4 +34,6 @@ private:
     int _pipe_in[2]; //Used by server to send data to cgi
     int _pipe_out[2]; // Used by cgi to send data to server
 };
+
+std::ostream& operator<<(std::ostream& os, const Cgi& obj);
 
