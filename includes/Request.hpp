@@ -65,6 +65,12 @@ class Request {
             }
         };
 
+        class dirNotEmpty: public requestError {
+            const char *what() const throw() {
+                return ("dir is not empty");
+            }
+        };
+
 	private:
         void parseRequest(Server *server, std::string &str);
 		void defineFileType();

@@ -1,7 +1,6 @@
 NAME  = webserv
 
 SRCS  = srcs/Client.cpp \
-		srcs/ConfParse.cpp \
 		srcs/Location.cpp \
 		srcs/main.cpp \
 		srcs/Mommy.cpp \

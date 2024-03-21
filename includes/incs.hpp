@@ -28,6 +28,7 @@
 #include <cerrno>
 #include <dirent.h>
 #include <fcntl.h>
+#include <cstdio>
 #include "MimeUtils.hpp"
 
 # ifndef DEBUG
@@ -46,6 +47,7 @@
 # define INVALIDSLASH 503
 # define TOOLONGREQUEST 504
 # define BADHEADER 505
+# define DIRNOTEMPTY 506
 
 class   requestError : public std::exception {};
 class   taMereEnSlip : public std::exception {};

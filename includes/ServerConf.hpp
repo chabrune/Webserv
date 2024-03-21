@@ -39,8 +39,10 @@ class ServerConf
         void location_client_max_body_size(std::string &line, size_t currentServerIndex, Mommy& frr, size_t currentLocationIndex);
         void location_return(std::string &line, size_t currentServerIndex, Mommy& frr, size_t currentLocationIndex);
         void location_autoindex(std::string &line, size_t currentServerIndex, Mommy& frr, size_t currentLocationIndex);
-        void testparsing(Mommy& frr);
         bool requirements_serv(Mommy& frr, size_t currentServerIndex);
+        void serv_upload(std::string &line, size_t currentServerIndex, Mommy& frr);
+        void location_upload(std::string &line, size_t currentServerIndex, Mommy& frr, size_t currentLocationIndex);
+
 
         const std::string& getRoot() const { return this->root; }
         const std::string& getServerName() const { return this->server_name; }
@@ -67,4 +69,5 @@ class ServerConf
         std::string server_name;    // contain the server_name
         int port; // contain ports to listen to
         unsigned long max_body_size;  // HTTP request's body max size (usefull for PUT and POST)
+        std::string upload_path;
 };
