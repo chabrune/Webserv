@@ -40,17 +40,21 @@
 # define CONNECTIONS_NUMBER_LIMIT 2000
 # define TIMEOUT 1 // Seconds before select exit
 
-// errno custom values
-# define ISDIRECTORY 500
-# define NOTALLOWEDMETHOD 501
-# define MISSINGSLASH 502
-# define INVALIDSLASH 503
-# define TOOLONGREQUEST 504
-# define BADHEADER 505
-# define DIRNOTEMPTY 506
-
 class   requestError : public std::exception {};
 class   taMereEnSlip : public std::exception {};
+
+extern int g_error;
+
+# define ISDIRECTORY 1
+# define NOTALLOWEDMETHOD 2
+# define MISSINGSLASH 3
+# define INVALIDSLASH 4
+# define TOOLONGREQUEST 5
+# define BADHEADER 6
+# define DIRNOTEMPTY 7
+# define NOTFOUND 8
+# define FORBIDDEN 9
+# define CONFLICT 10
 
 enum Methods
 {

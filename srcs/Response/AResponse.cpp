@@ -36,44 +36,44 @@ void AResponse::headerGenBuilder(std::string file_type) {
 std::string AResponse::getCodeHeader(std::string * path, Server* server,  const std::string & uri) {
     if (path)
         *path = server->getRootFrom(uri) + "/";
-    if (errno == MISSINGSLASH || errno == INVALIDSLASH) {
+    if (g_error == MISSINGSLASH || g_error == INVALIDSLASH) {
         return ("HTTP/1.1 301 Moved Permanently\n");
-    } else if (errno == EACCES || errno == EROFS) {
+    } else if (g_error == FORBIDDEN) {
         try {
             *path += server->getErrorPage(403, uri);
         } catch (std::exception &e) {
             *path = __defaultErrorPages[403];
         }
         return ("HTTP/1.1 403 Forbidden\n");
-    } else if (errno == ENAMETOOLONG || errno == TOOLONGREQUEST) {
+    } else if (g_error == TOOLONGREQUEST) {
         try {
             *path += server->getErrorPage(414, uri);
         } catch (std::exception &e) {
             *path = __defaultErrorPages[414];
         }
         return ("HTTP/1.1 414 Uri Too Long\n");
-    } else if (errno == ENOENT) {
+    } else if (g_error == NOTFOUND) {
         try {
             *path += server->getErrorPage(404, uri);
         } catch (std::exception &e) {
             *path = __defaultErrorPages[404];
         }
         return ("HTTP/1.1 404 Not Found\n");
-    }else if (errno == ENOTDIR || errno == EINVAL || errno == EROFS || errno == ISDIRECTORY || errno == BADHEADER) {
+    }else if (g_error == ISDIRECTORY || g_error == BADHEADER) {
         try {
             *path += server->getErrorPage(400, uri);
         } catch (std::exception &e) {
             *path = __defaultErrorPages[400];
         }
         return ("HTTP/1.1 400 Bad Request\n");
-    }else if (errno == ETXTBSY) {
+    }else if (g_error == CONFLICT) {
         try {
             *path += server->getErrorPage(409, uri);
         } catch (std::exception &e) {
             *path = __defaultErrorPages[409];
         }
         return ("HTTP/1.1 409 Conflict\n");
-    }else if (errno == NOTALLOWEDMETHOD || errno == DIRNOTEMPTY) {
+    }else if (g_error == NOTALLOWEDMETHOD || g_error == DIRNOTEMPTY) {
         try {
             *path += server->getErrorPage(405, uri);
         } catch (std::exception &e) {
@@ -93,7 +93,7 @@ std::string AResponse::getCodeHeader(std::string * path, Server* server,  const 
 void AResponse::redirectWellSlashed(const std::string & uri) {
     std::string newuri = uri;
     this->_header = getCodeHeader(0, 0, uri);
-    if (errno == INVALIDSLASH) {
+    if (g_error == INVALIDSLASH) {
         size_t i = 0;
         while (i + 1 < newuri.size()) {
             if (newuri[i] == '/' && newuri[i + 1] == '/') {
@@ -115,7 +115,7 @@ void AResponse::handleRequestError(Server* server, const std::string & uri) {
 
     if (DEBUG)
         std::cout << RED << "Sending error code, reason: " << errno << RESET << std::endl;
-    if (errno == MISSINGSLASH || errno == INVALIDSLASH) {
+    if (g_error == MISSINGSLASH || g_error == INVALIDSLASH) {
         redirectWellSlashed(uri);
         return;
     }

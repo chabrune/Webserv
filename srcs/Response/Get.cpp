@@ -55,7 +55,7 @@ bool Get::findReturnLocations(Server* server)
 
 bool Get::findLocationStatusCode(Server *server, std::string ptf)
 {
-    bool uri, found;
+    bool uri = false, found = false;
     std::vector<Location*>::iterator itl = server->locations.begin();
     for(; itl != server->locations.end(); itl++)
     {

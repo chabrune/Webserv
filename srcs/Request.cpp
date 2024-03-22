@@ -4,7 +4,7 @@
 
 Request::Request() : isDir(false) {}
 
-Request::Request(Server *server, int sockfd) : isDir(false) {
+Request::Request(Server *server, int sockfd) : tooLong(false), isDir(false) {
     if (DEBUG)
 	    std::cout << "New request receive.. Check for errors" << std::endl;
 	std::string buffer;
@@ -14,6 +14,9 @@ Request::Request(Server *server, int sockfd) : isDir(false) {
 		throw recvFailure();
 	else if (this->len >= HTTP_BUFFER_SIZE)
         throw tooLongRequest();
+    std::cout << "--------------------------------------------" << std::endl;
+    std::cout << MAGENTA << buffer << RESET << std::endl;
+    std::cout << "--------------------------------------------" << std::endl;
     if (DEBUG)
 	    std::cout << "No errors found, starting to parse.." << std::endl;
 	this->parseRequest(server, buffer);
@@ -69,10 +72,12 @@ void Request::tryAccess_Delete(Server *server) {
     std::string tester = server->getRootFrom(this->getPathToFile()) + this->subLocation(server->getLocationFrom(this->getPathToFile()));
     if (access(tester.c_str(), F_OK) != 0)
     {
+        g_error = NOTFOUND;
         throw accessError();
     }
     if (access(tester.c_str(), W_OK) != 0)
     {
+        g_error = FORBIDDEN;
         throw accessError();
     }
     struct stat filestat;
@@ -87,7 +92,7 @@ void Request::tryAccess_Delete(Server *server) {
             while ((entry = readdir(dir)) != NULL) {
                 if (std::string(entry->d_name) != "." && std::string(entry->d_name) != "..") {
                     closedir(dir);
-                    errno = DIRNOTEMPTY;
+                    g_error = DIRNOTEMPTY;
                     throw dirNotEmpty();
                 }
             }
@@ -98,19 +103,22 @@ void Request::tryAccess_Delete(Server *server) {
 
 void Request::tryAccess_Get(Server *server) {
     std::string tester = server->getRootFrom(this->getPathToFile()) + this->subLocation(server->getLocationFrom(this->getPathToFile()));
+
     if (access(tester.c_str(), F_OK) != 0)
     {
+        g_error = NOTFOUND;
         throw accessError();
     }
     if (access(tester.c_str(), R_OK) != 0)
     {
+        g_error = FORBIDDEN;
         throw accessError();
     }
     struct stat filestat;
     if (stat(tester.c_str(), &filestat) == 0) {
         if (S_ISDIR(filestat.st_mode)){
             if (this->_path_to_file[this->_path_to_file.size() - 1] != '/') {
-                errno = MISSINGSLASH;
+                g_error = MISSINGSLASH;
                 this->isDir = true;
                 throw dirDoesNotEndWithSlash();
             }
@@ -123,7 +131,7 @@ void Request::tryAccess_Get(Server *server) {
             }
             this->isDir = true;
             if (!server->getAutoindexFrom(this->_path_to_file)) {
-                errno = ISDIRECTORY;
+                g_error = ISDIRECTORY;
                 throw accessError();
             }
         }
@@ -140,11 +148,11 @@ int isWellSlashed(std::string & str) {
 
 void Request::isAllowed(Server *server) {
     if (this->tooLong) {
-        errno = TOOLONGREQUEST;
+        g_error = TOOLONGREQUEST;
         throw tooLongRequest();
     }
     if (isWellSlashed(this->_path_to_file) == -1) {
-        errno = INVALIDSLASH;
+        g_error = INVALIDSLASH;
         throw invalidSlash();
     }
     if (DEBUG)
@@ -162,7 +170,7 @@ void Request::isAllowed(Server *server) {
     {
         if (DEBUG)
             std::cout << RED << "Forbidden method: " << this->method << RESET << std::endl;
-        errno = NOTALLOWEDMETHOD;
+        g_error = NOTALLOWEDMETHOD;
         throw requestError();
     }
 }

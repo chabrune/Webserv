@@ -3,6 +3,8 @@
 #include "../includes/Response/Post.hpp"
 #include "../includes/Response/Delete.hpp"
 
+int g_error = 0;
+
 Mommy::Mommy() {
     this->timeout.tv_sec = 1;
     this->timeout.tv_usec = 0;
@@ -51,11 +53,15 @@ void Mommy::treatRequest(Server *server, Client *cli) {
         if (cli->request.getMethod() == "GET") {
             cli->response = Get(*server, cli->request);
         } else if (cli->request.getMethod() == "POST") {
-            cli->response = Post(*server, cli->request);
+
+            // Segfault si desactive
+            cli->sent = true;
+
+
         } else if (cli->request.getMethod() == "DELETE") {
             cli->response = Delete(*server, cli->request);
         } else {
-            errno = BADHEADER;
+            g_error = BADHEADER;
             throw badHeader();
         }
         cli->readyToSend = true;
@@ -66,6 +72,7 @@ void Mommy::treatRequest(Server *server, Client *cli) {
 
 void Mommy::run(void) {
     while (this->running) {
+        g_error = 0;
         int maxFd = load_LFdSet();
         int sval = select(maxFd, &this->lset, &this->cset, NULL, &this->timeout);
         if (sval == -1) 
