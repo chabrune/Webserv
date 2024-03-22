@@ -11,30 +11,29 @@ const character = document.getElementById('character');
 let characterX = 500;
 let characterY = 500;
 
-// Check if the character element exists
-if (!character) {
-    console.error("Character element not found.");
+document.addEventListener('keydown', moveListener);
+
+
+function moveListener(event) {
+    const stepSize = 5; // Adjust this value to change the step size of movement
+    if (event.key === 'ArrowUp')
+        characterY -= stepSize;
+    if (event.key === 'ArrowDown')
+        characterY += stepSize;
+    if (event.key === 'ArrowLeft')
+        characterX -= stepSize;
+    if (event.key === 'ArrowRight')
+        characterX += stepSize;
+    if (event.key === ' ')
+        drawOnSquare(Math.floor(characterY / 64), Math.floor(characterX / 64));
+    moveCharacter(characterX, characterY);
 }
 
-
-document.addEventListener('keydown', function(event) {
-    const stepSize = 5; // Adjust this value to change the step size of movement
-    switch (event.key) {
-        case 'ArrowUp':
-            characterY -= stepSize;
-            break;
-        case 'ArrowDown':
-            characterY += stepSize;
-            break;
-        case 'ArrowLeft':
-            characterX -= stepSize;
-            break;
-        case 'ArrowRight':
-            characterX += stepSize;
-            break;
-    }
+function moveListener2(event) {
+    if (event.key === ' ')
+        drawOnSquare(Math.floor(characterY / 64), Math.floor(characterX / 64));
     moveCharacter(characterX, characterY);
-});
+}
 
 // Create grid dynamically
 const container = document.body;
@@ -78,6 +77,17 @@ function mouseMoveEvent(event) {
 
 function draw(event) {
     const square = event.target;
+    square.style.backgroundColor = 'blue';
+}
+
+function drawOnSquare(row, column) {
+    // Calculate the index of the square in the linear grid
+    const index = row * squaresPerRow + column;
+
+    // Get the square element using its index
+    const square = document.querySelectorAll('.square')[index];
+
+    // Change the background color of the square
     square.style.backgroundColor = 'blue';
 }
 
