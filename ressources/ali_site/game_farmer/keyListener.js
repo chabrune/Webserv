@@ -1,4 +1,4 @@
-/*function moveListener(event) {
+function moveListener(event) {
     const stepSize = 5;
     if (event.key === 'ArrowUp')
         character.positionY -= stepSize;
@@ -28,4 +28,4 @@ function mouseMoveEvent(event) {
         draw(event.target);
     else if (isErasing === true)
         erase(event.target);
-}*/
+}
