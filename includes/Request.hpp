@@ -81,5 +81,6 @@ class Request {
 		std::string file_type; //text/css, text/js, image/jpg...
 		std::string extension; //jpg, png, css...
 		std::string host;
+        std::string body;
         bool isDir;
 };

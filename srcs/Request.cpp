@@ -58,6 +58,11 @@ void Request::parseRequest(Server *server, std::string &str) {
 
 	first_space_index = str.find_first_of(' ');
 	this->host = str.substr(first_space_index + 1, str.find_first_of('\n') - first_space_index);
+    size_t start = str.find("\r\n\r\n");
+    if (start != std::string::npos) {
+        this->body = str.substr(start + 4);
+        str.erase(start, str.length() - start);
+    }
 }
 
 void Request::defineFileType() {
