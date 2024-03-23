@@ -1,17 +1,6 @@
-let cardnumber = document.forms["register_form"]["cardnumber"].value
-
-let numericPattern = /^[0-9]+$/;
-
-if (numericPattern.test(cardnumber))
-    console.log("ui");
-else
-    console.log("Non");
-
-
 document.forms["register_form"]["cardnumber"].addEventListener('keypress', numericFilter);
 document.forms["register_form"]["cardname"].addEventListener('keypress', alphaFilter);
 document.forms["register_form"]["cvvnumber"].addEventListener('keypress', numericFilter);
-
 
 function alphaFilter(event) {
     const keyChar = getKey(event)
@@ -24,7 +13,6 @@ function numericFilter(event) {
     if (!isNumeric(keyChar))
         event.preventDefault();
 }
-
 
 function getKey(event) {
     const keyCode = event.keyCode || event.which;

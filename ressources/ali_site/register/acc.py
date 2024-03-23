@@ -105,7 +105,6 @@ def handle_login():
                 database[username] = {"password": password, "Credit card": [form.getvalue('cardnumber'), form.getvalue('cardname'), form.getvalue('expdate'), form.getvalue('cvvnumber')]}
                 with open('accounts.yml', 'w') as yaml_file:
                     yaml.dump(database, yaml_file)
-                    #database.addUser(username, password, firstname)
                 printUserMsg("Account Registerd Successfully!")
 
 form = cgi.FieldStorage()

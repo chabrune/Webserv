@@ -28,6 +28,8 @@ for (let i = 0; i < numRows; i++) {
     container.appendChild(clearfix);
 }
 
+
+
 function erase(square) {
     square.style.backgroundColor = 'lightgray';
 }
