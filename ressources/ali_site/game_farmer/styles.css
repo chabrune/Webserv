@@ -4,6 +4,11 @@ body {
     -webkit-user-select: none;
 }
 
+#map {
+    margin: 0 auto; /* Center the map horizontally */
+    background-color: red;
+}
+
 #characterimg {
     position: absolute;
     top: 50%;
@@ -15,14 +20,9 @@ body {
 .square {
     width: 64px; /* Adjust the size of squares as needed */
     height: 64px;
-    border: 1px solid #000;
-    float: left;
-}
 
-.clearfix::after {
-    content: "";
-    display: table;
-    clear: both;
+    background-color: lightgray;
+    float: left;
 }
 
 .square img {
