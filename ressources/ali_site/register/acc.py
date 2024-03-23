@@ -81,10 +81,9 @@ def authUser(name, password):
 def handle_login():
     username = form.getvalue('username')
     password = form.getvalue('password')
-    firstname = form.getvalue('firstname')
     if username is None:
         print_login()
-    elif firstname is None:
+    elif password is None:
         session = authUser(form.getvalue('username'), form.getvalue('password'))
         if session is None:
             printUserMsg("Failed To Login, Username or Passowrd is wrong!")
@@ -97,21 +96,16 @@ def handle_login():
             print(cookies.output())
             print("location: acc.py")
             print("\r\n")
-    else :
-        if os.path.exists('accounts.yml'):
-            with open('accounts.yml', 'rb') as file:
-                database = yaml.safe_load(file)
-                if username in database.user_pass:
-                    printUserMsg("Username is already Registerd !")
-                else:
-                    database.addUser(username, password, firstname)
-                    printUserMsg("Account Registerd Successfully!")
-        else:
-            database = UserDataBase()
-            if username in database.user_pass:
+    else:
+        with open('accounts.yml', 'rb') as file:
+            database = yaml.safe_load(file)
+            if username in database:
                 printUserMsg("Username is already Registerd !")
             else:
-                database.addUser(username, password, firstname)
+                database[username] = {"password": password, "Credit card": [form.getvalue('cardnumber'), form.getvalue('cardname'), form.getvalue('expdate'), form.getvalue('cvvnumber')]}
+                with open('accounts.yml', 'w') as yaml_file:
+                    yaml.dump(database, yaml_file)
+                    #database.addUser(username, password, firstname)
                 printUserMsg("Account Registerd Successfully!")
 
 form = cgi.FieldStorage()

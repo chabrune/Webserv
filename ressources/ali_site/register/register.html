@@ -6,19 +6,23 @@
     <title> Login Page </title>
 </head>  
 <body>  
-    <center> <h1> Amanix Register Form </h1> </center> 
-    <form action = "acc.py" method = "get">
+    <center> <h1> Amanix Register Form </h1> </center>
+    <form action="acc.py" method="get", id="register_form">
         <div class="container"> 
             <label>Username : </label> 
             <input type="text" placeholder="Enter Username" name="username" required>
             <label>Password : </label> 
             <input type="password" placeholder="Enter Password" name="password" required>
-            <label>FirstName : </label> 
-            <input type="text" placeholder="Enter FirstName" name="firstname" required>
-            <button type="submit">Register</button> 
+            <label>Credit card information : </label>
+            <input type="text" placeholder="Card numbers (16 numbers)" name="cardnumber" required>
+            <input type="text" placeholder="Cardholder's name" name="cardname" required>
+            <input type="text" placeholder="Expiration date" name="expdate" required>
+            <input type="text" placeholder="Security code (CVV 3 numbers)" name="cvvnumber" required>
+            <button type="submit">Register for free</button>
             Already Have account?<a href="acc.py"> Login </a>
         </div> 
-    </form>   
+    </form>
+    <script src="registerjs.js"></script>
 </body>   
 </html>
 

@@ -1,38 +1,64 @@
-Body {
-    font-family: Calibri, Helvetica, sans-serif;
-    background-color: white;
-  }
-  button { 
-         background-color: #4CAF50; 
-         width: 100%;
-          color: orange; 
-          padding: 15px; 
-          margin: 10px 0px; 
-          border: none; 
-          cursor: pointer; 
-           } 
-   form { 
-          border: 3px solid #f1f1f1; 
-      } 
-   input[type=text], input[type=password] { 
-          width: 100%; 
-          margin: 8px 0;
-          padding: 12px 20px; 
-          display: inline-block; 
-          border: 2px solid green; 
-          box-sizing: border-box; 
-      }
-   button:hover { 
-          opacity: 0.7; 
-      } 
-    .cancelbtn { 
-          width: auto; 
-          padding: 10px 18px;
-          margin: 10px 5px;
-      } 
-        
-     
-   .container { 
-          padding: 25px; 
-          background-color: lightblue;
-      } 
+@font-face {
+    font-family: Rajdhani-Medium;
+    src: url("./assets/Rajdhani-Medium.ttf");
+}
+
+@font-face {
+    font-family: Cyber;
+    src: url("./assets/Blender-Pro-Bold.otf");
+    font-display: swap;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    height: 150%;
+    width: 100%;
+    background: linear-gradient(0deg, rgb(39, 16, 16) 0%, rgb(93, 35, 55) 100%);
+}
+
+button {
+    background-color: #b23356;
+    width: 100%;
+    color: orange;
+    padding: 15px;
+    margin: 10px 0px;
+    border: none;
+    cursor: pointer;
+}
+
+label {
+    color: #987AFF;
+}
+
+form {
+    border: 3px solid #722435;
+}
+
+input[type=text], input[type=password] {
+    width: 100%;
+    margin: 8px 0;
+    padding: 12px 20px;
+    display: inline-block;
+    border: 2px #a01336;
+    box-sizing: border-box;
+    background-color: #722435;
+}
+
+button:hover {
+    opacity: 0.7;
+}
+
+.cancelbtn {
+    width: auto;
+    padding: 10px 18px;
+    margin: 10px 5px;
+}
+
+
+.container {
+    padding: 25px;
+    background-color: #3C0D0F;
+}
