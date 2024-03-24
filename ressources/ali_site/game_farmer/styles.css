@@ -6,15 +6,6 @@ body {
 
 #map {
     margin: 0 auto; /* Center the map horizontally */
-    background-color: red;
-}
-
-#characterimg {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    cursor: pointer;
 }
 
 .square {

@@ -1,32 +1,21 @@
 // Calculate the number of squares horizontally and vertically based on the screen size
-map = document.getElementById('map');
 
-result = getPercent(screen.width, 95);
-map.style.width = result - (result % 64) + "px";
-result = getPercent(screen.height, 80);
-map.style.height = result - (result % 64) + "px";
-
-const squaresPerRow = Math.floor(map.clientWidth / 64);
-const numRows = Math.floor(map.clientHeight / 64);
-
+map = new Map('map');
 
 let isDrawing = false;
 let isErasing = false;
 
-const character = new Character(500, 500, document.getElementById('characterimg'));
+const character = new Character(500, 500, loadImage("../image/test.png"), 10);
 
-
-document.addEventListener('keydown', moveListener);
-map.addEventListener('mousedown', mouseDownEvent);
-map.addEventListener('mousemove', mouseMoveEvent);
-map.addEventListener('mouseup', stopDrawing);
+document.addEventListener('keydown', character.moveListener);
 
 const container = document.body;
-for (let i = 0; i < numRows; i++) {
-    for (let j = 0; j < squaresPerRow; j++) {
+for (let i = 0; i < map.numRows; i++) {
+    for (let j = 0; j < map.squaresPerRow; j++) {
         const square = document.createElement('div');
         square.classList.add('square');
-        map.appendChild(square);
+        square.appendChild(loadImage("../image/grass.png"));
+        map.addSquare(square);
     }
 }
 
@@ -41,10 +30,21 @@ function draw(square) {
 
 function drawOnSquare() {
     // Calculate the index of the square in the linear grid
-    let row = Math.floor((character.positionY - 45) / 64);
-    let column = Math.floor((character.positionX - 70) / 64);
-    const index = row * squaresPerRow + column;
-    document.querySelectorAll('.square')[index].appendChild(loadImage("../image/4.png"))
+    let row = Math.floor(character.positionY / 64);
+    let column = Math.floor(character.positionX / 64) - 1;
+    const index = row * map.squaresPerRow + column;
+    const square = document.querySelectorAll('.square')[index];
+
+    square.removeChild(square.querySelector('img'));
+    square.appendChild(loadImage("../image/blocks/farmland_dry.png"));
+    setTimeout(function() {
+        square.removeChild(square.querySelector('img'));
+        square.appendChild(loadImage("../image/blocks/farmland_wet.png"));
+    }, 5000);
+    setTimeout(function() {
+        square.removeChild(square.querySelector('img'));
+        square.appendChild(loadImage("../image/blocks/dirt_podzol_top.png"));
+    }, 10000);
 }
 
 function stopDrawing() {
