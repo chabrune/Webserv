@@ -1,13 +1,13 @@
 class Map {
     constructor(elemId) {
         this.map = document.getElementById(elemId);
-        let result = getPercent(screen.width, 95);
-        this.map.style.width = result - (result % 64) + "px";
-        result = getPercent(screen.height, 80);
-        this.map.style.height = result - (result % 64) + "px";
+        let result = getPercent(screen.width, 60);
+        this.map.style.width = result - (result % globalSize) + "px";
+        result = getPercent(screen.height, 60);
+        this.map.style.height = result - (result % globalSize) + "px";
 
-        this.squaresPerRow = Math.floor(this.map.clientWidth / 64);
-        this.numRows = Math.floor(this.map.clientHeight / 64);
+        this.squaresPerRow = Math.floor(this.map.clientWidth / globalSize);
+        this.numRows = Math.floor(this.map.clientHeight / globalSize);
 
         this.map.addEventListener('mousedown', mouseDownEvent);
         this.map.addEventListener('mousemove', mouseMoveEvent);

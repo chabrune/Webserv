@@ -1,11 +1,13 @@
 // Calculate the number of squares horizontally and vertically based on the screen size
 
+const globalSize = 32;
+
 map = new Map('map');
 
 let isDrawing = false;
 let isErasing = false;
 
-const character = new Character(500, 500, loadImage("../image/test.png"), 10);
+const character = new Character(500, 500, loadImage("../image/char.png"), 10);
 
 document.addEventListener('keydown', character.moveListener);
 
@@ -30,8 +32,8 @@ function draw(square) {
 
 function drawOnSquare() {
     // Calculate the index of the square in the linear grid
-    let row = Math.floor(character.positionY / 64);
-    let column = Math.floor(character.positionX / 64) - 1;
+    let row = Math.floor(character.positionY / globalSize);
+    let column = Math.floor(character.positionX / globalSize);
     const index = row * map.squaresPerRow + column;
     const square = document.querySelectorAll('.square')[index];
 

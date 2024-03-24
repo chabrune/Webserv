@@ -5,7 +5,7 @@ class Character {
         this.image = image;
         this.speed = speed;
 
-        document.body.appendChild(image);
+        map.map.appendChild(image)
         this.image.style.position = 'absolute';
         this.image.style.left = positionX + 'px';
         this.image.style.top = positionY + 'px';
@@ -14,6 +14,7 @@ class Character {
      moveCharacter() {
         this.image.style.left = this.positionX + 'px';
         this.image.style.top = this.positionY + 'px';
+        this.printCharacterPosition()
      }
 
      printCharacterPosition() {

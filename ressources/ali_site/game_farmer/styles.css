@@ -1,16 +1,65 @@
 body {
-    margin-left: 1.5vw;
-    margin-top: 1.4vh;
+    background-color: #9bd4c3;
+    margin:0;
     -webkit-user-select: none;
 }
 
 #map {
-    margin: 0 auto; /* Center the map horizontally */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0 auto; 
+}
+
+#toolbar {
+    list-style-type: none;
+    margin: 0px;
+    padding: 0px;
+    overflow: hidden;
+    background-color: #8842d5;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 50px;
+    display: flex; /* Use flexbox */
+    justify-content: center; /* Center items horizontally */
+    align-items: center;
+ }
+
+li {
+    display:inline-block;
+}
+
+li .txt {
+    color: white;
+
+    padding: 5px 5px; 
+}
+
+li img {
+    vertical-align: middle; 
+}
+   
+li a {
+    display: block;
+    color: white;
+    text-align: left;
+    padding: 15px 17px;
+    text-decoration: none;
+}
+   
+li a:hover {
+background-color: #7300ff;
+}
+   
+.active {
+ background-color: #d61d1d;
 }
 
 .square {
-    width: 64px; /* Adjust the size of squares as needed */
-    height: 64px;
+    width: 32px; /* Adjust the size of squares as needed */
+    height: 32px;
 
     background-color: lightgray;
     float: left;
