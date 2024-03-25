@@ -94,6 +94,12 @@ void Request::parseHeaders(const std::string& headers)
         for(; value[i] != '"'; i++) {}
         this->_Postfilename = value.substr(0, i);
     }
+    pos = headers.find("Content-Lenght: ");
+    if (pos != std::string::npos) {
+        std::string value = headers.substr(pos + 16);
+        this->_contentLenght = atoi(value.substr(0, value.find_first_of('\n')).c_str());
+        // std::cout << this->_contentLenght << "coucou "<< std::endl;
+    }
 }
 
 
