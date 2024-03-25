@@ -3,7 +3,7 @@
 #include "../../includes/Response/AResponse.hpp"
 #include "../../includes/Server.hpp"
 
-Post::Post(Server & server, Request &request, bool & readyToSend) : AResponse(server), done(false), chunked(false), processing(false)
+Post::Post(Server & server, Request &request, bool & readyToSend) : AResponse(server), chunked(false), done(false), processing(false)
 {
     try {
         if (!this->processing) {
