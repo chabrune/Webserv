@@ -95,8 +95,6 @@ bool Get::handleReturn(Server *server, Request& request)
         }
         else if(it->first == 301 || it->first == 302 || it->first == 303 || it->first == 307)
         {
-            if(it->second.find("http://") == std::string::npos && it->second.find("https://") == std::string::npos)
-                return(this->_isGenerated = false);
             std::stringstream ss;
             ss << "HTTP/1.1 " << it->first << " " << __defaultErrorCodes.errorCodes[it->first] << "\r\n";
             ss << "Location: " << it->second << "\r\n";
@@ -127,8 +125,6 @@ bool Get::handleReturn(Server *server, Request& request)
             }
             else if(it->first == 301 || it->first == 302 || it->first == 303 || it->first == 307)
             {
-                if(it->second.find("http://") == std::string::npos && it->second.find("https://") == std::string::npos)
-                    return(this->_isGenerated = false);
                 std::stringstream ss;
                 ss << "HTTP/1.1 " << it->first << " " << __defaultErrorCodes.errorCodes[it->first] << "\r\n";
                 ss << "Location: " << it->second << "\r\n";
