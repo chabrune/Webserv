@@ -118,3 +118,11 @@ std::string Server::getPathFrom(const std::string & path) {
     }
     return ("/");
 }
+
+unsigned long Server::getMaxBodySizeFrom(const std::string &path) {
+    Location * location = getLocationFrom(path);
+    if (location) {
+        return (location->max_body_size);
+    }
+    return (this->max_body_size);
+}
