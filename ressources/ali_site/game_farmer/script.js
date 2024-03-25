@@ -7,6 +7,19 @@ blocks.push(new Block(loadImages("../image/crops/wheat", "crops", 1, 4), 5000));
 
 const character = new Character(500, 500, loadImage("../image/char.png", "character", 9), 10);
 document.addEventListener('keydown', character.moveListener);
+document.addEventListener('wheel', test);
+
+function test(event) {
+    if (event.deltaY < 0)
+    {
+        console.log('scrolling up');
+    }
+    else if (event.deltaY > 0)
+    {
+        console.log('scrolling down');
+    }
+}
+
 
 function drawOnSquare(block) {
     let row = Math.floor(character.positionY / globalSize);
