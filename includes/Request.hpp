@@ -28,8 +28,13 @@ class Request {
 		bool isKeepalive() const;
         void tryAccess_Get(Server *server);
         void tryAccess_Delete(Server *server);
+        void tryAccess_Post(Server *server);
         void isAllowed(Server *server);
+        const std::string& getBody() const;
+        const std::string& getPostFilename() const;
         std::string subLocation(Location *location);
+        void parseHeaders(const std::string& headers);
+
 		class returnTest : public taMereEnSlip
 		{
 			const char* what() const throw() {
@@ -81,6 +86,10 @@ class Request {
 		std::string file_type; //text/css, text/js, image/jpg...
 		std::string extension; //jpg, png, css...
 		std::string host;
-        std::string body;
+        std::string _body;
+        std::string _contentType;
+        std::string _boundary;
+        std::string _Postfilename;
+        std::map<std::string, std::string> _headers;
         bool isDir;
 };

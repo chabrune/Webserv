@@ -46,9 +46,10 @@ server {
     }
 
     location /autoindex/upload {
-         root ressources/upload
-         allow GET POST
-         index upload.html
+        allow_uploads /
+        root ressources/upload
+        allow GET POST
+        index upload.html
     }
 
     location /autoindex/errors {

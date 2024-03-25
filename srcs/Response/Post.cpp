@@ -5,18 +5,26 @@
 
 Post::Post(Server & server, Request &request) : AResponse(server)
 {
-    this->_uri = server.getRootFrom(request.getPathToFile()) + request.subLocation(server.getLocationFrom(request.getPathToFile()));
-    std::cout << this->_uri << std::endl;
-    (void)request;
+    try {
+        this->_uri = server.getRootFrom(request.getPathToFile()) + request.subLocation(server.getLocationFrom(request.getPathToFile()));
+        std::string ptf = request.getPathToFile();
+        request.tryAccess_Post(&server);
+        std::string pathFile = this->_uri + '/' + request.getPostFilename();
+        std::fstream file(pathFile.c_str(), std::ios_base::out | std::ios_base::trunc);
+        file << request.getBody();
+        file.close();
+    } catch(std::exception &e) {
+        throw;
+    }
 }
 
 /*
-    check path si allowed
-    separer body header dans request
-    parse header content type : (pour upload) multipart/form-data avec numero boundary
+    check path si allowed || A VOIR
+    separer body header dans request || OK
+    parse header content type : (pour upload) multipart/form-data avec numero boundary || OK
     utiliser ce numero pour split tout les body
     non bloquant ?
-    parser file name
+    parser file name || OK
     supprimmer "header" boundary pour parser le body pour le fichier
     verifier max body size
     lire le fichier upload

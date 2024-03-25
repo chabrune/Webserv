@@ -12,8 +12,8 @@ Request::Request(Server *server, int sockfd) : tooLong(false), isDir(false) {
 	this->len = recv(sockfd, &(buffer[0]), HTTP_BUFFER_SIZE, 0);
 	if (this->len <= 0)
 		throw recvFailure();
-	else if (this->len >= HTTP_BUFFER_SIZE)
-        throw tooLongRequest();
+	// else if (this->len >= HTTP_BUFFER_SIZE)
+    //     throw tooLongRequest();
     std::cout << "--------------------------------------------" << std::endl;
     std::cout << MAGENTA << buffer << RESET << std::endl;
     std::cout << "--------------------------------------------" << std::endl;
@@ -58,9 +58,11 @@ void Request::parseRequest(Server *server, std::string &str) {
 
 	first_space_index = str.find_first_of(' ');
 	this->host = str.substr(first_space_index + 1, str.find_first_of('\n') - first_space_index);
+    this->parseHeaders(str);
+    //parse body
     size_t start = str.find("\r\n\r\n");
     if (start != std::string::npos) {
-        this->body = str.substr(start + 4);
+        this->_body = str.substr(start + 4);
         str.erase(start, str.length() - start);
     }
 }
@@ -71,6 +73,39 @@ void Request::defineFileType() {
         this->setFileType("javascript");
 	this->extension = this->file_type;
 	this->file_type.insert(0, MimeUtils::getTypeOfContent(this->file_type) + "/");
+}
+
+void Request::parseHeaders(const std::string& headers)
+{
+    size_t pos = headers.find("Content-Type: ");
+    if (pos != std::string::npos) {
+        std::string value = headers.substr(pos + 14);
+        this->_contentType = value.substr(0, value.find_first_of(';'));
+    }
+    pos = headers.find("boundary=");
+    if (pos != std::string::npos) {
+        std::string value = headers.substr(pos + 9);
+        this->_boundary = value.substr(0, value.find_first_of('\n'));
+    }
+    pos = headers.find("filename=");
+    if (pos != std::string::npos) {
+        std::string value = headers.substr(pos + 10);
+        int i = 0;
+        for(; value[i] != '"'; i++) {}
+        this->_Postfilename = value.substr(0, i);
+    }
+}
+
+
+void Request::tryAccess_Post(Server *server)
+{
+    std::string tester = server->getRootFrom(this->getPathToFile()) + this->subLocation(server->getLocationFrom(this->getPathToFile()));
+    if (access(tester.c_str(), F_OK) != 0)
+    {
+        g_error = NOTFOUND;
+        throw accessError();
+    }
+
 }
 
 void Request::tryAccess_Delete(Server *server) {
@@ -226,4 +261,13 @@ const bool &Request::getIsDir() const {
 
 const std::string &Request::getHost() const {
 	return host;
+}
+
+const std::string &Request::getBody() const {
+    return _body;
+}
+
+const std::string& Request::getPostFilename() const
+{
+    return _Postfilename;
 }
