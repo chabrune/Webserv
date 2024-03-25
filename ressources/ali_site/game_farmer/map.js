@@ -10,6 +10,9 @@ class Map {
         this.numRows = Math.floor(this.map.clientHeight / globalSize);
 
         this.mapGenerator();
+
+        this.map.addEventListener('mousedown', mouseDownEvent);
+        this.map.addEventListener('mousemove', mouseMoveEvent);
     }
 
     addSquare(square) {
