@@ -1,6 +1,7 @@
 class Block {
-    constructor() {
-        
+    constructor(images, timeToGround) {
+        this.images = images;
+        this.timeToGrowth = timeToGround;
     }
 
 }

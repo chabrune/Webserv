@@ -1,55 +1,28 @@
-// Calculate the number of squares horizontally and vertically based on the screen size
-
-const globalSize = 32;
+const globalSize = 64;
+const blocks = [];
 
 map = new Map('map');
 
-let isDrawing = false;
-let isErasing = false;
+blocks.push(new Block(loadImages("../image/crops/wheat", "crops", 1, 4), 5000));
 
-const character = new Character(500, 500, loadImage("../image/char.png"), 10);
-
+const character = new Character(500, 500, loadImage("../image/char.png", "character", 9), 10);
 document.addEventListener('keydown', character.moveListener);
 
-const container = document.body;
-for (let i = 0; i < map.numRows; i++) {
-    for (let j = 0; j < map.squaresPerRow; j++) {
-        const square = document.createElement('div');
-        square.classList.add('square');
-        square.appendChild(loadImage("../image/grass.png"));
-        map.addSquare(square);
-    }
-}
-
-function erase(square) {
-    square.style.backgroundColor = 'lightgray';
-}
-
-
-function draw(square) {
-    square.style.backgroundColor = 'blue';
-}
-
-function drawOnSquare() {
-    // Calculate the index of the square in the linear grid
+function drawOnSquare(block) {
     let row = Math.floor(character.positionY / globalSize);
     let column = Math.floor(character.positionX / globalSize);
+    if (map.isBorderOfMap(row, column))
+        return;
     const index = row * map.squaresPerRow + column;
     const square = document.querySelectorAll('.square')[index];
 
-    square.removeChild(square.querySelector('img'));
-    square.appendChild(loadImage("../image/blocks/farmland_dry.png"));
-    setTimeout(function() {
-        square.removeChild(square.querySelector('img'));
-        square.appendChild(loadImage("../image/blocks/farmland_wet.png"));
-    }, 5000);
-    setTimeout(function() {
-        square.removeChild(square.querySelector('img'));
-        square.appendChild(loadImage("../image/blocks/dirt_podzol_top.png"));
-    }, 10000);
-}
-
-function stopDrawing() {
-    isDrawing = false;
-    isErasing = false;
+    if (square.querySelector('#crops'))
+        return;
+    square.appendChild(block.images[0].cloneNode(true));
+    for (let i= 1; i <= block.images.length - 1; i++) {
+        setTimeout(function() {
+            square.removeChild(square.querySelector('#crops'));
+            square.appendChild(block.images[i].cloneNode(true));
+        }, block.timeToGrowth * i);
+    }
 }

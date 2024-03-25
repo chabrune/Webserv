@@ -4,6 +4,7 @@ class Character {
         this.positionY = positionY;
         this.image = image;
         this.speed = speed;
+        this.hand = blocks[0];
 
         map.map.appendChild(image)
         this.image.style.position = 'absolute';
@@ -31,7 +32,7 @@ class Character {
         if (event.key === 'ArrowRight')
             character.positionX += character.speed;
         if (event.key === ' ')
-            drawOnSquare();
+            drawOnSquare(blocks[0]);
         character.moveCharacter();
     }
 }
