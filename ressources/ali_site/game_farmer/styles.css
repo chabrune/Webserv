@@ -1,32 +1,73 @@
 body {
-    margin-left: 1.5vw;
-    margin-top: 1.4vh;
+    background-color: #9bd4c3;
+    margin:0;
     -webkit-user-select: none;
 }
 
-#characterimg {
-    position: absolute;
+#map {
+    background-color: #8842d5;
+    border-radius: 10px;
+    position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    cursor: pointer;
+    margin: 0 auto; 
 }
+
+#toolbar {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #8842d5;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    display: flex; /* Use flexbox */
+    justify-content: center; /* Center items horizontally */
+    align-items: center;
+ }
+
+ li {
+    display: flex;
+    align-items: center; /* Vertically center content */
+    height: 50px;
+    width: 90px;
+}
+
+li .txt {
+    color: white;
+    padding: 2px 2px;
+    flex-grow: 1; /* Allow text to grow to fill available space */
+}
+
+li img {
+    vertical-align: middle; /* Align image vertically in the middle */
+    margin-left: 5px; /* Add margin to the right to create space between image and text */
+}
+
+#toolbar #toolbar_dirt {
+    background-color: #b580ed;
+}
+
 
 .square {
     width: 64px; /* Adjust the size of squares as needed */
     height: 64px;
-    border: 1px solid #000;
     float: left;
-}
-
-.clearfix::after {
-    content: "";
-    display: table;
-    clear: both;
 }
 
 .square img {
     max-width: 100%;
     max-height: 100%;
     display: block;
+    position: fixed;
 }
+
+.square :hover {
+    border-radius: 17px;
+}
+
+/*.square:hover img[id="crops"] {
+    background-color: red;
+}*/

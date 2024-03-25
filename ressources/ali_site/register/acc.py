@@ -6,6 +6,7 @@ import time
 import hashlib
 import pickle
 import sys
+import yaml
 
 #tmp file for testing cgi from https://github.com/Kaydooo/Webserv_42/blob/main/cgi-bin/acc.py
 class Session:
@@ -27,6 +28,13 @@ class UserDataBase:
         self.user_firstname[username] = firstname
         with open('cgi-bin/user_database', 'wb') as f:
             pickle.dump(self, f)
+
+
+def read_html_file(file_name):
+    with open(file_name, "r") as file:
+        file.readline()
+        for line in  file:
+            print(line)
 
 
 def printAccPage(session):
@@ -54,31 +62,9 @@ def printUserMsg(msg):
     print("<a href=\"../cgi/acc.py\"> Click here to go back to login page </a>")
     print("</html>")
 
-def printLogin():
+def print_login():
     print("Content-Type: text/html\r\n")
-    print("<html> ")
-    print("<head>")
-    print("<meta charset=\"UTF-8\" name=\"viewport\" content=\"width=device-width, initial-scale=1\">")
-    print("<link rel=\"stylesheet\" href=\"../cgi/css/accstyle.css\">")
-    print("<title> Login Page </title>")
-    print("</head>")
-    print("<body>  ")
-    print("<center> <h1> Amanix Login Form </h1> </center> ")
-    print("<form action = \"../cgi/acc.py\" method = \"get\">")
-    print("<div class=\"container\"> ")
-    print("<label>Username : </label> ")
-    print("<input type=\"text\" placeholder=\"Enter Username\" name=\"username\" required>")
-    print("<label>Password : </label> ")
-    print("<input type=\"password\" placeholder=\"Enter Password\" name=\"password\" required>")
-    print("<button type=\"submit\">Login</button> ")
-    print("No Account?<a href=\"/register.html\"> Register Here </a> ")
-    print("</div> ")
-    print("</form>   ")
-    print("</body>   ")
-    print("</html>")
-
-
-
+    read_html_file("login.html")
 
 def authUser(name, password):
     if os.path.exists('cgi/accounts'):
@@ -92,15 +78,14 @@ def authUser(name, password):
     else:
         return None
 
-def handleLogin():
+def handle_login():
     username = form.getvalue('username')
     password = form.getvalue('password')
-    firstname = form.getvalue('firstname')
-    if username == None:
-        printLogin()
-    elif firstname == None:
+    if username is None:
+        print_login()
+    elif password is None:
         session = authUser(form.getvalue('username'), form.getvalue('password'))
-        if(session == None):
+        if session is None:
             printUserMsg("Failed To Login, Username or Passowrd is wrong!")
         else:
             print("Correct Crenditales :D",file=sys.stderr)
@@ -111,21 +96,15 @@ def handleLogin():
             print(cookies.output())
             print("location: acc.py")
             print("\r\n")
-    else :
-        if os.path.exists('cgi-bin/user_database'):
-            with open('cgi-bin/user_database', 'rb') as f:
-                database = pickle.load(f)
-                if username in database.user_pass:
-                    printUserMsg("Username is already Registerd !")
-                else:
-                    database.addUser(username, password, firstname)
-                    printUserMsg("Account Registerd Successfully!")
-        else:
-            database = UserDataBase()
-            if username in database.user_pass:
+    else:
+        with open('accounts.yml', 'rb') as file:
+            database = yaml.safe_load(file)
+            if username in database:
                 printUserMsg("Username is already Registerd !")
             else:
-                database.addUser(username, password, firstname)
+                database[username] = {"password": password, "Credit card": [form.getvalue('cardnumber'), form.getvalue('cardname'), form.getvalue('expdate'), form.getvalue('cvvnumber')]}
+                with open('accounts.yml', 'w') as yaml_file:
+                    yaml.dump(database, yaml_file)
                 printUserMsg("Account Registerd Successfully!")
 
 form = cgi.FieldStorage()
@@ -139,8 +118,8 @@ if 'HTTP_COOKIE' in os.environ:
             sess = pickle.load(f)
         printAccPage(sess)
     else:
-        handleLogin()
+        handle_login()
 else:
-    handleLogin()
+    handle_login()
 
 

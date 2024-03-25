@@ -52,17 +52,18 @@ void Mommy::treatRequest(Server *server, Client *cli) {
     try {
         if (cli->request.getMethod() == "GET") {
             cli->response = Get(*server, cli->request);
+            cli->readyToSend = true;
         } else if (cli->request.getMethod() == "POST") {
-            cli->response = Post(*server, cli->request);
+            cli->response = Post(*server, cli->request, cli->readyToSend);
             // Segfault si desactive
             cli->sent = true;
         } else if (cli->request.getMethod() == "DELETE") {
             cli->response = Delete(*server, cli->request);
+            cli->readyToSend = true;
         } else {
             g_error = BADHEADER;
             throw badHeader();
         }
-        cli->readyToSend = true;
     } catch (std::exception &e) {
         throw;
     }
