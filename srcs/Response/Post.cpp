@@ -7,13 +7,6 @@ Post::Post(Server & server, Request &request, bool & readyToSend) : AResponse(se
 {
     try {
         this->_uri = server.getRootFrom(request.getPathToFile()) + request.subLocation(server.getLocationFrom(request.getPathToFile()));
-        std::string ptf = request.getPathToFile();
-        request.tryAccess_Post(&server);
-        std::string pathFile = this->_uri + '/' + request.getPostFilename();
-        std::fstream file(pathFile.c_str(), std::ios_base::out | std::ios_base::trunc);
-
-        file << request.parseBodyz(request.getBody());
-        file.close();
         if (!this->processing) {
 //            this->fileExist = tryAccess_Post(&server);
             this->_uri = server.getRootFrom(request.getPathToFile()) + request.subLocation(server.getLocationFrom(request.getPathToFile()));
@@ -25,11 +18,13 @@ Post::Post(Server & server, Request &request, bool & readyToSend) : AResponse(se
             // Gerer CGI
             if (!this->done)
                 return;
-        } else if (!this->fileExist) {
-            // Creer fichier
-            this->fileExist = true;
-        }
+        } 
         // Ecire dans fichier
+        // std::string pathFile = this->_uri + '/' + request.getPostFilename();
+        // std::fstream file(pathFile.c_str(), std::ios_base::out | std::ios_base::trunc);
+        request.parseBodyz(this->_uri);
+        // file.close();
+        this->fileExist = true;
         if (this->chunked) {
             // Gerer multipart
         } else {
@@ -45,6 +40,7 @@ Post::Post(Server & server, Request &request, bool & readyToSend) : AResponse(se
 }
 
 /*
+    S'arreter a l'header pour les autres requetes et body pour post
     C LE BORDEL AVEC LES DEUX MERGE MAIS JE DOIS ALLER GRIMPER BISOUS NOUTNOUT
     check path si allowed || A VOIR
     separer body header dans request || OK
