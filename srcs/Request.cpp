@@ -94,11 +94,10 @@ void Request::parseHeaders(const std::string& headers)
         for(; value[i] != '"'; i++) {}
         this->_Postfilename = value.substr(0, i);
     }
-    pos = headers.find("Content-Lenght: ");
+    pos = headers.find("Content-Length: ");
     if (pos != std::string::npos) {
         std::string value = headers.substr(pos + 16);
-        this->_contentLenght = atoi(value.substr(0, value.find_first_of('\n')).c_str());
-        // std::cout << this->_contentLenght << "coucou "<< std::endl;
+        this->_contentLength = atoi(value.substr(0, value.find_first_of('\n')).c_str());
     }
 }
 
@@ -219,6 +218,19 @@ void Request::isAllowed(Server *server) {
         g_error = NOTALLOWEDMETHOD;
         throw requestError();
     }
+}
+
+std::string Request::parseBodyz(const std::string& str)
+{
+    size_t beginIndex = str.find("\r\n\r\n");
+    beginIndex += 4;
+    size_t endIndex = str.find(this->_boundary, beginIndex);
+    if (endIndex == std::string::npos) {
+        throw std::runtime_error("Error : End of body not found"); // A MODIF
+    }
+    endIndex -= 4;
+    std::string ret = str.substr(beginIndex, endIndex - beginIndex);
+    return ret;
 }
 
 void Request::setFileType(const std::string &filetype) {

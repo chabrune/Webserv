@@ -12,7 +12,7 @@ Post::Post(Server & server, Request &request, bool & readyToSend) : AResponse(se
         std::string pathFile = this->_uri + '/' + request.getPostFilename();
         std::fstream file(pathFile.c_str(), std::ios_base::out | std::ios_base::trunc);
 
-        // file << parseBodyz(request.getBody());
+        file << request.parseBodyz(request.getBody());
         file.close();
         if (!this->processing) {
 //            this->fileExist = tryAccess_Post(&server);
@@ -44,12 +44,8 @@ Post::Post(Server & server, Request &request, bool & readyToSend) : AResponse(se
     }
 }
 
-// std::string parseBodyz(const std::string& str)
-// {
-//     getline()
-// }
-
 /*
+    C LE BORDEL AVEC LES DEUX MERGE MAIS JE DOIS ALLER GRIMPER BISOUS NOUTNOUT
     check path si allowed || A VOIR
     separer body header dans request || OK
     parse header content type : (pour upload) multipart/form-data avec numero boundary || OK

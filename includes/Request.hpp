@@ -34,6 +34,7 @@ class Request {
         const std::string& getPostFilename() const;
         std::string subLocation(Location *location);
         void parseHeaders(const std::string& headers);
+        std::string parseBodyz(const std::string& str);
 
 		class returnTest : public taMereEnSlip
 		{
@@ -90,7 +91,7 @@ class Request {
         std::string _contentType;
         std::string _boundary;
         std::string _Postfilename;
-        int _contentLenght;
+        int _contentLength;
         std::map<std::string, std::string> _headers;
         bool isDir;
 };
