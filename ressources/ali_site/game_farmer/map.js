@@ -24,12 +24,15 @@ class Map {
             for (let y = 0; y < this.squaresPerRow; y++) {
                 const square = document.createElement('div');
                 square.classList.add('square');
-                if (this.#isCorner(x, y))
-                    square.appendChild(loadImage("../image/grass_corner.png", "ground", 0))
-                else if (this.isBorderOfMap(x, y))
-                    square.appendChild(loadImage("../image/grass_side.png", "ground", 0))
-                else
+                if (this.#isCorner(x, y)) {
+                    square.appendChild(loadImage("../image/grass_corner.png", "corner", 0))
+                }
+                else if (this.isBorderOfMap(x, y)) {
+                    square.appendChild(loadImage("../image/grass_side.png", "side", 0))
+                }
+                else {
                     square.appendChild(loadImage("../image/grass.png", "ground", 0));
+                }
                 const img = square.querySelector('img');
                 img.style.transform = this.#rotateCalculation(x, y);
                 this.addSquare(square);
@@ -54,4 +57,34 @@ class Map {
             return "rotate(270deg)";
         return "rotate(0deg)";
     }
+
+    plantCrop(block, x, y) {
+        let row = Math.floor(y / globalSize);
+        let column = Math.floor(x / globalSize);
+        if (map.isBorderOfMap(row, column))
+            return;
+        const index = row * map.squaresPerRow + column;
+        const square = document.querySelectorAll('.square')[index];
+
+        if (square.querySelector('#crops'))
+            return;
+        square.appendChild(block.images[0].cloneNode(true));
+        for (let i= 1; i <= block.images.length - 1; i++) {
+            setTimeout(function() {
+                square.removeChild(square.querySelector('#crops'));
+                square.appendChild(block.images[i].cloneNode(true));
+            }, block.timeToGrowth * i + (Math.random() * block.timeToGrowth));
+        }
+    }
+}
+
+function mouseDownEvent(event) {
+    const mapRect = map.map.getBoundingClientRect();
+    const x = event.clientX - mapRect.left;
+    const y = event.clientY - mapRect.top;
+    map.plantCrop(handBlock, x, y);
+}
+
+function mouseMoveEvent(event) {
+
 }

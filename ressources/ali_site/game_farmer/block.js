@@ -4,5 +4,4 @@ class Block {
         this.timeToGrowth = timeToGround;
         this.icon = images.pathname;
     }
-
 }

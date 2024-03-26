@@ -1,53 +1,53 @@
-map = new Map('map');
+const blocks = [];
+const sounds = [];
+let map;
+let handBlock;
 
-blocks.push(new Block(loadImages("../image/crops/wheat", "crops", 1, 4), 5000));
-blocks.push(new Block(loadImages("../image/crops/ad/wheat", "crops", 1, 2), 5000));
+initGame();
 
-handBlock = blocks[0];
-
-//const character = new Character(500, 500, loadImage("../image/char.png", "character", 9), 10);
-//document.addEventListener('keydown', character.moveListener);
-document.addEventListener('wheel', test);
-
-function mouseDownEvent(event) {
-    const mapRect = map.map.getBoundingClientRect();
-    const x = event.clientX - mapRect.left;
-    const y = event.clientY - mapRect.top;
-    
-    drawOnSquare(handBlock, x, y);
+function initGame() {
+    map = new Map('map');
+    loadSounds();
+    loadBlocks();
+    loadGlobalListeners();
+    initAllDefaultValues()
 }
 
-function mouseMoveEvent(event) {
-
+function loadSounds() {
+    sounds.push(new Audio('../sound/default_sound.mp3'));
 }
 
-function test(event) {
+function loadBlocks() {
+    blocks.push(new Block(loadImages("../image/crops/melon.png", "crops", 1, 7), 3000));
+    blocks.push(new Block(loadImages("../image/crops/wheat.png", "crops", 1, 7), 3000));
+    blocks.push(new Block(loadImages("../image/crops/sugarcane.png", "crops", 1, 7), 3000));
+    blocks.push(new Block(loadImages("../image/crops/eggplant.png", "crops", 1, 7), 3000));
+    blocks.push(new Block(loadImages("../image/crops/chili.png", "crops", 1, 7), 3000));
+}
+
+function loadGlobalListeners() {
+    document.addEventListener('wheel', wheelListener);
+}
+
+function initAllDefaultValues() {
+    handBlock = blocks[0];
+    sounds[0].play();
+}
+
+
+function wheelListener(event) {
     if (event.deltaY < 0)
     {
-        console.log('scrolling up');
+        let i = blocks.indexOf(handBlock) - 1;
+        if (i <= 0)
+            i = blocks.length - 1;
+        handBlock = blocks[i];
     }
     else if (event.deltaY > 0)
     {
-        console.log('scrolling down');
-    }
-}
-
-
-function drawOnSquare(block, x, y) {
-    let row = Math.floor(y / globalSize);
-    let column = Math.floor(x / globalSize);
-    if (map.isBorderOfMap(row, column))
-        return;
-    const index = row * map.squaresPerRow + column;
-    const square = document.querySelectorAll('.square')[index];
-
-    if (square.querySelector('#crops'))
-        return;
-    square.appendChild(block.images[0].cloneNode(true));
-    for (let i= 1; i <= block.images.length - 1; i++) {
-        setTimeout(function() {
-            square.removeChild(square.querySelector('#crops'));
-            square.appendChild(block.images[i].cloneNode(true));
-        }, block.timeToGrowth * i + (Math.random() * block.timeToGrowth));
+        let i = blocks.indexOf(handBlock) + 1;
+        if (i >= blocks.length)
+            i = 0;
+        handBlock = blocks[i];
     }
 }
