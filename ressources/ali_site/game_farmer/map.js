@@ -25,13 +25,13 @@ class Map {
                 const square = document.createElement('div');
                 square.classList.add('square');
                 if (this.#isCorner(x, y)) {
-                    square.appendChild(loadImage("../image/grass_corner.png", "corner", 0))
+                    square.appendChild(loadImage("../image/ground/grass_corner.png", "corner", 0))
                 }
                 else if (this.isBorderOfMap(x, y)) {
-                    square.appendChild(loadImage("../image/grass_side.png", "side", 0))
+                    square.appendChild(loadImage("../image/ground/grass_side.png", "side", 0))
                 }
                 else {
-                    square.appendChild(loadImage("../image/grass.png", "ground", 0));
+                    square.appendChild(loadImage("../image/ground/grass.png", "ground", 0));
                 }
                 const img = square.querySelector('img');
                 img.style.transform = this.#rotateCalculation(x, y);
@@ -58,31 +58,34 @@ class Map {
         return "rotate(0deg)";
     }
 
-    plantCrop(block, x, y) {
-        let row = Math.floor(y / globalSize);
+    getSquareIndex(x, y) {
+        /*let row = Math.floor(y / globalSize);
         let column = Math.floor(x / globalSize);
         if (map.isBorderOfMap(row, column))
-            return;
-        const index = row * map.squaresPerRow + column;
-        const square = document.querySelectorAll('.square')[index];
+            return;*/
+        return y * map.squaresPerRow + x;
+    }
 
-        if (square.querySelector('#crops'))
-            return;
-        square.appendChild(block.images[0].cloneNode(true));
-        for (let i= 1; i <= block.images.length - 1; i++) {
-            setTimeout(function() {
-                square.removeChild(square.querySelector('#crops'));
-                square.appendChild(block.images[i].cloneNode(true));
-            }, block.timeToGrowth * i + (Math.random() * block.timeToGrowth));
-        }
+    getSquare(x, y) {
+        return document.querySelectorAll('.square')[this.getSquareIndex(x, y)];
     }
 }
 
 function mouseDownEvent(event) {
     const mapRect = map.map.getBoundingClientRect();
-    const x = event.clientX - mapRect.left;
-    const y = event.clientY - mapRect.top;
-    map.plantCrop(handBlock, x, y);
+    const x = Math.floor((event.clientX - mapRect.left) / globalSize);
+    const y = Math.floor((event.clientY - mapRect.top) / globalSize);
+    if (map.isBorderOfMap(y, x))
+        return;
+
+    const square = map.getSquare(x, y);
+    if (event.button === 0) {
+        handBlock.build(square);
+    }
+    else {
+        square.removeChild(square.querySelector('#ground'));
+        square.appendChild(grounds[0].cloneNode(true));
+    }
 }
 
 function mouseMoveEvent(event) {
