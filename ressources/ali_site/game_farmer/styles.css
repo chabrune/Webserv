@@ -63,12 +63,28 @@ li img {
     position: relative;
 }
 
+.square img#crops {
+    position: absolute; /* Position the image absolutely within the square */
+    top: 50%; /* Align the top of the image with the middle of the square */
+    left: 50%; /* Align the left of the image with the middle of the square */
+    transform: translate(-50%, -50%); /* Move the image up and left by half of its width and height */
+}
+
+.square img#static {
+    position: absolute; /* Position the image absolutely within the square */
+    bottom: 0; /* Align the bottom of the image with the bottom of the square */
+    left: 50%; /* Align the left of the image with the middle of the square */
+    transform: translateX(-50%); /* Move the image horizontally to center it */
+}
+
 .square img {
     transition: border-radius 0.3s ease;
-    position: absolute;
-    transform: translate(-0%, -25%);
 }
 
 .square:hover #ground {
+    border-radius: 13px;
+}
+
+.hover-ground:hover {
     border-radius: 13px;
 }
