@@ -20,11 +20,7 @@ Post::Post(Server & server, Request &request, bool & readyToSend) : AResponse(se
                 return;
         } 
         // Ecire dans fichier
-        // std::string pathFile = this->_uri + '/' + request.getPostFilename();
-        // std::fstream file(pathFile.c_str(), std::ios_base::out | std::ios_base::trunc);
         request.parseBodyz(this->_uri);
-        // file.close();
-        this->fileExist = true;
         if (this->chunked) {
             // Gerer multipart
         } else {
