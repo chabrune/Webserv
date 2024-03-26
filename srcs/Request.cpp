@@ -4,22 +4,28 @@
 
 Request::Request() : isDir(false) {}
 
-Request::Request(Server *server, int sockfd) : tooLong(false), isDir(false) {
+Request::Request(Server *server, int sockfd) : tooLong(false), _sockfd(sockfd), isDir(false) {
     if (DEBUG)
 	    std::cout << "New request receive.. Check for errors" << std::endl;
 	std::string buffer;
+    std::stringstream ss;
 	buffer.resize(HTTP_BUFFER_SIZE);
-	this->len = recv(sockfd, &(buffer[0]), HTTP_BUFFER_SIZE, 0);
-	if (this->len <= 0)
-		throw recvFailure();
+    while(true)
+    {
+        this->len = recv(_sockfd, &(buffer[0]), HTTP_BUFFER_SIZE, 0);
+        if (this->len <= 0)
+            break;
+        ss.write(buffer.c_str(), this->len);
+    }
+    std::string full = ss.str();
 	// else if (this->len >= HTTP_BUFFER_SIZE)
     //     throw tooLongRequest();
     std::cout << "--------------------------------------------" << std::endl;
-    std::cout << MAGENTA << buffer << RESET << std::endl;
+    std::cout << MAGENTA << full << RESET << std::endl;
     std::cout << "--------------------------------------------" << std::endl;
     if (DEBUG)
 	    std::cout << "No errors found, starting to parse.." << std::endl;
-	this->parseRequest(server, buffer);
+	this->parseRequest(server, full);
     if (DEBUG)
 	    std::cout << "New request created. Method: " << this->method << " file path: " << getPathToFile() << " file-name " << getFileName() << " query " << getQuery() << " file type: " << this->file_type << " host: " << this->host << std::endl;
 }
@@ -59,7 +65,6 @@ void Request::parseRequest(Server *server, std::string &str) {
 	first_space_index = str.find_first_of(' ');
 	this->host = str.substr(first_space_index + 1, str.find_first_of('\n') - first_space_index);
     this->parseHeaders(str);
-    //parse body
     size_t start = str.find("\r\n\r\n");
     if (start != std::string::npos) {
         this->_body = str.substr(start + 4);
@@ -101,7 +106,7 @@ void Request::parseHeaders(const std::string& headers)
     }
 }
 
-
+//A FAIRE ???
 void Request::tryAccess_Post(Server *server)
 {
     std::string tester = server->getRootFrom(this->getPathToFile()) + this->subLocation(server->getLocationFrom(this->getPathToFile()));
@@ -220,17 +225,68 @@ void Request::isAllowed(Server *server) {
     }
 }
 
-std::string Request::parseBodyz(const std::string& str)
+std::string Request::parseBodyz(std::string uri)
 {
-    size_t beginIndex = str.find("\r\n\r\n");
-    beginIndex += 4;
-    size_t endIndex = str.find(this->_boundary, beginIndex);
-    if (endIndex == std::string::npos) {
-        throw std::runtime_error("Error : End of body not found"); // A MODIF
+    size_t pos = 0;
+    std::stringstream ss;
+
+    while (pos < this->_body.size()) {
+        // Recherche de la prochaine boundary
+        size_t boundaryPos = this->_body.find(this->_boundary, pos);
+        if (boundaryPos == std::string::npos) {
+            // Si pas de boundary trouvée, on ajoute le reste du corps dans le flux de sortie
+            ss << this->_body.substr(pos);
+            break;
+        }
+
+        // Ajout de la partie précédente la boundary dans le flux de sortie
+        ss << this->_body.substr(pos, boundaryPos - pos);
+
+        // Recherche de l'en-tête de la partie suivante
+        size_t crlfPos = this->_body.find("\r\n\r\n", boundaryPos);
+        if (crlfPos == std::string::npos) {
+            // Si pas d'en-tête trouvée, on sort de la boucle
+            break;
+        }
+
+        // Extraction de l'en-tête de la partie suivante
+        std::string header = this->_body.substr(boundaryPos, crlfPos - boundaryPos);
+
+        // Recherche du nom du fichier dans l'en-tête
+        size_t filenamePos = header.find("filename=\"");
+        if (filenamePos == std::string::npos) {
+            // Si pas de nom de fichier trouvé, on saute cette partie
+            pos = crlfPos + 4;
+            continue;
+        }
+
+        // Extraction du nom du fichier
+        std::string filename = header.substr(filenamePos + 10, header.find("\"", filenamePos + 10) - filenamePos - 10);
+
+        // Recherche de la fin de la partie
+        size_t endBoundaryPos = this->_body.find(this->_boundary, crlfPos);
+        if (endBoundaryPos == std::string::npos) {
+            // Si pas de boundary trouvée, on sort de la boucle
+            break;
+        }
+
+        // Extraction de la partie
+        std::string part = this->_body.substr(crlfPos + 4, endBoundaryPos - (crlfPos + 4));
+
+        // Ecriture de la partie dans le fichier
+        std::string pathfile = uri + '/' + this->_Postfilename;
+        std::cout << pathfile << "COUCOU LOL MDR DEDEDEDE" << std::endl;
+        std::ofstream file(pathfile.c_str(), std::ios_base::out | std::ios_base::trunc);
+        if (file.is_open()) {
+            file << part;
+            file.close();
+        }
+
+        // Mise à jour du pointeur de lecture
+        pos = endBoundaryPos;
     }
-    endIndex -= 4;
-    std::string ret = str.substr(beginIndex, endIndex - beginIndex);
-    return ret;
+
+    return ss.str();
 }
 
 void Request::setFileType(const std::string &filetype) {
@@ -289,3 +345,14 @@ const std::string& Request::getPostFilename() const
 {
     return _Postfilename;
 }
+
+const int& Request::getContentLenght() const
+{
+    return _contentLength;
+}
+
+const int& Request::getSockfd() const
+{
+    return _sockfd;
+}
+

@@ -23,6 +23,8 @@ class Request {
         void setQuery(const std::string &query);
 		const std::string &getFileType() const;
 		const std::string &getExtension() const;
+		const int &getContentLenght() const;
+		const int &getSockfd() const;
 		const std::string &getHost() const;
         const bool &getIsDir() const;
 		bool isKeepalive() const;
@@ -34,7 +36,8 @@ class Request {
         const std::string& getPostFilename() const;
         std::string subLocation(Location *location);
         void parseHeaders(const std::string& headers);
-        std::string parseBodyz(const std::string& str);
+        std::string parseBodyz(std::string uri);
+        void handleBody();
 
 		class returnTest : public taMereEnSlip
 		{
@@ -78,6 +81,7 @@ class Request {
         };
 
 	private:
+        int _sockfd;
         void parseRequest(Server *server, std::string &str);
 		void defineFileType();
 		std::string method; //GET, POST..
@@ -87,11 +91,12 @@ class Request {
 		std::string file_type; //text/css, text/js, image/jpg...
 		std::string extension; //jpg, png, css...
 		std::string host;
+        std::string _header;
         std::string _body;
         std::string _contentType;
         std::string _boundary;
         std::string _Postfilename;
         int _contentLength;
-        std::map<std::string, std::string> _headers;
+        // std::map<std::string, std::string> _headers; A voir
         bool isDir;
 };
