@@ -32,10 +32,25 @@ class Map {
                 }
                 else {
                     square.appendChild(loadImage("../image/ground/grass.png", "ground", 0));
+                    if (Math.random() * 100 <= globalNaturalGeneration)
+                        this.#generateElement(square);
                 }
                 const img = square.querySelector('img');
                 img.style.transform = this.#rotateCalculation(x, y);
                 this.addSquare(square);
+            }
+        }
+    }
+
+    #generateElement(square) {
+        while (true) {
+            let block = blocks[Math.floor(Math.random() * blocks.length)]
+            if (block.constructor !== Static)
+                continue;
+            let randValue = Math.floor(Math.random() * 100);
+            if (randValue <= block.naturalSpawnChance) {
+                square.appendChild(block.images[0].cloneNode(true));
+                break;
             }
         }
     }

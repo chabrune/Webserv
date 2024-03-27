@@ -1,6 +1,7 @@
 class Static extends Block {
-	constructor(image) {
+	constructor(image, naturalSpawnChance) {
 		super(image);
+		this.naturalSpawnChance = naturalSpawnChance;
 	}
 
 	build(square) {

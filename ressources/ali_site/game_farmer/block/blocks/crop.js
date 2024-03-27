@@ -12,7 +12,11 @@ class Crop extends Block {
 			setTimeout(() => { // Arrow function
 				square.removeChild(square.querySelector('#crops'));
 				square.appendChild(this.images[i].cloneNode(true));
-			}, this.timeToGrowth * i + (Math.random() * this.timeToGrowth));
+			}, this.#cropGrowthCalculation(i));
 		}
+	}
+
+	#cropGrowthCalculation(stage) {
+		return (this.timeToGrowth * stage + (Math.random() * this.timeToGrowth)) * globalGrowthSpeed;
 	}
 }
