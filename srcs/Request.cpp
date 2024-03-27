@@ -251,7 +251,7 @@ std::string Request::parseBodyz(std::string uri)
 
         // Extraction de l'en-tête de la partie suivante
         std::string header = this->_body.substr(boundaryPos, crlfPos - boundaryPos);
-
+        std::cout << GREEN << header << RESET << std::endl;
         // Recherche du nom du fichier dans l'en-tête
         size_t filenamePos = header.find("filename=\"");
         if (filenamePos == std::string::npos) {
@@ -275,7 +275,6 @@ std::string Request::parseBodyz(std::string uri)
 
         // Ecriture de la partie dans le fichier
         std::string pathfile = uri + '/' + this->_Postfilename;
-        std::cout << pathfile << "COUCOU LOL MDR DEDEDEDE" << std::endl;
         std::ofstream file(pathfile.c_str(), std::ios_base::out | std::ios_base::trunc);
         if (file.is_open()) {
             file << part;
