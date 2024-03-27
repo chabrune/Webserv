@@ -10,7 +10,6 @@ class Post : public AResponse {
         Post(Server & server, Request &request, bool & readyToSend);
 
     private:
-        bool fileExist;
         bool chunked;
         bool done;
         bool processing;
