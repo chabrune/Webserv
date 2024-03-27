@@ -4,28 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Farm Simulator 1</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="toolbar.css">
-    <link rel="stylesheet" href="ressourcebar.css">
-    <link rel="icon" type="image/png" href="../image/icon/favicon.png" />
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/square.css">
+    <link rel="stylesheet" href="css/toolbar.css">
+    <link rel="stylesheet" href="css/ressourcebar.css">
+    <link rel="icon" type="image/png" href="assets/image/icon/favicon.png" />
 </head>
 <body draggable="false">
     <div id="map"></div>
     <ul id="ressourcebar">
-        <li id="ressourcebar_dirt"><img src="../image/icon/melon_icon.png"><span class="txt">8007</span></li>
-        <li id="ressourcebar_wood"><img src="../image/icon/wood.png"><span class="txt">425</span></li>
-        <li id="ressourcebar_wheet"><img src="../image/icon/wheet.png"><span class="txt">0</span></li>
-        <li id="ressourcebar_mushroom"><img src="../image/icon/mushroom.png"><span class="txt">58</span></li>
-        <li id="ressourcebar_flower"><img src="../image/icon/flower.png"><span class="txt">58</span></li>
-        <li id="ressourcebar_lavande"><img src="../image/icon/lavande.png"><span class="txt">4776</span></li>
+        <li id="ressourcebar_dirt"><img src="assets/image/icon/melon_icon.png"><span class="txt">8007</span></li>
+        <li id="ressourcebar_wood"><img src="assets/image/icon/wood.png"><span class="txt">425</span></li>
+        <li id="ressourcebar_wheet"><img src="assets/image/icon/wheet.png"><span class="txt">0</span></li>
+        <li id="ressourcebar_mushroom"><img src="assets/image/icon/mushroom.png"><span class="txt">58</span></li>
+        <li id="ressourcebar_flower"><img src="assets/image/icon/flower.png"><span class="txt">58</span></li>
+        <li id="ressourcebar_lavande"><img src="assets/image/icon/lavande.png"><span class="txt">4776</span></li>
     </ul>
 
     <nav id="toolbar">
         <ul>
-            <li class="left-item"><img src="../image/icon/settings_icon.png" alt="Settings"><span class="txt">Settings</span></li>
+            <li class="left-item"><img src="assets/image/icon/settings_icon.png" alt="Settings"><span class="txt">Settings</span></li>
             <li class="center-items">
-                <div><img src="../image/icon/crops_icon.png" alt="Crops icon"><span class="txt">Crops</span></div>
-                <div><img src="../image/icon/static_icon.png" alt="Static icon"><span class="txt">Static element</span></div>
+                <div class="dropup">
+                    <img src="assets/image/icon/crops_icon.png" alt="Crops icon">
+                    <span class="txt">Crops</span>
+                    <div class="dropup-content">
+                        <div><img src="assets/image/icon/static_icon.png" alt="Static icon"><span class="txt">Static</span></div>
+                        <div><img src="assets/image/icon/static_icon.png" alt="Static icon"><span class="txt">Static</span></div>
+                        <div><img src="assets/image/icon/static_icon.png" alt="Static icon"><span class="txt">Static</span></div>
+                        <div><img src="assets/image/icon/static_icon.png" alt="Static icon"><span class="txt">Static</span></div>
+                        <div><img src="assets/image/icon/static_icon.png" alt="Static icon"><span class="txt">Static</span></div>
+                    </div>
+                </div>
+                <div><img src="assets/image/icon/static_icon.png" alt="Static icon"><span class="txt">Static</span></div>
             </li>
             <li class="right-item"><img src="right-icon.png" alt="Right Icon"><span class="txt">Right Item</span></li>
         </ul>

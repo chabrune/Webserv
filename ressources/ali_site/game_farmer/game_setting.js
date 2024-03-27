@@ -2,11 +2,11 @@
 
 const globalSize = 32;
 const globalNaturalGeneration = 30;
-const globalGrowthSpeed = 0.01;
+const globalGrowthSpeed = 1;
 
-const Images = {
-	Summer: "summer",
-	Autumn: "autumn",
-	Winter: "winter",
-	Spring: "spring"
+const GROUND = {
+	GRASS: 0,
+	GRASS_SIDE: 1,
+	GRASS_CORNER: 2,
+	GRASS_FARM: 3
 }

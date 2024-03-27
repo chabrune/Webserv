@@ -25,13 +25,13 @@ class Map {
                 const square = document.createElement('div');
                 square.classList.add('square');
                 if (this.#isCorner(x, y)) {
-                    square.appendChild(loadImage("../image/ground/grass_corner.png", "corner", 0))
+                    square.appendChild(grounds[GROUND.GRASS_CORNER].cloneNode(true))
                 }
                 else if (this.isBorderOfMap(x, y)) {
-                    square.appendChild(loadImage("../image/ground/grass_side.png", "side", 0))
+                    square.appendChild(grounds[GROUND.GRASS_SIDE].cloneNode(true));
                 }
                 else {
-                    square.appendChild(loadImage("../image/ground/grass.png", "ground", 0));
+                    square.appendChild(grounds[GROUND.GRASS].cloneNode(true));
                     if (Math.random() * 100 <= globalNaturalGeneration)
                         this.#generateElement(square);
                 }
@@ -74,10 +74,6 @@ class Map {
     }
 
     getSquareIndex(x, y) {
-        /*let row = Math.floor(y / globalSize);
-        let column = Math.floor(x / globalSize);
-        if (map.isBorderOfMap(row, column))
-            return;*/
         return y * map.squaresPerRow + x;
     }
 
@@ -99,7 +95,7 @@ function mouseDownEvent(event) {
     }
     else {
         square.removeChild(square.querySelector('#ground'));
-        square.appendChild(grounds[0].cloneNode(true));
+        square.appendChild(grounds[GROUND.GRASS_FARM].cloneNode(true));
     }
 }
 

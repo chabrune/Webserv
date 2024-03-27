@@ -12,14 +12,15 @@
 
 .center-items {
     display: flex;
-    gap: 10px; /* Adjust gap between center items as needed */
+    gap: 10px;
 }
 
-#toolbar li {
+#toolbar li,
+#toolbar li div {
     display: flex;
     align-items: center;
-    height: 50px;
-    width: auto;
+    min-height: 50px;
+    min-width: 140px;
 }
 
 #toolbar li .txt {
@@ -30,9 +31,26 @@
 
 #toolbar img {
     vertical-align: middle;
-    margin-left: 5px; 
+    margin-left: 5px;
 }
 
-#toolbar li div:hover {
+#toolbar li div:not(.dropup-content):hover {
     background-color: #b580ed;
+}
+
+#toolbar li:not(.center-items):hover {
+    background-color: #b580ed;
+}
+
+#toolbar .dropup-content {
+    display: none;
+    position: absolute;
+    background-color: #8842d5;
+    min-width: 140px;
+    bottom: 50px;
+    z-index: 1;
+}
+
+#toolbar .dropup:hover .dropup-content {
+    display: block;
 }
