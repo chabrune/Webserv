@@ -36,7 +36,7 @@
 # endif
 
 # define HTTP_BUFFER_SIZE 1000000
-# define SND_BUFFER_SIZE 16384
+# define SND_BUFFER_SIZE 1000000
 # define CONNECTIONS_NUMBER_LIMIT 2000
 # define TIMEOUT 1 // Seconds before select exit
 
@@ -55,6 +55,7 @@ extern int g_error;
 # define NOTFOUND 8
 # define FORBIDDEN 9
 # define CONFLICT 10
+# define TOOLARGEENTITY 12
 
 enum Methods
 {

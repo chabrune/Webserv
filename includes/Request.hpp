@@ -38,6 +38,8 @@ class Request {
         void parseHeaders(const std::string& headers);
         std::string parseBodyz(std::string uri);
         void handleBody();
+        const std::string& getBoundary() const;
+
 
 		class returnTest : public taMereEnSlip
 		{

@@ -16,6 +16,7 @@ class AResponse {
 		std::string &getContent();
         std::string &getUri();
         bool getGenerated();
+        bool & modIsPosting();
         std::ifstream * getContentFile();
         long long getContentSize();
         void setContent(const std::string &content);
@@ -37,4 +38,5 @@ class AResponse {
         long long _contentSize;
 
         bool _isGenerated;
+        bool _isPosting;
 };
