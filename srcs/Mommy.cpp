@@ -54,9 +54,13 @@ void Mommy::treatRequest(Server *server, Client *cli) {
             cli->response = Get(*server, cli->request);
             cli->readyToSend = true;
         } else if (cli->request.getMethod() == "POST") {
-            cli->response = Post(*server, cli->request, cli->readyToSend);
-            // Segfault si desactive
-            cli->sent = true;
+            if (!cli->response.modIsPosting()) {
+                cli->response = Post(*server);
+                cli->response.modIsPosting() = true;
+            }
+            static_cast<Post &>(cli->response).doThingsAndLetsSeeWhatHappenMaybeItWillWorkMaybeNotWeWillSeeLetsPrayTogetherAndMakeLoveNotWar___amen(*server, cli->request, cli->readyToSend);
+
+            // cli->sent = true;
         } else if (cli->request.getMethod() == "DELETE") {
             cli->response = Delete(*server, cli->request);
             cli->readyToSend = true;

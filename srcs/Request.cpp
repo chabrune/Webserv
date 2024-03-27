@@ -10,22 +10,25 @@ Request::Request(Server *server, int sockfd) : tooLong(false), _sockfd(sockfd), 
 	std::string buffer;
     std::stringstream ss;
 	buffer.resize(HTTP_BUFFER_SIZE);
-    while(true)
-    {
-        this->len = recv(_sockfd, &(buffer[0]), HTTP_BUFFER_SIZE, 0);
-        if (this->len <= 0)
-            break;
-        ss.write(buffer.c_str(), this->len);
-    }
-    std::string full = ss.str();
-	// else if (this->len >= HTTP_BUFFER_SIZE)
-    //     throw tooLongRequest();
+    this->len = recv(_sockfd, &(buffer[0]), HTTP_BUFFER_SIZE, 0);
+    if (this->len <= 0)
+        throw recvFailure();
+    buffer.resize(this->len);
+    std::cout << this->len << "lol" << std::endl;
+        // ss.write(buffer.c_str(), this->len);
+    // std::string full = ss.str();
+	// if(full.size() > server->max_body_size)
+    // {
+    //     std::cout << RED << "413 Request Entity Too Large" << RESET << std::endl;
+    //     g_error = TOOLARGEENTITY;
+    //     throw std::exception();
+    // }
     std::cout << "--------------------------------------------" << std::endl;
-    std::cout << MAGENTA << full << RESET << std::endl;
+    // std::cout << MAGENTA << buffer << RESET << std::endl;
     std::cout << "--------------------------------------------" << std::endl;
-    if (DEBUG)
+    if (DEBUG)  
 	    std::cout << "No errors found, starting to parse.." << std::endl;
-	this->parseRequest(server, full);
+	this->parseRequest(server, buffer);
     if (DEBUG)
 	    std::cout << "New request created. Method: " << this->method << " file path: " << getPathToFile() << " file-name " << getFileName() << " query " << getQuery() << " file type: " << this->file_type << " host: " << this->host << std::endl;
 }
@@ -44,7 +47,6 @@ std::string Request::subLocation(Location *location) {
 
 void Request::parseRequest(Server *server, std::string &str) {
 	unsigned int first_space_index = str.find_first_of(' ');
-	this->len = str.length();
 
 	this->method = str.substr(0, first_space_index);
     setPathToFile(str.substr(first_space_index + 1, str.find_first_of(' ', first_space_index + 1) - (first_space_index + 1)));
@@ -90,7 +92,7 @@ void Request::parseHeaders(const std::string& headers)
     pos = headers.find("boundary=");
     if (pos != std::string::npos) {
         std::string value = headers.substr(pos + 9);
-        this->_boundary = value.substr(0, value.find_first_of('\n'));
+        this->_boundary = value.substr(0, value.find_first_of('\n') - 1);
     }
     pos = headers.find("filename=");
     if (pos != std::string::npos) {
@@ -227,9 +229,12 @@ void Request::isAllowed(Server *server) {
 
 std::string Request::parseBodyz(std::string uri)
 {
+    (void)uri;
     size_t pos = 0;
     std::stringstream ss;
-
+    std::cout << this->_body.size() << std::endl;
+    std::cout << this->_contentLength << std::endl;
+    if(this->_body.size())
     while (pos < this->_body.size()) {
         // Recherche de la prochaine boundary
         size_t boundaryPos = this->_body.find(this->_boundary, pos);
@@ -274,12 +279,12 @@ std::string Request::parseBodyz(std::string uri)
         std::string part = this->_body.substr(crlfPos + 4, endBoundaryPos - (crlfPos + 4));
 
         // Ecriture de la partie dans le fichier
-        std::string pathfile = uri + '/' + this->_Postfilename;
-        std::ofstream file(pathfile.c_str(), std::ios_base::out | std::ios_base::trunc);
-        if (file.is_open()) {
-            file << part;
-            file.close();
-        }
+        // std::string pathfile = uri + '/' + this->_Postfilename;
+        // std::ofstream file(pathfile.c_str(), std::ios_base::out | std::ios_base::trunc);
+        // if (file.is_open()) {
+        //     file << part;
+        //     file.close();
+        // }
 
         // Mise à jour du pointeur de lecture
         pos = endBoundaryPos;
@@ -343,6 +348,11 @@ const std::string &Request::getBody() const {
 const std::string& Request::getPostFilename() const
 {
     return _Postfilename;
+}
+
+const std::string& Request::getBoundary() const
+{
+    return _boundary;
 }
 
 const int& Request::getContentLenght() const

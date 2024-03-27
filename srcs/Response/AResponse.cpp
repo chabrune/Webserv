@@ -6,7 +6,7 @@ defaultErrorCodes __defaultErrorCodes;
 defaultErrorPages __defaultErrorPages;
 
 AResponse::AResponse() : _contentFile(0), _isGenerated(false) {}
-AResponse::AResponse(Server & server) : server(&server), _contentFile(0), _isGenerated(false) {
+AResponse::AResponse(Server & server) : server(&server), _contentFile(0), _isGenerated(false), _isPosting(false) {
     if (DEBUG)
 	    std::cout << "New response is under building.." << std::endl;
 }
@@ -38,6 +38,8 @@ std::string AResponse::getCodeHeader(std::string * path, Server* server,  const 
         *path = server->getRootFrom(uri) + "/";
     if (g_error == MISSINGSLASH || g_error == INVALIDSLASH) {
         return ("HTTP/1.1 301 Moved Permanently\n");
+    } else if (g_error == TOOLARGEENTITY) {
+        return ("413 Request Entity Too Large\n");
     } else if (g_error == FORBIDDEN) {
         try {
             *path += server->getErrorPage(403, uri);
@@ -167,4 +169,8 @@ std::ifstream * AResponse::getContentFile() {
 
 long long AResponse::getContentSize() {
     return this->_contentSize;
+}
+
+bool & AResponse::modIsPosting() {
+    return this->_isPosting;
 }
