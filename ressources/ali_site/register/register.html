@@ -10,9 +10,9 @@
     <div id='stars2'></div>
     <div id='stars3'></div>
     <center> <h1 class="title"> Amanix Register Form </h1> </center>
-    <form action="acc.py" method="get", id="register_form">
-        <div class="container"> 
-            <label>Username : </label> 
+    <form action="register.py" method="get" id="register_form">
+        <div class="container">
+            <label>Username : </label>
             <input type="text" placeholder="Enter Username" name="username" required>
             <label>Password : </label> 
             <input type="password" placeholder="Enter Password" name="password" required>
@@ -22,7 +22,7 @@
             <input type="text" placeholder="Expiration date" name="expdate" required>
             <input type="text" placeholder="Security code (CVV 3 numbers)" name="cvvnumber" required>
             <button type="submit">Register for free</button>
-            Already Have account?<a href="acc.py" class="register"> Login </a>
+            Already Have account?<a href="login.py" class="register"> Login </a>
         </div> 
     </form>
     <script src="registerjs.js"></script>

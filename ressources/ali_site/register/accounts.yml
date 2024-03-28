@@ -5,9 +5,6 @@ C'est mwa:
   - 06/1999
   - '123'
   password: motdepassesupersecretewadjawohdiuawhuidhawuodwhad
-ali: {}
-ali2:
-  password: fa
 salut:
   Credit card:
   - abc
@@ -15,3 +12,10 @@ salut:
   - daf
   - fdafa
   password: cava
+testte:
+  Credit card:
+  - '1455'
+  - g
+  - '55245'
+  - '25425'
+  password: testests
