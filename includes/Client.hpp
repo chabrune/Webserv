@@ -5,6 +5,7 @@
 #include "Response/AResponse.hpp"
 #include "Server.hpp"
 #include "incs.hpp"
+#include "Response/Post.hpp"
 
 class Server;
 
@@ -21,6 +22,7 @@ class Client {
         sockaddr_in addr;
         Server *server; // Attached server
         AResponse response;
+        Post p;
         Request request;
 
         void readRequest();

@@ -8,9 +8,11 @@
 class Post : public AResponse {
     public:
         Post(Server & server);
+        void doSomeThings(std::string & buffer, Request &request);
         void doThingsAndLetsSeeWhatHappenMaybeItWillWorkMaybeNotWeWillSeeLetsPrayTogetherAndMakeLoveNotWar___amen(Server & server, Request &request, bool & readyToSend);
     private:
-        bool chunked;
         bool done;
         bool processing;
+        std::string _filename;
+        std::string _filePath;
 };

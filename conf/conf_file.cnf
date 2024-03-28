@@ -18,7 +18,7 @@ server {
 
 server {
     listen 8080
-    server_name localhost
+    server_name k0r2p6
     root ressources
     client_max_body_size 3000000
     cgi .py /usr/bin/python3

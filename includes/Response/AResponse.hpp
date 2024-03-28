@@ -11,7 +11,6 @@ class AResponse {
 	public:
         AResponse();
         AResponse(Server & server);
-
 		std::string &getHeader();
 		std::string &getContent();
         std::string &getUri();
@@ -22,6 +21,7 @@ class AResponse {
         void setContent(const std::string &content);
         void setContentSize(long long size);
         void handleRequestError(Server* server, const std::string & uri);
+        void doSomeThings(std::string & buffer, Request &request);
 
 	protected:
         void defaultFileBuilder(const Request &request);
@@ -36,7 +36,6 @@ class AResponse {
         std::string _content; // For auto-generated content like autoindex
         std::ifstream *_contentFile; //For local files
         long long _contentSize;
-
         bool _isGenerated;
         bool _isPosting;
 };

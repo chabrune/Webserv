@@ -36,7 +36,7 @@ class Request {
         const std::string& getPostFilename() const;
         std::string subLocation(Location *location);
         void parseHeaders(const std::string& headers);
-        std::string parseBodyz(std::string uri);
+        void parseBodyz(std::string uri, std::string &buffer);
         void handleBody();
         const std::string& getBoundary() const;
 
@@ -98,6 +98,8 @@ class Request {
         std::string _contentType;
         std::string _boundary;
         std::string _Postfilename;
+        std::string _filePath;
+
         int _contentLength;
         // std::map<std::string, std::string> _headers; A voir
         bool isDir;

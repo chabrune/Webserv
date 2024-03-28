@@ -48,6 +48,7 @@ Client * Mommy::acceptRequest(int fd, Server *server) {
     return cli;
 }
 
+
 void Mommy::treatRequest(Server *server, Client *cli) {
     try {
         if (cli->request.getMethod() == "GET") {
@@ -55,10 +56,10 @@ void Mommy::treatRequest(Server *server, Client *cli) {
             cli->readyToSend = true;
         } else if (cli->request.getMethod() == "POST") {
             if (!cli->response.modIsPosting()) {
-                cli->response = Post(*server);
+                cli->p = Post(*server);
                 cli->response.modIsPosting() = true;
             }
-            static_cast<Post &>(cli->response).doThingsAndLetsSeeWhatHappenMaybeItWillWorkMaybeNotWeWillSeeLetsPrayTogetherAndMakeLoveNotWar___amen(*server, cli->request, cli->readyToSend);
+            cli->p.doThingsAndLetsSeeWhatHappenMaybeItWillWorkMaybeNotWeWillSeeLetsPrayTogetherAndMakeLoveNotWar___amen(*server, cli->request, cli->readyToSend);
 
             // cli->sent = true;
         } else if (cli->request.getMethod() == "DELETE") {
@@ -133,7 +134,7 @@ void Mommy::run(void) {
                             }
                             catch (requestError &e) 
                             {
-                                it->second->response.handleRequestError(it->second->server, it->second->request.getPathToFile());
+                                it->second->response->handleRequestError(it->second->server, it->second->request.getPathToFile());
                                 it->second->readyToSend = true;
                             } 
                             catch (std::exception &e) 
