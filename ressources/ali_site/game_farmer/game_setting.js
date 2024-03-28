@@ -3,6 +3,8 @@
 const globalSize = 32;
 const globalNaturalGeneration = 30;
 const globalGrowthSpeed = 1;
+const mapHeight = 75;
+const mapWidth = 95;
 
 const GROUND = {
 	GRASS: 0,

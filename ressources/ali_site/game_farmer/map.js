@@ -1,9 +1,9 @@
 class Map {
     constructor(elemId) {
         this.map = document.getElementById(elemId);
-        let result = getPercent(screen.width, 60);
+        let result = getPercent(screen.width, mapWidth);
         this.map.style.width = result - (result % globalSize) + "px";
-        result = getPercent(screen.height, 60);
+        result = getPercent(screen.height, mapHeight);
         this.map.style.height = result - (result % globalSize) + "px";
 
         this.squaresPerRow = Math.floor(this.map.clientWidth / globalSize);
@@ -90,10 +90,12 @@ function mouseDownEvent(event) {
         return;
 
     const square = map.getSquare(x, y);
-    if (event.button === 0) {
+    if (square.querySelectorAll("img").length > 1)
+        return;
+
+    if (event.button === 0 && handBlock != null) {
         handBlock.build(square);
-    }
-    else {
+    } else if (event.button === 2) {
         square.removeChild(square.querySelector('#ground'));
         square.appendChild(grounds[GROUND.GRASS_FARM].cloneNode(true));
     }

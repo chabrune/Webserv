@@ -1,7 +1,7 @@
 const blocks = [];
 const sounds = [];
 let map;
-let handBlock;
+let handBlock = null;
 let grounds = [];
 
 initGame();
@@ -43,35 +43,28 @@ function loadGrounds() {
 }
 
 function loadGlobalListeners() {
-    document.addEventListener('wheel', wheelListener);
-
-    document.addEventListener('contextmenu', (event) => {
+    /*document.addEventListener('contextmenu', (event) => {
         event.preventDefault();
-    })
+    })*/
+
+    document.getElementById('toolbar').addEventListener('mousedown', mouseDownToolBar);
 }
 
 function initAllDefaultValues() {
-    handBlock = blocks[0];
     sounds[0].play();
 }
 
-
-function wheelListener(event) {
-    if (event.deltaY < 0)
-    {
-        let i = blocks.indexOf(handBlock) - 1;
-        console.log("up " + i)
-        if (i < 0)
-            i = blocks.length - 1;
-        handBlock = blocks[i];
+function getBlockFromName(name) {
+    for (const block of blocks) {
+        if (block.name === name)
+            return block;
     }
-    else if (event.deltaY > 0)
-    {
-        let i = blocks.indexOf(handBlock) + 1;
-        console.log(i)
+    return null;
+}
 
-        if (i >= blocks.length)
-            i = 0;
-        handBlock = blocks[i];
-    }
+function mouseDownToolBar(event) {
+    let block = getBlockFromName(event.target.textContent)
+    if (block === null)
+        return;
+    handBlock = block;
 }

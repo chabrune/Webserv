@@ -44,3 +44,7 @@ function getPercent(value, percent) {
 function insertToStr(strTarget, strToInsert, index) {
     return strTarget.slice(0, index) + strToInsert + strTarget.slice(index);
 }
+
+function isDigit(char) {
+    return char >= '0' && char <= '9'
+}

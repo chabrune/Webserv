@@ -34,7 +34,7 @@
     margin-left: 5px;
 }
 
-#toolbar li div:not(.dropup-content):hover {
+#toolbar li div:not(#dropup-crop):hover {
     background-color: #b580ed;
 }
 
@@ -42,7 +42,7 @@
     background-color: #b580ed;
 }
 
-#toolbar .dropup-content {
+#toolbar #dropup-crop {
     display: none;
     position: absolute;
     background-color: #8842d5;
@@ -51,6 +51,6 @@
     z-index: 1;
 }
 
-#toolbar .dropup:hover .dropup-content {
+#toolbar .dropup:hover #dropup-crop {
     display: block;
 }

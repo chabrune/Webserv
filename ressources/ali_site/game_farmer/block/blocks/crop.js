@@ -2,6 +2,16 @@ class Crop extends Block {
 	constructor(images, timeToGrowth) {
 		super(images);
 		this.timeToGrowth = timeToGrowth;
+
+		let htmlElement = document.getElementById('dropup-crop');
+
+		let div = document.createElement('div');
+		div.appendChild(this.icon);
+
+		let spanHTML = `<div class="txt">${this.name}</div>`;
+
+		htmlElement.appendChild(div);
+		div.insertAdjacentHTML('beforeend', spanHTML);
 	}
 
 	build(square) {
