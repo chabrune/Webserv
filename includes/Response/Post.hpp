@@ -7,6 +7,7 @@
 
 class Post : public AResponse {
     public:
+        Post() {};
         Post(Server & server);
         void doSomeThings(std::string & buffer, Request &request);
         void doThingsAndLetsSeeWhatHappenMaybeItWillWorkMaybeNotWeWillSeeLetsPrayTogetherAndMakeLoveNotWar___amen(Server & server, Request &request, bool & readyToSend);

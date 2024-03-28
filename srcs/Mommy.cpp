@@ -134,7 +134,7 @@ void Mommy::run(void) {
                             }
                             catch (requestError &e) 
                             {
-                                it->second->response->handleRequestError(it->second->server, it->second->request.getPathToFile());
+                                it->second->response.handleRequestError(it->second->server, it->second->request.getPathToFile());
                                 it->second->readyToSend = true;
                             } 
                             catch (std::exception &e) 

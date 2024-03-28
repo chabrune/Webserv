@@ -4,8 +4,8 @@
 Client::Client(int fd, sockaddr_in addr, Server *server) : sockfd(fd), addr(addr), server(server), readyToSend(false), headerSent(false), sent(false), contentSent(0) { }
 
 Client::~Client() {
-    if (this->response->getContentFile())
-        delete this->response->getContentFile();
+    if (this->response.getContentFile())
+        delete this->response.getContentFile();
 }
 
 std::ostream & operator<<(std::ostream & out, const Client & cli) {
@@ -16,12 +16,12 @@ std::ostream & operator<<(std::ostream & out, const Client & cli) {
 void Client::sendResponse() {
     // Send Header
     if (!this->headerSent) {
-        if (send(this->sockfd, &this->response->getHeader()[0], this->response->getHeader().size(), 0) == -1)
+        if (send(this->sockfd, &this->response.getHeader()[0], this->response.getHeader().size(), 0) == -1)
             if (DEBUG)
                 std::cerr << RED << "TA MERE LE HEADER" << RESET << std::endl;
         this->headerSent = true;
     }
-    if (this->response->getGenerated())
+    if (this->response.getGenerated() || this->request.getMethod() == "POST")
         sendGeneratedContent();
     else if (this->server->isCgi(request.getExtension()))
         sendCgiContent();
@@ -30,10 +30,10 @@ void Client::sendResponse() {
 }
 
 void Client::sendGeneratedContent() {
-    long size = std::min(static_cast<long long>(SND_BUFFER_SIZE), static_cast<long long>(this->response->getContent().size() - this->contentSent));
+    long size = std::min(static_cast<long long>(SND_BUFFER_SIZE), static_cast<long long>(this->response.getContent().size() - this->contentSent));
     if (DEBUG)
-        std::cout << "size: " << this->response->getContent().size() << std::endl;
-    std::string buffer = this->response->getContent().substr(this->contentSent, size);
+        std::cout << "size: " << this->response.getContent().size() << std::endl;
+    std::string buffer = this->response.getContent().substr(this->contentSent, size);
 
     // Send non-file content
     long sent = send(this->sockfd, &buffer[0], size, 0);
@@ -45,7 +45,7 @@ void Client::sendGeneratedContent() {
         size = sent;
     }
     this->contentSent += size;
-    if (this->contentSent >= static_cast<long long>(this->response->getContent().size())) {
+    if (this->contentSent >= static_cast<long long>(this->response.getContent().size())) {
         this->sent = true;
         if (DEBUG)
             std::cout << GREEN << "all gen data sent" << RESET << std::endl;
@@ -54,7 +54,7 @@ void Client::sendGeneratedContent() {
 
 void Client::sendCgiContent() {
     // Send file content
-    send(this->sockfd, this->response->getContent().c_str(), this->response->getContent().size(), 0);
+    send(this->sockfd, this->response.getContent().c_str(), this->response.getContent().size(), 0);
     this->sent = true;
 }
 
@@ -63,9 +63,9 @@ void Client::sendInfileContent() {
     memset(buffer, 0, SND_BUFFER_SIZE + 1);
 
     // Send file content
-    long size = std::min(static_cast<long long>(SND_BUFFER_SIZE), this->response->getContentSize() - this->contentSent);
-    this->response->getContentFile()->seekg(this->contentSent);
-    this->response->getContentFile()->read(buffer, size);
+    long size = std::min(static_cast<long long>(SND_BUFFER_SIZE), this->response.getContentSize() - this->contentSent);
+    this->response.getContentFile()->seekg(this->contentSent);
+    this->response.getContentFile()->read(buffer, size);
     long sent = send(this->sockfd, buffer, size, 0);
     if (sent == -1) {
         std::cerr << RED << "❗ connection lost for " << GREEN << *this << RESET << std::endl;
@@ -75,7 +75,7 @@ void Client::sendInfileContent() {
         size = sent;
     }
     this->contentSent += size;
-    if (this->contentSent >= this->response->getContentSize()) {
+    if (this->contentSent >= this->response.getContentSize()) {
         this->sent = true;
         if (DEBUG)
             std::cout << GREEN << "all data sent" << RESET << std::endl;

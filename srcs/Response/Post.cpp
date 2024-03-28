@@ -10,11 +10,13 @@ Post::Post(Server & server) : AResponse(server), done(false), processing(false)
 
 void Post::doSomeThings(std::string & buffer, Request &request) {
     (void)request;
+    size_t original_size = buffer.size();
+    std::cout << YELLOW << "buffer size: " << original_size << RESET << std::endl;
+    // std::cout << YELLOW << "VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV" << RESET << std::endl;
+    // std::cout << YELLOW << buffer << RESET << std::endl;
+    // std::cout << YELLOW << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << RESET << std::endl;
     while (!buffer.empty()) 
     {
-        std::cout << YELLOW << "VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV" << RESET << std::endl;
-        std::cout << YELLOW << buffer << RESET << std::endl;
-        std::cout << YELLOW << "VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV" << RESET << std::endl;
         // file 
         if (buffer.find("--" + request.getBoundary()) == 0) 
         {
@@ -25,47 +27,37 @@ void Post::doSomeThings(std::string & buffer, Request &request) {
                 continue;
             } else {
                 // Extraction du nom du fichier
-                // size_t slash = buffer.find("\"", filenamePos + 10);
+                size_t slash = buffer.find("\"", filenamePos + 10);
                 // std::cout << RED << slash << RESET << std::endl;
-                _filename = "index(5).html";
-                // buffer.substr(filenamePos + 10, slash - filenamePos - 10);
+                this->_filename = buffer.substr(filenamePos + 10, slash - filenamePos - 10);
                 this->_filePath = this->_uri + '/' + this->_filename;
                 
             }
-            buffer = buffer.substr(buffer.find("\r\n"), buffer.size());
+            buffer = buffer.substr(buffer.find("\r\n\r\n") + 4, buffer.size());
         }
         if (this->_filePath.empty()) {
             // Gerer erreur psq ya rien a creer
         }
-        std::ofstream file(this->_filePath.c_str(), std::ios_base::out | std::ios_base::trunc);
+        std::ofstream file(this->_filePath.c_str(), std::ios_base::out | std::ios_base::app);
         size_t nextBound = buffer.find("--" + request.getBoundary());
-        if (buffer.find("--" + request.getBoundary() + "--") == nextBound) {
-            file << buffer.substr(0, request.getBoundary().size() + 4);
+        if (buffer.find("--" + request.getBoundary() + "--") == nextBound && nextBound != std::string::npos) {
+            file << buffer.substr(0, buffer.size() - (request.getBoundary().size() + 8));
             buffer.clear();
+            std::cout << RED << "DONE TRUE !?" << RESET << std::endl;
             this->done = true;
         } else if (nextBound != std::string::npos) {
-            file << buffer.substr(0, nextBound);
-            buffer = buffer.substr(nextBound, buffer.size());
-        }
-        else if (request.getBoundary().size() + 4 < buffer.size()) {
-            file << buffer.substr(0, buffer.size() - (request.getBoundary().size() + 4));
-            buffer = buffer.substr(buffer.size() - (request.getBoundary().size() + 4), buffer.size());
+            file << buffer.substr(0, nextBound - 2);
+            buffer = buffer.substr(nextBound, buffer.size() - 2);
         } else {
             file << buffer;
+            buffer.clear();
         }
         file.close();
-
-        // if (nouveau_boundary)
-        //  break;
-
-        // buffer.substr(content_readed, buffer.size());
     }
 }
 
 void Post::doThingsAndLetsSeeWhatHappenMaybeItWillWorkMaybeNotWeWillSeeLetsPrayTogetherAndMakeLoveNotWar___amen(Server & server, Request &request, bool & readyToSend) {
         try {
-            _filename.resize(strlen("index(5).html"));
-            _filename = "index(5).html";
         std::string buffer;
         if (!this->processing) {
 //            this->fileExist = tryAccess_Post(&server);
@@ -86,21 +78,22 @@ void Post::doThingsAndLetsSeeWhatHappenMaybeItWillWorkMaybeNotWeWillSeeLetsPrayT
             long tmp;
             buffer.resize(HTTP_BUFFER_SIZE);
             tmp = recv(request.getSockfd(), &(buffer[0]), HTTP_BUFFER_SIZE, 0);
-            if (tmp <= 0) {
-                std::cout << YELLOW << "recv failed or enmpty, exiting POST" << RESET << std::endl;
+            if (tmp < 0) {
+                std::cout << YELLOW << "recv failed or enmpty, exiting POST, value: " << tmp << RESET << std::endl;
+                perror("");
                 readyToSend = true;
                 throw Request::recvFailure();
             }
-            std::cout << MAGENTA << "another recv done" << RESET << std::endl;
             buffer.resize(tmp);
             request.len += tmp;
+            std::cout << RED << "total lu: " << request.len << RESET << std::endl;
 
         }
         doSomeThings(buffer, request);
         // if(buffer.find("--" + request.getBoundary() + "--") != std::string::npos)
         //     this->done = true;
-
         if (this->done) {
+            std::cout << MAGENTA << "Post is done" << RESET << std::endl;
             this->_isGenerated = true;
             this->headerGenBuilder("");
             readyToSend = true;
