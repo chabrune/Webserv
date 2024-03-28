@@ -30,13 +30,6 @@ class UserDataBase:
             pickle.dump(self, f)
 
 
-def read_html_file(file_name):
-    with open(file_name, "r") as file:
-        file.readline()
-        for line in  file:
-            print(line)
-
-
 def printAccPage(session):
     print("Content-type: text/html\r\n")
     print("<html>")
@@ -50,21 +43,6 @@ def printAccPage(session):
     print("<a href=\"/index.html\"> Click here to go back to homepage </a>")
     print("</html>")
 
-def printUserMsg(msg):
-    print("Content-type: text/html\r\n")
-    print("<html>")
-    print("<head>")
-    print("<title>USER MSG</title>")
-    print("</head>")
-    print("<body>")
-    print("<h1>", msg ,"</h1>")
-    print("</body>")
-    print("<a href=\"../cgi/acc.py\"> Click here to go back to login page </a>")
-    print("</html>")
-
-def print_login():
-    print("Content-Type: text/html\r\n")
-    read_html_file("login.html")
 
 def authUser(name, password):
     if os.path.exists('cgi/accounts'):
@@ -78,34 +56,6 @@ def authUser(name, password):
     else:
         return None
 
-def handle_login():
-    username = form.getvalue('username')
-    password = form.getvalue('password')
-    if username is None:
-        print_login()
-    elif password is None:
-        session = authUser(form.getvalue('username'), form.getvalue('password'))
-        if session is None:
-            printUserMsg("Failed To Login, Username or Passowrd is wrong!")
-        else:
-            print("Correct Crenditales :D",file=sys.stderr)
-            cookies.clear()
-            cookies["SID"] = session.getSid()
-            cookies["SID"]["expires"] = 120 # Session Expires after 2 mins
-            print("HTTP/1.1 301 OK")
-            print(cookies.output())
-            print("location: acc.py")
-            print("\r\n")
-    else:
-        with open('accounts.yml', 'rb') as file:
-            database = yaml.safe_load(file)
-            if username in database:
-                printUserMsg("Username is already Registerd !")
-            else:
-                database[username] = {"password": password, "Credit card": [form.getvalue('cardnumber'), form.getvalue('cardname'), form.getvalue('expdate'), form.getvalue('cvvnumber')]}
-                with open('accounts.yml', 'w') as yaml_file:
-                    yaml.dump(database, yaml_file)
-                printUserMsg("Account Registerd Successfully!")
 
 form = cgi.FieldStorage()
 if 'HTTP_COOKIE' in os.environ:

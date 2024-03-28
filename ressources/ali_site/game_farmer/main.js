@@ -43,9 +43,9 @@ function loadGrounds() {
 }
 
 function loadGlobalListeners() {
-    /*document.addEventListener('contextmenu', (event) => {
+    document.addEventListener('contextmenu', (event) => {
         event.preventDefault();
-    })*/
+    })
 
     document.getElementById('toolbar').addEventListener('mousedown', mouseDownToolBar);
 }

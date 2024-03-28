@@ -31,6 +31,7 @@ void Get::headerFileBuilder(std::string file_type) {
     if (this->_isGenerated) {
         file_type = "text/html";
     }
+    //header_tmp << "Set-Cookie: Password=XYZ123;\r\n";
     header_tmp << "HTTP/1.1 200 OK\nContent-Type: " << file_type << "\nContent-Length: " << this->_contentSize << "\r\n\r\n";
     this->_header = header_tmp.str();
 }
