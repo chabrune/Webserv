@@ -2,7 +2,7 @@ function loadImage(imagePath, id, z) {
     const img = new Image();
     img.src = imagePath;
     img.onerror = function() {
-        console.error(`Failed to load image into square`);
+        console.error(`Failed to load image ` + imagePath);
     };
     img.setAttribute('id', id);
     img.style.zIndex = z;

@@ -8,10 +8,10 @@ class Crop extends Block {
 		let div = document.createElement('div');
 		div.appendChild(this.icon);
 
-		let spanHTML = `<div class="txt">${this.name}</div>`;
+		let spanHTML = `<span class="txt">${this.name}</span>`;
 
-		htmlElement.appendChild(div);
 		div.insertAdjacentHTML('beforeend', spanHTML);
+		htmlElement.appendChild(div);
 	}
 
 	build(square) {

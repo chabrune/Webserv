@@ -9,17 +9,22 @@
     <link rel="stylesheet" href="css/toolbar.css">
     <link rel="stylesheet" href="css/ressourcebar.css">
     <link rel="icon" type="image/png" href="assets/image/icon/favicon.png" />
+
+
 </head>
 <body draggable="false">
     <div id="map"></div>
-    <ul id="ressourcebar">
-        <li id="ressourcebar_dirt"><img src="assets/image/icon/melon_icon.png"><span class="txt">8007</span></li>
-        <li id="ressourcebar_wood"><img src="assets/image/icon/wood.png"><span class="txt">425</span></li>
-        <li id="ressourcebar_wheet"><img src="assets/image/icon/wheat_icon.png"><span class="txt">0</span></li>
-        <li id="ressourcebar_mushroom"><img src="assets/image/icon/mushroom.png"><span class="txt">58</span></li>
-        <li id="ressourcebar_flower"><img src="assets/image/icon/flower.png"><span class="txt">58</span></li>
-        <li id="ressourcebar_lavande"><img src="assets/image/icon/lavande.png"><span class="txt">4776</span></li>
-    </ul>
+
+    <nav id="ressourcebar">
+        <ul>
+            <li id="ressourcebar_dirt"><img src="assets/image/icon/melon_icon.png"><span class="txt">8007</span></li>
+            <li id="ressourcebar_wood"><img src="assets/image/icon/wood.png"><span class="txt">425</span></li>
+            <li id="ressourcebar_wheet"><img src="assets/image/icon/wheat_icon.png"><span class="txt">0</span></li>
+            <li id="ressourcebar_mushroom"><img src="assets/image/icon/mushroom.png"><span class="txt">58</span></li>
+            <li id="ressourcebar_flower"><img src="assets/image/icon/flower.png"><span class="txt">58</span></li>
+            <li id="ressourcebar_lavande"><img src="assets/image/icon/lavande.png"><span class="txt">4776</span></li>
+        </ul>
+    </nav>
 
     <nav id="toolbar">
         <ul>
@@ -36,12 +41,12 @@
         </ul>
     </nav>
 
-    <script src="game_setting.js"></script>
-    <script src="utils.js"></script>
-    <script src="block/block.js"></script>
-    <script src="block/blocks/crop.js"></script>
-    <script src="block/blocks/static.js"></script>
-    <script src="map.js"></script>
+    <script src="src/game_setting.js"></script>
+    <script src="src/utils.js"></script>
+    <script src="src/block/block.js"></script>
+    <script src="src/block/blocks/crop.js"></script>
+    <script src="src/block/blocks/static.js"></script>
+    <script src="src/map.js"></script>
     <script src="main.js"></script>
 </body>
 </html>

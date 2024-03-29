@@ -11,7 +11,7 @@ class Map {
 
         this.mapGenerator();
 
-        this.map.addEventListener('mousedown', mouseDownEvent);
+        this.map.addEventListener('mousedown', mouseDownMap);
         this.map.addEventListener('mousemove', mouseMoveEvent);
     }
 
@@ -82,7 +82,10 @@ class Map {
     }
 }
 
-function mouseDownEvent(event) {
+
+//Map event Listener
+
+function mouseDownMap(event) {
     const mapRect = map.map.getBoundingClientRect();
     const x = Math.floor((event.clientX - mapRect.left) / globalSize);
     const y = Math.floor((event.clientY - mapRect.top) / globalSize);
