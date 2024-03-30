@@ -44,8 +44,6 @@ function getNameFromImage(img) {
 
     path = path.charAt(0).toUpperCase() + path.slice(1);
     path = path.substring(0, path.indexOf('.'));
-    if (isDigit(path[path.length - 1]))
-        path = path.substring(0, path.length - 1);
     return path;
 }
 

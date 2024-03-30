@@ -1,4 +1,4 @@
-class Crop extends Block {
+class Crop extends BlockElement {
 	constructor(images, icon, timeToGrowth) {
 		super(images);
 		this.timeToGrowth = timeToGrowth;
@@ -21,7 +21,7 @@ class Crop extends Block {
 		square.appendChild(this.images[0].cloneNode(true));
 		for (let i= 1; i <= this.images.length - 1; i++) {
 			setTimeout(() => {
-				square.removeChild(square.querySelector('#crops'));
+				square.removeChild(square.querySelectorAll('img')[1]);
 				square.appendChild(this.images[i].cloneNode(true));
 			}, this.#cropGrowthCalculation(i));
 		}

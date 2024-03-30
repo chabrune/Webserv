@@ -22,7 +22,6 @@ class Map {
 
     mapGenerator() {
         const start = performance.now();
-
         const naturalSpawnableBlock = [];
         for (const block of blocks) {
             if (block.naturalSpawnChance === undefined)
@@ -48,9 +47,7 @@ class Map {
                 this.addSquare(square);
             }
         }
-
-        const end = performance.now();
-        console.log(`Time to load the map: ${end - start} ms`);
+        console.log(`Time to load the map: ${performance.now() - start} ms`);
     }
 
     #generateElement(square, naturalSpawnableBlock) {
@@ -80,7 +77,7 @@ class Map {
     }
 
     isBorderOfMap(x, y) {
-        return x === 0 || y === 0 || x === (this.numRows - 1) || y === (this.squaresPerRow - 1)
+        return x <= 0 || y <= 0 || x >= (this.numRows - 1) || y >= (this.squaresPerRow - 1)
     }
 
     #rotateCalculation(x, y) {
@@ -100,6 +97,12 @@ class Map {
     getSquare(x, y) {
         return document.querySelectorAll('.square')[this.getSquareIndex(x, y)];
     }
+
+    getBlockFromSquare(square) {
+        if (square.querySelectorAll('img').length <= 1)
+	        return null;
+        return getBlockFromName(square.querySelectorAll('img')[1].getAttribute('id'));
+    }
 }
 
 
@@ -113,14 +116,16 @@ function mouseDownMap(event) {
         return;
 
     const square = map.getSquare(x, y);
-    if (square.querySelectorAll("img").length > 1)
-        return;
-
-    if (event.button === 0 && handBlock != null) {
+    if (event.button === 0 && handBlock != null)
         handBlock.setBlockToSquare(square);
-    } else if (event.button === 2) {
-        square.removeChild(square.querySelector('#ground'));
-        square.appendChild(IMG.GRASS_FARM.cloneNode(true));
+    else if (event.button === 2) {
+        const block = map.getBlockFromSquare(square);
+        if (block === null && !square.querySelector('#ground_farm')) {
+            square.removeChild(square.querySelector('#ground'));
+            square.appendChild(IMG.GRASS_FARM.cloneNode(true));
+        }
+        else if (block != null && block.blockAction !== undefined)
+            block.blockAction.executor(square)
     }
 }
 

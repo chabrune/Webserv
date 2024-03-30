@@ -1,6 +1,6 @@
-class Block {
+class BlockElement {
     constructor(images) {
-        if (this.constructor === Block)
+        if (this.constructor === BlockElement)
             throw new Error("Abstract classes can't be instantiated.");
         this.images = images;
         this.name = getNameFromImage(images[0]);
@@ -16,8 +16,18 @@ class Block {
         return this;
     }
 
+    setBlockAction(blockAction) {
+        this.blockAction = blockAction;
+        return this;
+    }
+
+    setLootable(resource, resourceNumber = 1) {
+        this.resource = resource;
+        this.resourceNumber = resourceNumber;
+        return this;
+    }
+
     setBlockToSquare(square) {
         throw new Error("This function need to be implemented");
     }
-
 }

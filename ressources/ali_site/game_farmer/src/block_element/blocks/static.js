@@ -1,4 +1,4 @@
-class Static extends Block {
+class Static extends BlockElement {
 	constructor(image) {
 		super(image);
 	}

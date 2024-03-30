@@ -18,7 +18,7 @@ function initGame() {
 }
 
 function loadBlocks() {
-    blocks.push(new Static(new Array(IMG.TREE0)).setNaturalSpawnChance(20));
+    blocks.push(new Static(new Array(IMG.TREE0)).setNaturalSpawnChance(20).setLootable(RESOURCE.SEED).setBlockAction(new BlockActionHarvest()));
     blocks.push(new Static(new Array(IMG.TREE1)).setNaturalSpawnChance(20));
     blocks.push(new Static(new Array(IMG.PLANT0)).setNaturalSpawnChance(75));
     blocks.push(new Static(new Array(IMG.ROCK0)).setNaturalSpawnChance(30));
@@ -43,7 +43,7 @@ function loadGlobalListeners() {
 
 function getBlockFromName(name) {
     for (const block of blocks) {
-        if (block.name === name)
+        if (block.name.toUpperCase() === name.toUpperCase())
             return block;
     }
     return null;
