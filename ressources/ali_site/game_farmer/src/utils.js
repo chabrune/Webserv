@@ -1,10 +1,15 @@
-function loadImage(imagePath, id, z) {
+function newImage(imagePath, id, z, className = "none") {
     const img = new Image();
-    img.src = imagePath;
+
     img.onerror = function() {
-        console.error(`Failed to load image ` + imagePath);
+        throw new Error(`Failed to load image ` + imagePath);
     };
+
+    img.src = imagePath;
     img.setAttribute('id', id);
+    img.setAttribute('draggable', "false");
+    if (className !== "none")
+        img.classList.add(className);
     img.style.zIndex = z;
     return img;
 }
@@ -20,21 +25,28 @@ function loadImage(imagePath, id, z) {
  * @param {int} number - The number of images to load.
  * @returns {HTMLImageElement[]} An array of HTMLImageElement objects representing the loaded images.
  */
-function loadImages(imagePath, id, z, number) {
+function newImages(imagePath, id, z, number) {
     let imgs = [];
     let indexOfPoint = imagePath.lastIndexOf('.');
 
     for (let i = 0; i < number; i++) {
         const img = new Image();
         img.src = insertToStr(imagePath, i, indexOfPoint);
-        img.onerror = function() {
-            console.error(`Failed to load image into square`);
-        };
         img.setAttribute('id', id);
         img.style.zIndex = z;
         imgs.push(img);
     }
     return imgs;
+}
+
+function getNameFromImage(img) {
+    let path = img.src.replace(/^.*[\\\/]/, '');
+
+    path = path.charAt(0).toUpperCase() + path.slice(1);
+    path = path.substring(0, path.indexOf('.'));
+    if (isDigit(path[path.length - 1]))
+        path = path.substring(0, path.length - 1);
+    return path;
 }
 
 function getPercent(value, percent) {

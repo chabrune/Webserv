@@ -1,10 +1,9 @@
 class Static extends Block {
-	constructor(image, naturalSpawnChance) {
+	constructor(image) {
 		super(image);
-		this.naturalSpawnChance = naturalSpawnChance;
 	}
 
-	build(square) {
+	setBlockToSquare(square) {
 		square.appendChild(this.images[0].cloneNode(true));
 	}
 }

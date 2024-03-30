@@ -1,7 +1,8 @@
 class Crop extends Block {
-	constructor(images, timeToGrowth) {
+	constructor(images, icon, timeToGrowth) {
 		super(images);
 		this.timeToGrowth = timeToGrowth;
+		this.icon = icon;
 
 		let htmlElement = document.getElementById('dropup-crop');
 
@@ -14,12 +15,12 @@ class Crop extends Block {
 		htmlElement.appendChild(div);
 	}
 
-	build(square) {
-		if (square.querySelector('#crops'))
+	setBlockToSquare(square) {
+		if (square.querySelector('#crops') || !square.querySelector('img#ground_farm'))
 			return;
 		square.appendChild(this.images[0].cloneNode(true));
 		for (let i= 1; i <= this.images.length - 1; i++) {
-			setTimeout(() => { // Arrow function
+			setTimeout(() => {
 				square.removeChild(square.querySelector('#crops'));
 				square.appendChild(this.images[i].cloneNode(true));
 			}, this.#cropGrowthCalculation(i));

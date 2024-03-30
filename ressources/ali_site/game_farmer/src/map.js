@@ -8,6 +8,7 @@ class Map {
 
         this.squaresPerRow = Math.floor(this.map.clientWidth / globalSize);
         this.numRows = Math.floor(this.map.clientHeight / globalSize);
+        this.hoveredSquare = null;
 
         this.mapGenerator();
 
@@ -20,36 +21,55 @@ class Map {
     }
 
     mapGenerator() {
+        const start = performance.now();
+
+        const naturalSpawnableBlock = [];
+        for (const block of blocks) {
+            if (block.naturalSpawnChance === undefined)
+                continue;
+            naturalSpawnableBlock.push(block);
+        }
         for (let x = 0; x < this.numRows; x++) {
             for (let y = 0; y < this.squaresPerRow; y++) {
                 const square = document.createElement('div');
                 square.classList.add('square');
-                if (this.#isCorner(x, y)) {
-                    square.appendChild(grounds[GROUND.GRASS_CORNER].cloneNode(true))
-                }
-                else if (this.isBorderOfMap(x, y)) {
-                    square.appendChild(grounds[GROUND.GRASS_SIDE].cloneNode(true));
-                }
+                if (this.#isCorner(x, y))
+                    square.appendChild(IMG.GRASS_CORNER.cloneNode(true))
+                else if (this.isBorderOfMap(x, y))
+                    square.appendChild(IMG.GRASS_SIDE.cloneNode(true));
                 else {
-                    square.appendChild(grounds[GROUND.GRASS].cloneNode(true));
-                    if (Math.random() * 100 <= globalNaturalGeneration)
-                        this.#generateElement(square);
+                    square.appendChild(IMG.GRASS.cloneNode(true));
+                    if (Math.random() * 100 <= globalNaturalGeneration) {
+                        this.#generateElement(square, [...naturalSpawnableBlock]);
+                    }
                 }
                 const img = square.querySelector('img');
                 img.style.transform = this.#rotateCalculation(x, y);
                 this.addSquare(square);
             }
         }
+
+        const end = performance.now();
+        console.log(`Time to load the map: ${end - start} ms`);
     }
 
-    #generateElement(square) {
+    #generateElement(square, naturalSpawnableBlock) {
+        /*let randValue = Math.floor(Math.random() * 100);
+        while (naturalSpawnableBlock.length > 0) {
+            const selector = Math.floor(Math.random() * naturalSpawnableBlock.length);
+            let block = naturalSpawnableBlock[selector]
+            if (randValue <= block.naturalSpawnChance) {
+                block.setBlockToSquare(square)
+                break;
+            }
+            naturalSpawnableBlock.splice(selector, 1);
+        }*/
+
         while (true) {
-            let block = blocks[Math.floor(Math.random() * blocks.length)]
-            if (block.constructor !== Static)
-                continue;
+            let block = naturalSpawnableBlock[Math.floor(Math.random() * naturalSpawnableBlock.length)]
             let randValue = Math.floor(Math.random() * 100);
             if (randValue <= block.naturalSpawnChance) {
-                square.appendChild(block.images[0].cloneNode(true));
+                block.setBlockToSquare(square)
                 break;
             }
         }
@@ -97,13 +117,26 @@ function mouseDownMap(event) {
         return;
 
     if (event.button === 0 && handBlock != null) {
-        handBlock.build(square);
+        handBlock.setBlockToSquare(square);
     } else if (event.button === 2) {
         square.removeChild(square.querySelector('#ground'));
-        square.appendChild(grounds[GROUND.GRASS_FARM].cloneNode(true));
+        square.appendChild(IMG.GRASS_FARM.cloneNode(true));
     }
 }
 
 function mouseMoveEvent(event) {
+    const mapRect = map.map.getBoundingClientRect();
+    const x = Math.floor((event.clientX - mapRect.left) / globalSize);
+    const y = Math.floor((event.clientY - mapRect.top) / globalSize);
+    const square = map.getSquare(x, y);
+    if (map.isBorderOfMap(y, x))
+        return;
+
+    if (map.hoveredSquare === square)
+        return;
+    if (map.hoveredSquare != null)
+        map.hoveredSquare.querySelector("img.ground").classList.remove("square-hover-effect");
+    square.querySelector("img.ground").classList.add("square-hover-effect");
+    map.hoveredSquare = square;
 
 }

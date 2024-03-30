@@ -1,45 +1,36 @@
 const blocks = [];
-const sounds = [];
 let map;
 let handBlock = null;
-let grounds = [];
 
-initGame();
+
+document.getElementsByClassName('buttonPlay')[0].addEventListener('click', function() {
+    document.getElementsByClassName('buttonPlay')[0].remove()
+    initGame();
+    SOUND.DEFAULT_SOUND.volume = 0.5;
+    SOUND.DEFAULT_SOUND.loop = true;
+    SOUND.DEFAULT_SOUND.play();
+});
 
 function initGame() {
-    loadSounds();
-    loadGrounds();
     loadBlocks();
     map = new Map('map');
     loadGlobalListeners();
-    initAllDefaultValues()
-}
-
-function loadSounds() {
-    sounds.push(new Audio('assets/sound/default_sound.mp3'));
 }
 
 function loadBlocks() {
-    blocks.push(new Static(new Array(loadImage("assets/image/static/tree0.png", "static", 2)), 20));
-    blocks.push(new Static(new Array(loadImage("assets/image/static/tree1.png", "static", 2)), 20));
-    blocks.push(new Static(new Array(loadImage("assets/image/static/plant0.png", "static", 1)), 75));
-    blocks.push(new Static(new Array(loadImage("assets/image/static/rock0.png", "static", 1)), 30));
-    blocks.push(new Static(new Array(loadImage("assets/image/static/flower0.png", "static", 1)), 4));
-    blocks.push(new Static(new Array(loadImage("assets/image/static/flower1.png", "static", 1)), 4));
-    blocks.push(new Static(new Array(loadImage("assets/image/static/flower2.png", "static", 1)), 4));
-    blocks.push(new Static(new Array(loadImage("assets/image/static/trunk0.png", "static", 1)), 10));
-    blocks.push(new Crop(loadImages("assets/image/crops/melon.png", "crops", 1, 7), 5000));
-    blocks.push(new Crop(loadImages("assets/image/crops/wheat.png", "crops", 1, 7), 15000));
-    blocks.push(new Crop(loadImages("assets/image/crops/sugarcane.png", "crops", 1, 7), 13000));
-    blocks.push(new Crop(loadImages("assets/image/crops/eggplant.png", "crops", 1, 7), 3000));
-    blocks.push(new Crop(loadImages("assets/image/crops/chili.png", "crops", 1, 7), 7000));
-}
-
-function loadGrounds() {
-    grounds.push(loadImage("assets/image/ground/grass.png", "ground", 0));
-    grounds.push(loadImage("assets/image/ground/grass_side.png", "ground", 0));
-    grounds.push(loadImage("assets/image/ground/grass_corner.png", "ground", 0));
-    grounds.push(loadImage("assets/image/ground/grass_farm.png", "ground", 0));
+    blocks.push(new Static(new Array(IMG.TREE0)).setNaturalSpawnChance(20));
+    blocks.push(new Static(new Array(IMG.TREE1)).setNaturalSpawnChance(20));
+    blocks.push(new Static(new Array(IMG.PLANT0)).setNaturalSpawnChance(75));
+    blocks.push(new Static(new Array(IMG.ROCK0)).setNaturalSpawnChance(30));
+    blocks.push(new Static(new Array(IMG.FLOWER0)).setNaturalSpawnChance(4));
+    blocks.push(new Static(new Array(IMG.FLOWER1)).setNaturalSpawnChance(4));
+    blocks.push(new Static(new Array(IMG.FLOWER2)).setNaturalSpawnChance(4));
+    blocks.push(new Static(new Array(IMG.TRUNK0)).setNaturalSpawnChance(10));
+    blocks.push(new Crop(IMG.MELON, IMG_ICON.MELON, 5000));
+    blocks.push(new Crop(IMG.WHEAT, IMG_ICON.WHEAT, 15000));
+    blocks.push(new Crop(IMG.SUGARCANE, IMG_ICON.SUGARCANE, 13000));
+    blocks.push(new Crop(IMG.EGGPLANT, IMG_ICON.EGGPLANT, 3000));
+    blocks.push(new Crop(IMG.CHILI, IMG_ICON.CHILI, 7000));
 }
 
 function loadGlobalListeners() {
@@ -48,10 +39,6 @@ function loadGlobalListeners() {
     })
 
     document.getElementById('toolbar').addEventListener('mousedown', mouseDownToolBar);
-}
-
-function initAllDefaultValues() {
-    sounds[0].play();
 }
 
 function getBlockFromName(name) {
