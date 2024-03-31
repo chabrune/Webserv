@@ -41,17 +41,10 @@ function loadGlobalListeners() {
     document.getElementById('toolbar').addEventListener('mousedown', mouseDownToolBar);
 }
 
-function getBlockFromName(name) {
+function getBlockFromId(id) {
     for (const block of blocks) {
-        if (block.name.toUpperCase() === name.toUpperCase())
+        if (block .images[0].getAttribute("id").toUpperCase() === id.toUpperCase())
             return block;
     }
     return null;
-}
-
-function mouseDownToolBar(event) {
-    let block = getBlockFromName(event.target.textContent)
-    if (block === null)
-        return;
-    handBlock = block;
 }

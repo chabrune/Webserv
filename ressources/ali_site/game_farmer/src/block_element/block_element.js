@@ -3,7 +3,7 @@ class BlockElement {
         if (this.constructor === BlockElement)
             throw new Error("Abstract classes can't be instantiated.");
         this.images = images;
-        this.name = getNameFromImage(images[0]);
+        this.name = this.images[0].getAttribute("id");
     }
 
     setIcon(icon) {

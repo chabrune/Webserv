@@ -39,22 +39,10 @@ function newImages(imagePath, id, z, number) {
     return imgs;
 }
 
-function getNameFromImage(img) {
-    let path = img.src.replace(/^.*[\\\/]/, '');
-
-    path = path.charAt(0).toUpperCase() + path.slice(1);
-    path = path.substring(0, path.indexOf('.'));
-    return path;
-}
-
 function getPercent(value, percent) {
     return (value * percent) / 100;
 }
 
 function insertToStr(strTarget, strToInsert, index) {
     return strTarget.slice(0, index) + strToInsert + strTarget.slice(index);
-}
-
-function isDigit(char) {
-    return char >= '0' && char <= '9'
 }
