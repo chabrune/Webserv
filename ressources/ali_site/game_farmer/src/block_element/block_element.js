@@ -3,7 +3,6 @@ class BlockElement {
         if (this.constructor === BlockElement)
             throw new Error("Abstract classes can't be instantiated.");
         this.images = images;
-        this.name = this.images[0].getAttribute("id");
     }
 
     setIcon(icon) {
@@ -27,7 +26,12 @@ class BlockElement {
         return this;
     }
 
-    setBlockToSquare(square) {
+    setDisplayName(displayName) {
+        this.displayName = displayName;
+        return this;
+    }
+
+    setElementToSquare(square) {
         throw new Error("This function need to be implemented");
     }
 }

@@ -1,6 +1,9 @@
 class Map {
-    constructor(elemId) {
-        this.map = document.getElementById(elemId);
+    constructor() {
+        this.map = document.createElement("div");
+        this.map.setAttribute("id", "map");
+        document.body.prepend(this.map);
+
         let result = getPercent(screen.width, mapWidth);
         this.map.style.width = result - (result % globalSize) + "px";
         result = getPercent(screen.height, mapHeight);
@@ -66,7 +69,7 @@ class Map {
             let block = naturalSpawnableBlock[Math.floor(Math.random() * naturalSpawnableBlock.length)]
             let randValue = Math.floor(Math.random() * 100);
             if (randValue <= block.naturalSpawnChance) {
-                block.setBlockToSquare(square)
+                block.setElementToSquare(square)
                 break;
             }
         }
@@ -100,12 +103,7 @@ class Map {
     }
 
     getBlockFromSquare(square) {
-        if (!this.isSquareContainBlock(square))
-	        return null;
-        return getBlockFromId(square.querySelectorAll('img')[1].getAttribute('id'));
-    }
-
-    isSquareContainBlock(square) {
-        return square.querySelectorAll('img').length > 1
+        const nodes = square.querySelectorAll('img');
+        return getBlockFromId(nodes[nodes.length - 1].getAttribute('id'));
     }
 }

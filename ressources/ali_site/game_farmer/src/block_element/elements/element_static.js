@@ -1,9 +1,9 @@
-class Static extends BlockElement {
+class ElementStatic extends BlockElement {
 	constructor(image) {
 		super(image);
 	}
 
-	setBlockToSquare(square) {
+	setElementToSquare(square) {
 		square.appendChild(this.images[0].cloneNode(true));
 	}
 }

@@ -1,21 +1,22 @@
-class Crop extends BlockElement {
-	constructor(images, icon, timeToGrowth) {
+class ElementCrop extends BlockElement {
+	constructor(images, icon, displayName, timeToGrowth) {
 		super(images);
 		this.timeToGrowth = timeToGrowth;
 		this.icon = icon;
+		this.displayName = displayName;
 
 		let htmlElement = document.getElementById('dropup-crop');
 
 		let div = document.createElement('div');
 		div.appendChild(this.icon);
 
-		let spanHTML = `<span class="txt">${this.name}</span>`;
+		let spanHTML = `<span class="txt">${this.displayName}</span>`;
 
 		div.insertAdjacentHTML('beforeend', spanHTML);
 		htmlElement.appendChild(div);
 	}
 
-	setBlockToSquare(square) {
+	setElementToSquare(square) {
 		if (square.querySelector('#crops') || !square.querySelector('img#ground_farm'))
 			return;
 		square.appendChild(this.images[0].cloneNode(true));
