@@ -1,7 +1,6 @@
 import os
 import sys
 
-
 print("<html>")
 print("<head>")
 print("<title>Hello World - First CGI Program</title>")

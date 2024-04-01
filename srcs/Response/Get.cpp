@@ -12,11 +12,11 @@ Get::Get(Server &server, Request &request) : AResponse(server) {
             generateAutoindex(request);
         else if (server.isCgi(request.getExtension())) {
             Cgi(*this, request, server);
-            headerFileBuilder(request.getFileType());
+            headerFileBuilder(request.getFileType(), request);
         }
         else {
             defaultFileBuilder(request);
-            headerFileBuilder(request.getFileType());
+            headerFileBuilder(request.getFileType(), request);
         }
     } catch (std::exception &e) {
         throw;
@@ -25,14 +25,18 @@ Get::Get(Server &server, Request &request) : AResponse(server) {
         std::cout << "Response created. Header:" << std::endl << MAGENTA << this->_header << RESET;
 }
 
-void Get::headerFileBuilder(std::string file_type) {
+void Get::headerFileBuilder(std::string file_type, Request &request) {
     std::stringstream header_tmp;
-
     if (this->_isGenerated) {
         file_type = "text/html";
     }
-    //header_tmp << "Set-Cookie: Password=XYZ123;\r\n";
-    header_tmp << "HTTP/1.1 200 OK\nContent-Type: " << file_type << "\nContent-Length: " << this->_contentSize << "\r\n\r\n";
+    header_tmp << "HTTP/1.1 200 OK\nContent-Type: " << file_type << "\nContent-Length: " << this->_contentSize << "\r\n";
+    for (std::map<std::string, std::string>::const_iterator it = request.getCookies().begin(); it != request.getCookies().end(); it++) {
+        std::cout << header_tmp.str() << std::endl;
+        header_tmp << "Set-Cookie: " << it->first << "=" << it->second << ";\r\n";
+    }
+    std::cout << header_tmp.str() << std::endl;
+    header_tmp << "\r\n";
     this->_header = header_tmp.str();
 }
 

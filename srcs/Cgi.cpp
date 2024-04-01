@@ -93,8 +93,13 @@ void Cgi::readPipeValue(AResponse &response, Request &request) {
         buffer += c;
     }*/
     size_t first_line_index = buffer.find_first_of('\n');
-    request.setFileType(buffer.substr(14, first_line_index - 14));
-    buffer.erase(0, first_line_index + 1);
+    std::string first_line = buffer.substr(0, first_line_index);
+    if (first_line.find("Content-Type") == std::string::npos) {
+        if (DEBUG)
+            std::cout << RED << "Conent-Type in CGI not found, please respect convention and define it." << RESET << std::endl;
+        request.setFileType("text/html");
+    } else
+        request.setFileType(first_line.substr(14, first_line_index - 14));
     response.setContent(buffer);
     response.setContentSize(buffer.size());
 }

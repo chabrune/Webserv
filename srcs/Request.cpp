@@ -72,6 +72,23 @@ void Request::parseRequest(Server *server, std::string &str) {
         this->_body = str.substr(start + 4);
         str.erase(start, str.length() - start);
     }
+
+    //cookie
+    size_t cookie_index = str.find("Cookie:");
+    if (cookie_index == std::string::npos) {
+        if (DEBUG)
+            std::cout << "No cookie found" << std::endl;
+        return;
+    }
+    std::string cookie_line = str.substr(cookie_index + 8, str.find('\n', cookie_index) - (cookie_index + 8));
+    while (!cookie_line.empty()) {
+        size_t equalsChar = cookie_line.find('=');
+        size_t colonChar = cookie_line.find(';');
+        if (colonChar == std::string::npos)
+            colonChar = cookie_line.length();
+        addCookie(cookie_line.substr(0, equalsChar), cookie_line.substr(equalsChar + 1, colonChar - equalsChar - 1));
+        cookie_line.erase(0, colonChar + 2);
+    }
 }
 
 void Request::defineFileType() {
@@ -324,6 +341,14 @@ const std::string &Request::getQuery() const {
 
 void Request::setQuery(const std::string &query) {
     this->_query = query;
+}
+
+const std::map<std::string, std::string> &Request::getCookies() {
+    return this->_cookies;
+}
+
+void Request::addCookie(const std::string &key, const std::string &value) {
+    this->_cookies[key] = value;
 }
 
 const std::string &Request::getFileType() const {

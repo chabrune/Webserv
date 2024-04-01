@@ -21,6 +21,8 @@ class Request {
         void setFileName(const std::string &file_name);
         const std::string &getQuery() const;
         void setQuery(const std::string &query);
+        const std::map<std::string, std::string> &getCookies();
+        void addCookie(const std::string &key, const std::string &value);
 		const std::string &getFileType() const;
 		const std::string &getExtension() const;
 		const int &getContentLenght() const;
@@ -94,6 +96,7 @@ class Request {
 		std::string extension; //jpg, png, css...
 		std::string host;
         std::string _header;
+        std::map<std::string, std::string> _cookies;
         std::string _body;
         std::string _contentType;
         std::string _boundary;

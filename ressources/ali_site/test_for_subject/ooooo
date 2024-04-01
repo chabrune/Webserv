@@ -1,1 +1,2 @@
 je suis le ooooo file ouououh
+std::cout << "key: " << cookie_line.substr(0, equalsChar) << "val: " << cookie_line.substr(equalsChar + 1, colonChar - equalsChar - 1) << " " << std::endl;
