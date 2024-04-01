@@ -34,14 +34,12 @@ void Cgi::cgiBuilder(Request &request, Server &server) {
     _env.push_back(strdup("CONTENT_TYPE="));
     _env.push_back(strdup("GATEWAY_INTERFACE=CGI/1.1"));
     _env.push_back(strdup(("SCRIPT_NAME=" + getPathFullName()).c_str()));
-    //this->_env["PATH_TRANSLATED"] = it_loc->getRootLocation() + (this->_env["PATH_INFO"] == "" ? "/" : this->_env["PATH_INFO"]);
     _env.push_back(strdup(("QUERY_STRING=" + request.getQuery()).c_str()));
-    //this->_env["REMOTE_ADDR"] = //ip du client
     _env.push_back(strdup(("SERVER_NAME=" + server.getServerName()).c_str()));
     int_convertor << server.getPort();
     _env.push_back(strdup(("SERVER_PORT=" + int_convertor.str()).c_str()));
     _env.push_back(strdup(("REQUEST_METHOD=" + request.getMethod()).c_str()));
-    //this->_env["HTTP_COOKIE"] = req.getHeader("cookie");
+    _env.push_back(strdup(("HTTP_COOKIE=" + request.getCookie()).c_str()));
     _env.push_back(strdup("SERVER_PROTOCOL=HTTP/1.1"));
     _env.push_back(strdup("REDIRECT_STATUS=200"));
     _env.push_back(strdup("SERVER_SOFTWARE=AMANIX"));
@@ -89,6 +87,8 @@ void Cgi::readPipeValue(AResponse &response, Request &request) {
         return;
     }
     read(_pipe_out[0], &buffer[0], 1024);
+    if (buffer.find("Set-Cookie:") != std::string::npos)
+        parseCookieFromCgi(buffer, request);
     /*while (read(_pipe_out[0], &c, 1) > 0) {
         buffer += c;
     }*/
@@ -100,8 +100,19 @@ void Cgi::readPipeValue(AResponse &response, Request &request) {
         request.setFileType("text/html");
     } else
         request.setFileType(first_line.substr(14, first_line_index - 14));
+    buffer.erase(0, first_line_index + 1);
     response.setContent(buffer);
     response.setContentSize(buffer.size());
+}
+
+void Cgi::parseCookieFromCgi(std::string &buffer, Request &request) {
+    size_t lineStart = buffer.find("Set-Cookie:");
+    size_t lineEnd;
+    do {
+        lineEnd = buffer.find('\n', lineStart);
+        request.addCookie("; " +  buffer.substr(lineStart + 12, lineEnd - (lineStart + 12)));
+        buffer.erase(lineStart, lineEnd - lineStart);
+    } while((lineStart = buffer.find("Set-Cookie:")) != std::string::npos);
 }
 
 void Cgi::closeAllPipe() {

@@ -23,9 +23,6 @@ Request::Request(Server *server, int sockfd) : tooLong(false), _sockfd(sockfd), 
     //     g_error = TOOLARGEENTITY;
     //     throw std::exception();
     // }
-    std::cout << "--------------------------------------------" << std::endl;
-    // std::cout << MAGENTA << buffer << RESET << std::endl;
-    std::cout << "--------------------------------------------" << std::endl;
     if (DEBUG)  
 	    std::cout << "No errors found, starting to parse.." << std::endl;
 	this->parseRequest(server, buffer);
@@ -80,15 +77,7 @@ void Request::parseRequest(Server *server, std::string &str) {
             std::cout << "No cookie found" << std::endl;
         return;
     }
-    std::string cookie_line = str.substr(cookie_index + 8, str.find('\n', cookie_index) - (cookie_index + 8));
-    while (!cookie_line.empty()) {
-        size_t equalsChar = cookie_line.find('=');
-        size_t colonChar = cookie_line.find(';');
-        if (colonChar == std::string::npos)
-            colonChar = cookie_line.length();
-        addCookie(cookie_line.substr(0, equalsChar), cookie_line.substr(equalsChar + 1, colonChar - equalsChar - 1));
-        cookie_line.erase(0, colonChar + 2);
-    }
+    setCookie(str.substr(cookie_index + 8, str.find('\n', cookie_index) - (cookie_index + 8)));
 }
 
 void Request::defineFileType() {
@@ -343,12 +332,16 @@ void Request::setQuery(const std::string &query) {
     this->_query = query;
 }
 
-const std::map<std::string, std::string> &Request::getCookies() {
+const std::string &Request::getCookie() {
     return this->_cookies;
 }
 
-void Request::addCookie(const std::string &key, const std::string &value) {
-    this->_cookies[key] = value;
+void Request::setCookie(const std::string &cookie) {
+    this->_cookies = cookie;
+}
+
+void Request::addCookie(const std::string &value) {
+    this->_cookies += value;
 }
 
 const std::string &Request::getFileType() const {
