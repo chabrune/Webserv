@@ -50,3 +50,26 @@ const RESOURCE = {
 	CHILI: new Resource("Chili", IMG_ICON.CHILI),
 	WOOD: new Resource("Wood", IMG_ICON.WOOD)
 }
+
+const BLOCK = {
+	GRASS: new ElementGround([IMG.GRASS]).setBlockAction(new BlockActionPlowe()),
+	GRASS_SIDE: new ElementGround([IMG.GRASS_SIDE]),
+	GRASS_CORNER: new ElementGround([IMG.GRASS_CORNER]),
+	GRASS_FARM: new ElementGround([IMG.GRASS_FARM]),
+
+	TREE0: new ElementStatic([IMG.TREE0]).setNaturalSpawnChance(20).setLootable(RESOURCE.SEED).setBlockAction(new BlockActionHarvest()),
+	TREE1: new ElementStatic([IMG.TREE1]).setNaturalSpawnChance(20),
+	PLANT0: new ElementStatic([IMG.PLANT0]).setNaturalSpawnChance(75),
+	ROCK0: new ElementStatic([IMG.ROCK0]).setNaturalSpawnChance(30),
+	FLOWER0: new ElementStatic([IMG.FLOWER0]).setNaturalSpawnChance(4),
+	FLOWER1: new ElementStatic([IMG.FLOWER1]).setNaturalSpawnChance(4),
+	FLOWER2: new ElementStatic([IMG.FLOWER2]).setNaturalSpawnChance(4),
+	TRUNK0: new ElementStatic([IMG.TRUNK0]).setNaturalSpawnChance(10),
+	MELON: new ElementCrop(IMG.MELON, IMG_ICON.MELON, "Melon", 5000),
+	WHEAT: new ElementCrop(IMG.WHEAT, IMG_ICON.WHEAT, "Wheat", 15000),
+	SUGARCANE: new ElementCrop(IMG.SUGARCANE, IMG_ICON.SUGARCANE, "Sugarcane", 13000),
+	EGGPLANT: new ElementCrop(IMG.EGGPLANT, IMG_ICON.EGGPLANT, "Eggplant", 3000),
+	CHILI: new ElementCrop(IMG.CHILI, IMG_ICON.CHILI, "Chili", 7000)
+
+
+}

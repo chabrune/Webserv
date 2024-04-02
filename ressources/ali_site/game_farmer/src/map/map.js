@@ -26,7 +26,8 @@ class Map {
     mapGenerator() {
         const start = performance.now();
         const naturalSpawnableBlock = [];
-        for (const block of blocks) {
+        for (const blockName in BLOCK) {
+            const block = BLOCK[blockName];
             if (block.naturalSpawnChance === undefined)
                 continue;
             naturalSpawnableBlock.push(block);
@@ -105,5 +106,9 @@ class Map {
     getBlockFromSquare(square) {
         const nodes = square.querySelectorAll('img');
         return getBlockFromId(nodes[nodes.length - 1].getAttribute('id'));
+    }
+
+    isSquareContainMaxElement(square) {
+        return square.querySelectorAll('img').length > 1;
     }
 }
