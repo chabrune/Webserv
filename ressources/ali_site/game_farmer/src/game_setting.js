@@ -31,13 +31,13 @@ const IMG = {
 }
 
 const IMG_ICON = {
-	SEED: newImage("assets/image/icon/seed_icon.png", "icon", 0),
-	MELON: newImage("assets/image/icon/melon_icon.png", "icon", 0),
-	WHEAT: newImage("assets/image/icon/wheat_icon.png", "icon", 0),
-	SUGARCANE: newImage("assets/image/icon/sugarcane_icon.png", "icon", 0),
-	EGGPLANT: newImage("assets/image/icon/eggplant_icon.png", "icon", 0),
-	CHILI: newImage("assets/image/icon/chili_icon.png", "icon", 0),
-	WOOD: newImage("assets/image/icon/wood_icon.png", "icon", 0)
+	SEED: newImage("assets/image/icon/seed_icon.png", "seed0", 0),
+	MELON: newImage("assets/image/icon/melon_icon.png", "melon", 0),
+	WHEAT: newImage("assets/image/icon/wheat_icon.png", "wheat", 0),
+	SUGARCANE: newImage("assets/image/icon/sugarcane_icon.png", "sugarcane", 0),
+	EGGPLANT: newImage("assets/image/icon/eggplant_icon.png", "eggplant", 0),
+	CHILI: newImage("assets/image/icon/chili_icon.png", "chili", 0),
+	WOOD: newImage("assets/image/icon/wood_icon.png", "wood", 0)
 
 }
 

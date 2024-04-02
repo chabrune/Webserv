@@ -14,6 +14,11 @@ function mouseDownMap(event) {
 			 return;
 		 block.blockAction.executor(square)
 	}
+	let htmlElement = document.getElementById('ressourcebar').getElementsByTagName('ul')[0];
+	const liList = htmlElement.getElementsByTagName('li');
+	for (const liVal of liList) {
+		console.log(liVal.getElementsByTagName("img")[0].id)
+	}
 }
 
 function mouseMoveEvent(event) {

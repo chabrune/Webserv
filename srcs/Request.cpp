@@ -68,7 +68,7 @@ void Request::parseRequest(Server *server, std::string &str) {
         return;
     }
     setCookie(str.substr(cookie_index + 8, str.find('\n', cookie_index) - (cookie_index + 8)));
-}
+mak}
 
 void Request::defineFileType() {
     this->setFileType(this->_path_to_file.substr(this->_path_to_file.find_first_of('.') + 1, this->_path_to_file.length()));

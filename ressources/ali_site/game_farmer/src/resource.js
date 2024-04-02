@@ -1,6 +1,6 @@
 class Resource {
-	constructor(name, icon) {
-		this.name = name;
+	constructor(displayName, icon) {
+		this.displayName = displayName;
 		this.icon = icon;
 
 		let htmlElement = document.getElementById('ressourcebar').getElementsByTagName('ul')[0];
