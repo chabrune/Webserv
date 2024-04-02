@@ -9,7 +9,6 @@ Post::Post(Server & server) : AResponse(server), done(false), processing(false)
 }
 
 void Post::doSomeThings(std::string & buffer, Request &request) {
-    (void)request;
     size_t original_size = buffer.size();
     std::cout << YELLOW << "buffer size: " << original_size << RESET << std::endl;
     // std::cout << YELLOW << "VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV" << RESET << std::endl;
@@ -22,11 +21,8 @@ void Post::doSomeThings(std::string & buffer, Request &request) {
         {
             size_t filenamePos = buffer.find("filename=\"");
             if (filenamePos == std::string::npos) {
-                // Si pas de nom de fichier trouvé, on saute cette partie
-    
                 continue;
             } else {
-                // Extraction du nom du fichier
                 size_t slash = buffer.find("\"", filenamePos + 10);
                 // std::cout << RED << slash << RESET << std::endl;
                 this->_filename = buffer.substr(filenamePos + 10, slash - filenamePos - 10);
@@ -60,20 +56,15 @@ void Post::doThingsAndLetsSeeWhatHappenMaybeItWillWorkMaybeNotWeWillSeeLetsPrayT
         try {
         std::string buffer;
         if (!this->processing) {
-//            this->fileExist = tryAccess_Post(&server);
+//            this->fileExist = tryAccess_Post(&server); // ??
             this->_uri = server.getRootFrom(request.getPathToFile()) + request.subLocation(server.getLocationFrom(request.getPathToFile()));
             buffer = request.getBody();
-           // std::cout << YELLOW << buffer.substr(0, 200) << RESET << std::endl;
+            if(buffer.size() > server.max_body_size) // ??
+            {
+                g_error = TOOLARGEENTITY;
+                throw Request::tooLongRequest();
+            }
         }
-
-    
-        // std::cout << RED << buffer << RESET << std::endl;
-        // std::cout << GREEN << request.getBoundary() << RESET << std::endl;
-        // if(buffer.find("--" + request.getBoundary() + "--") != std::string::npos)
-        // {
-        //     //boucle sur boundary pour gerer multi files + creer file si multi
-        //     doSomeThings(buffer, request);
-        // }
         if (!this->done && this->processing) { // Si le dernier boundary est toujours pas arrive
             long tmp;
             buffer.resize(HTTP_BUFFER_SIZE);
@@ -90,8 +81,6 @@ void Post::doThingsAndLetsSeeWhatHappenMaybeItWillWorkMaybeNotWeWillSeeLetsPrayT
 
         }
         doSomeThings(buffer, request);
-        // if(buffer.find("--" + request.getBoundary() + "--") != std::string::npos)
-        //     this->done = true;
         if (this->done) {
             std::cout << MAGENTA << "Post is done" << RESET << std::endl;
             this->_isGenerated = true;
@@ -105,6 +94,12 @@ void Post::doThingsAndLetsSeeWhatHappenMaybeItWillWorkMaybeNotWeWillSeeLetsPrayT
 }
 
 /*
+    Voir pour gerer le max body size (+ renvoyer le bon code erreur)
+    Implementer le allow_upload pour les routes (allowed ou non) (idem renvoyer le bon code)
+    POST CGI ??? 
+    Try_AccessPost ?
+
+
     S'arreter a l'header pour les autres requetes et body pour post
     C LE BORDEL AVEC LES DEUX MERGE MAIS JE DOIS ALLER GRIMPER BISOUS NOUTNOUT
     check path si allowed || A VOIR

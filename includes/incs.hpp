@@ -41,7 +41,6 @@
 # define TIMEOUT 1 // Seconds before select exit
 
 class   requestError : public std::exception {};
-class   taMereEnSlip : public std::exception {};
 
 extern int g_error;
 

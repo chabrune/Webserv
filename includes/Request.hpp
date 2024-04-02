@@ -42,14 +42,7 @@ class Request {
         void parseBodyz(std::string uri, std::string &buffer);
         void handleBody();
         const std::string& getBoundary() const;
-
-
-		class returnTest : public taMereEnSlip
-		{
-			const char* what() const throw() {
-				return("OK");
-			}
-		};
+        
 		class recvFailure : public requestError {
 			const char * what() const throw() {
 				return ("-failed to read / empty request");

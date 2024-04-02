@@ -13,7 +13,13 @@ server {
         allow GET
         return 301 https://www.winxclubfrance.com/
     }
-    return 301 https://www.youtube.com/watch?v=oHg5SJYRHA0
+    location /autoindex/upload {
+        allow_uploads /
+        root ressources/upload
+        allow GET POST
+        index upload.html
+        return 301 https://www.winxclubfrance.com/
+    }
 }
 
 server {

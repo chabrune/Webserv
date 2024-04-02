@@ -128,10 +128,6 @@ void Mommy::run(void) {
                                 it->second->request.isAllowed(it->second->server);
                                 this->treatRequest(it->second->server, it->second);
                             }
-                            catch(taMereEnSlip &e)
-                            {
-                                it->second->readyToSend = true;
-                            }
                             catch (requestError &e) 
                             {
                                 it->second->response.handleRequestError(it->second->server, it->second->request.getPathToFile());

@@ -39,7 +39,7 @@ std::string AResponse::getCodeHeader(std::string * path, Server* server,  const 
     if (g_error == MISSINGSLASH || g_error == INVALIDSLASH) {
         return ("HTTP/1.1 301 Moved Permanently\n");
     } else if (g_error == TOOLARGEENTITY) {
-        return ("413 Request Entity Too Large\n");
+        return ("HTTP/1.1 413 Request Entity Too Large\n");
     } else if (g_error == FORBIDDEN) {
         try {
             *path += server->getErrorPage(403, uri);
