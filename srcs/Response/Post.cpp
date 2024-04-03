@@ -4,11 +4,11 @@
 #include "../../includes/Server.hpp"
 
 Post::Post(Server & server) : AResponse(server), done(false), processing(false)
-{ 
+{
 
 }
 
-void Post::doSomeThings(std::string & buffer, Request &request) {
+void Post::treatBuffer(std::string & buffer, Request &request) {
     size_t original_size = buffer.size();
     std::cout << YELLOW << "buffer size: " << original_size << RESET << std::endl;
     // std::cout << YELLOW << "VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV" << RESET << std::endl;
@@ -52,7 +52,7 @@ void Post::doSomeThings(std::string & buffer, Request &request) {
     }
 }
 
-void Post::doThingsAndLetsSeeWhatHappenMaybeItWillWorkMaybeNotWeWillSeeLetsPrayTogetherAndMakeLoveNotWar___amen(Server & server, Request &request, bool & readyToSend) {
+void Post::execPost(Server & server, Request &request, bool & readyToSend) {
         try {
         std::string buffer;
         if (!this->processing) {
@@ -80,7 +80,7 @@ void Post::doThingsAndLetsSeeWhatHappenMaybeItWillWorkMaybeNotWeWillSeeLetsPrayT
             std::cout << RED << "total lu: " << request.len << RESET << std::endl;
 
         }
-        doSomeThings(buffer, request);
+        treatBuffer(buffer, request);
         if (this->done) {
             std::cout << MAGENTA << "Post is done" << RESET << std::endl;
             this->_isGenerated = true;

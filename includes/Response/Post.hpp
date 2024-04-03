@@ -9,8 +9,8 @@ class Post : public AResponse {
     public:
         Post() {};
         Post(Server & server);
-        void doSomeThings(std::string & buffer, Request &request);
-        void doThingsAndLetsSeeWhatHappenMaybeItWillWorkMaybeNotWeWillSeeLetsPrayTogetherAndMakeLoveNotWar___amen(Server & server, Request &request, bool & readyToSend);
+        void treatBuffer(std::string & buffer, Request &request);
+        void execPost(Server & server, Request &request, bool & readyToSend);
     private:
         bool done;
         bool processing;

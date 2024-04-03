@@ -24,7 +24,7 @@ server {
 
 server {
     listen 8080
-    server_name localhost
+    server_name k0r3p8
     root ressources
     client_max_body_size 3000000
     cgi .py /usr/bin/python3
@@ -78,6 +78,12 @@ server {
 
     location /autoindex/game {
         allow GET
-        return 301 /autoindex/cgi/game_farmer/testgrid.html
+        return 301 /autoindex/cgi/game_farmer/main.html
+    }
+
+    location /autoindex/dj_drogonj {
+        root ressources/dj_drogonj
+        allow GET
+        index disco.html
     }
 }

@@ -11,6 +11,8 @@ class AResponse {
 	public:
         AResponse();
         AResponse(Server & server);
+        virtual ~AResponse() {};
+
 		std::string &getHeader();
 		std::string &getContent();
         std::string &getUri();
@@ -21,7 +23,7 @@ class AResponse {
         void setContent(const std::string &content);
         void setContentSize(long long size);
         void handleRequestError(Server* server, const std::string & uri);
-        void doSomeThings(std::string & buffer, Request &request);
+
 
 	protected:
         void defaultFileBuilder(const Request &request);

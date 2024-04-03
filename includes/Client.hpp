@@ -21,8 +21,7 @@ class Client {
         int sockfd;
         sockaddr_in addr;
         Server *server; // Attached server
-        AResponse response;
-        Post p;
+        AResponse *response;
         Request request;
 
         void readRequest();

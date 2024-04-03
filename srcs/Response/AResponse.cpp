@@ -6,7 +6,7 @@ defaultErrorCodes __defaultErrorCodes;
 defaultErrorPages __defaultErrorPages;
 
 AResponse::AResponse() : _contentFile(0), _isGenerated(false) {}
-AResponse::AResponse(Server & server) : server(&server), _contentFile(0), _isGenerated(false), _isPosting(false) {
+AResponse::AResponse(Server & server) : server(&server), _contentFile(0), _isGenerated(false), _isPosting(false)  {
     if (DEBUG)
 	    std::cout << "New response is under building.." << std::endl;
 }

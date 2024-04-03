@@ -52,18 +52,20 @@ Client * Mommy::acceptRequest(int fd, Server *server) {
 void Mommy::treatRequest(Server *server, Client *cli) {
     try {
         if (cli->request.getMethod() == "GET") {
-            cli->response = Get(*server, cli->request);
+            cli->response = new Get(*server, cli->request);
             cli->readyToSend = true;
         } else if (cli->request.getMethod() == "POST") {
-            if (!cli->response.modIsPosting()) {
-                cli->p = Post(*server);
-                cli->response.modIsPosting() = true;
+            if (!cli->response) {
+                cli->response = new Post(*server);
             }
-            cli->p.doThingsAndLetsSeeWhatHappenMaybeItWillWorkMaybeNotWeWillSeeLetsPrayTogetherAndMakeLoveNotWar___amen(*server, cli->request, cli->readyToSend);
-
-            // cli->sent = true;
+            Post* postResponse = dynamic_cast<Post*>(cli->response);
+            if (postResponse) {
+                postResponse->execPost(*cli->server, cli->request, cli->readyToSend);
+            } else {
+                std::cout << RED << "nope" << RESET << std::endl;
+            }
         } else if (cli->request.getMethod() == "DELETE") {
-            cli->response = Delete(*server, cli->request);
+            cli->response = new Delete(*server, cli->request);
             cli->readyToSend = true;
         } else {
             g_error = BADHEADER;
@@ -130,7 +132,9 @@ void Mommy::run(void) {
                             }
                             catch (requestError &e) 
                             {
-                                it->second->response.handleRequestError(it->second->server, it->second->request.getPathToFile());
+                                if (!it->second->response)
+                                    it->second->response = new AResponse(*it->second->server);
+                                it->second->response->handleRequestError(it->second->server, it->second->request.getPathToFile());
                                 it->second->readyToSend = true;
                             } 
                             catch (std::exception &e) 
