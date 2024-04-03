@@ -71,7 +71,6 @@ void Post::execPost(Server & server, Request &request, bool & readyToSend) {
             tmp = recv(request.getSockfd(), &(buffer[0]), HTTP_BUFFER_SIZE, 0);
             if (tmp < 0) {
                 std::cout << YELLOW << "recv failed or enmpty, exiting POST, value: " << tmp << RESET << std::endl;
-                perror("");
                 readyToSend = true;
                 throw Request::recvFailure();
             }
@@ -79,6 +78,13 @@ void Post::execPost(Server & server, Request &request, bool & readyToSend) {
             request.len += tmp;
             std::cout << RED << "total lu: " << request.len << RESET << std::endl;
 
+        }
+        if (server.isCgi(request.getExtension())) {
+            buffer.push_back('\n');
+            Cgi(*this, request, server, buffer);
+            this->headerFileBuilder(request.getFileType(), request);
+            readyToSend = true;
+            return;
         }
         treatBuffer(buffer, request);
         if (this->done) {
