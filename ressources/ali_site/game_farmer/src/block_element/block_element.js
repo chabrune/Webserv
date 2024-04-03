@@ -34,4 +34,12 @@ class BlockElement {
     setElementToSquare(square) {
         throw new Error("This function need to be implemented");
     }
+
+    getResource() {
+        return this.resource;
+    }
+
+    getResourceNumber() {
+        return this.resourceNumber;
+    }
 }

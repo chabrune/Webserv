@@ -6,6 +6,8 @@ const globalGrowthSpeed = 1;
 const mapHeight = 75;
 const mapWidth = 95;
 
+const resourceBarElement = document.getElementById('ressourcebar').getElementsByTagName('ul')[0];
+
 const SOUND = {
 	DEFAULT_SOUND: new Audio('assets/sound/default_sound.mp3')
 }
@@ -57,22 +59,17 @@ const BLOCK = {
 	GRASS_CORNER: new ElementGround([IMG.GRASS_CORNER]),
 	GRASS_FARM: new ElementGround([IMG.GRASS_FARM]),
 
-	TREE0: new ElementStatic([IMG.TREE0]).setNaturalSpawnChance(20).setLootable(RESOURCE.SEED).setBlockAction(new BlockActionHarvest()),
-	TREE1: new ElementStatic([IMG.TREE1]).setNaturalSpawnChance(20),
+	TREE0: new ElementStatic([IMG.TREE0]).setNaturalSpawnChance(20).setLootable(RESOURCE.WOOD, 7).setBlockAction(new BlockActionHarvest()),
+	TREE1: new ElementStatic([IMG.TREE1]).setNaturalSpawnChance(20).setLootable(RESOURCE.WOOD, 7).setBlockAction(new BlockActionHarvest()),
 	PLANT0: new ElementStatic([IMG.PLANT0]).setNaturalSpawnChance(75),
 	ROCK0: new ElementStatic([IMG.ROCK0]).setNaturalSpawnChance(30),
-	FLOWER0: new ElementStatic([IMG.FLOWER0]).setNaturalSpawnChance(4),
-	FLOWER1: new ElementStatic([IMG.FLOWER1]).setNaturalSpawnChance(4),
-	FLOWER2: new ElementStatic([IMG.FLOWER2]).setNaturalSpawnChance(4),
-	TRUNK0: new ElementStatic([IMG.TRUNK0]).setNaturalSpawnChance(10),
+	FLOWER0: new ElementStatic([IMG.FLOWER0]).setNaturalSpawnChance(4).setLootable(RESOURCE.SEED, 1).setBlockAction(new BlockActionHarvest()),
+	FLOWER1: new ElementStatic([IMG.FLOWER1]).setNaturalSpawnChance(4).setLootable(RESOURCE.SEED, 1).setBlockAction(new BlockActionHarvest()),
+	FLOWER2: new ElementStatic([IMG.FLOWER2]).setNaturalSpawnChance(4).setLootable(RESOURCE.SEED, 1).setBlockAction(new BlockActionHarvest()),
+	TRUNK0: new ElementStatic([IMG.TRUNK0]).setNaturalSpawnChance(10).setLootable(RESOURCE.WOOD, 2).setBlockAction(new BlockActionHarvest()),
 	MELON: new ElementCrop(IMG.MELON, IMG_ICON.MELON, "Melon", 5000),
 	WHEAT: new ElementCrop(IMG.WHEAT, IMG_ICON.WHEAT, "Wheat", 15000),
 	SUGARCANE: new ElementCrop(IMG.SUGARCANE, IMG_ICON.SUGARCANE, "Sugarcane", 13000),
 	EGGPLANT: new ElementCrop(IMG.EGGPLANT, IMG_ICON.EGGPLANT, "Eggplant", 3000),
 	CHILI: new ElementCrop(IMG.CHILI, IMG_ICON.CHILI, "Chili", 7000)
-}
-
-const BAR = {
-	RESOURCE: new Bar(document.getElementById('ressourcebar').getElementsByTagName('ul')[0]),
-	TOOLBAR: new Bar()
 }
