@@ -17,7 +17,7 @@ class ElementCrop extends BlockElement {
 	}
 
 	setElementToSquare(square) {
-		if (square.querySelector('#crops') || !square.querySelector('img#ground_farm'))
+		if (map.isSquareContainMaxElement(square) || !square.querySelector('img#ground_farm'))
 			return;
 		square.appendChild(this.images[0].cloneNode(true));
 		for (let i= 1; i <= this.images.length - 1; i++) {
