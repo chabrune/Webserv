@@ -1,0 +1,28 @@
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #232323;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    padding-top: 25vh;
+    padding-bottom: 25vh;
+    padding-left: 20vw;
+    padding-right: 20vw;
+    gap: 5px;
+}
+
+.object {
+    border: 3px solid #bb152d;
+    box-shadow: rgba(255, 0, 0, 0.75) 0px 5px 15px;
+    border-radius: 10px;
+    width: 50px;
+    height: 50px;
+}

@@ -3,8 +3,8 @@ body {
     padding: 0;
     overflow:hidden;
     background: rgb(17, 5, 9);
-    color:white;
-    font-family:Arial;
+    color: #d9d9d9;
+    font-family: sans-serif;
 }
 
 #canv {
@@ -25,7 +25,7 @@ body {
     background: #4e1515;
     cursor:pointer;
     font-size:14px;
-    border:1px solid white;
+    border:1px solid #752626;
     border-radius: 5px 5px;
     transition: opacity 1s ease;
 }
