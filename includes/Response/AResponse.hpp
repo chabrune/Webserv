@@ -28,6 +28,7 @@ class AResponse {
 	protected:
         void defaultFileBuilder(const Request &request);
         void headerGenBuilder(std::string file_type);
+        void headerFileBuilder(std::string file_type, Request &request);
         std::string getCodeHeader(std::string * path, Server* server, const std::string & uri);
         void redirectWellSlashed(const std::string & uri);
 

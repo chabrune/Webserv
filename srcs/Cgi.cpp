@@ -3,13 +3,13 @@
 #include "../includes/Request.hpp"
 #include "../includes/Response/AResponse.hpp"
 
-Cgi::Cgi(AResponse &response, Request &request, Server &server) {
+Cgi::Cgi(AResponse &response, Request &request, Server &server, const std::string &buffer) {
     if (DEBUG)
         std::cout << MAGENTA << "New Cgi is under building.." << std::endl;
     cgiBuilder(request, server);
     if (DEBUG)
         std::cout << GREEN << "Cgi build. " << *this << std::endl;
-    pipeCreatorAndExec();
+    pipeCreatorAndExec(buffer);
     readPipeValue(response, request);
     closeAllPipe();
     if (DEBUG)
@@ -30,8 +30,8 @@ void Cgi::cgiBuilder(Request &request, Server &server) {
     setArgv(argv);
 
     _env.push_back(strdup("AUTH_TYPE=Basic"));
-    _env.push_back(strdup("CONTENT_LENGTH="));
-    _env.push_back(strdup("CONTENT_TYPE="));
+    _env.push_back(strdup("CONTENT_LENGTH=3"));
+    _env.push_back(strdup("CONTENT_TYPE=text/html"));
     _env.push_back(strdup("GATEWAY_INTERFACE=CGI/1.1"));
     _env.push_back(strdup(("SCRIPT_NAME=" + getPathFullName()).c_str()));
     _env.push_back(strdup(("QUERY_STRING=" + request.getQuery()).c_str()));
@@ -46,7 +46,7 @@ void Cgi::cgiBuilder(Request &request, Server &server) {
     _env.push_back(0);
 }
 
-void Cgi::pipeCreatorAndExec() {
+void Cgi::pipeCreatorAndExec(const std::string &buffer) {
     if (pipe(this->_pipe_out) < 0) {
         std::cout << "pipe1 marche po" << std::endl;
         exit(1);
@@ -68,8 +68,10 @@ void Cgi::pipeCreatorAndExec() {
         if (DEBUG)
             std::cout << "Chdir in folder " << getPathFullName() << " return result: " << this->_exit_status << std::endl;
         std::cout << this->_argv[0] << std::endl;
+        std::cout << buffer << std::endl;
         dup2(_pipe_in[0], STDIN_FILENO);
         dup2(_pipe_out[1], STDOUT_FILENO);
+        write(_pipe_in[1], buffer.c_str(), buffer.length());
         closeAllPipe();
         execve(this->_argv[0], const_cast<char **>(this->_argv.data()), const_cast<char **>(this->_env.data()));
     }

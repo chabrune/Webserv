@@ -70,6 +70,9 @@ const BLOCK = {
 	SUGARCANE: new ElementCrop(IMG.SUGARCANE, IMG_ICON.SUGARCANE, "Sugarcane", 13000),
 	EGGPLANT: new ElementCrop(IMG.EGGPLANT, IMG_ICON.EGGPLANT, "Eggplant", 3000),
 	CHILI: new ElementCrop(IMG.CHILI, IMG_ICON.CHILI, "Chili", 7000)
+}
 
-
+const BAR = {
+	RESOURCE: new Bar(document.getElementById('ressourcebar').getElementsByTagName('ul')[0]),
+	TOOLBAR: new Bar()
 }

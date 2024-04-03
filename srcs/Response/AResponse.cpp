@@ -23,6 +23,25 @@ void AResponse::defaultFileBuilder(const Request &request) {
     this->_contentFile->seekg(0, std::ios::beg);
 }
 
+void AResponse::headerFileBuilder(std::string file_type, Request &request) {
+    std::stringstream header_tmp;
+    if (this->_isGenerated) {
+        file_type = "text/html";
+    }
+    header_tmp << "HTTP/1.1 200 OK\nContent-Type: " << file_type << "\nContent-Length: " << this->_contentSize << "\r\n";
+    std::string cookie_line = request.getCookie();
+    while (!cookie_line.empty()) {
+        size_t equalsChar = cookie_line.find('=');
+        size_t colonChar = cookie_line.find(';');
+        if (colonChar == std::string::npos)
+            colonChar = cookie_line.length();
+        header_tmp << "Set-Cookie: " << cookie_line.substr(0, equalsChar + 1) << cookie_line.substr(equalsChar + 1, colonChar - equalsChar) << "\r\n";
+        cookie_line.erase(0, colonChar + 2);
+    }
+    header_tmp << "\r\n";
+    this->_header = header_tmp.str();
+}
+
 void AResponse::headerGenBuilder(std::string file_type) {
     std::stringstream header_tmp;
 

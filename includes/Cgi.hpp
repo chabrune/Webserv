@@ -7,10 +7,11 @@ class Request;
 class Server;
 class AResponse;
 class Get;
+class Post;
 
 class Cgi {
 public:
-    Cgi(AResponse &response, Request &request, Server &server);
+    Cgi(AResponse &response, Request &request, Server &server, const std::string &buffer);
     ~Cgi();
 
     const std::string &getPathFullName() const;
@@ -20,11 +21,10 @@ public:
 
 private:
     void cgiBuilder(Request &request, Server &server);
-    void pipeCreatorAndExec();
+    void pipeCreatorAndExec(const std::string &buffer);
     void readPipeValue(AResponse &response, Request &request);
     void parseCookieFromCgi(std::string &buffer, Request &request);
     void closeAllPipe();
-
 
     std::string _path_full_name;
     int _exit_status;
