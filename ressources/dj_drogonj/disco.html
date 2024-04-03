@@ -14,7 +14,7 @@
         document.getElementsByClassName('button')[0].addEventListener('click', function() {
             const button = document.querySelector('.button');
             button.classList.add('hidden');
-            audio.volume = 0.5;
+            audio.volume = 1;
             audio.loop = true;
             audio.play();
 
@@ -70,7 +70,7 @@
             mouse.x = e.x;
             mouse.y = e.y;
             for (let i = 0; i < 2; i++) {
-                particles.push(new Particle);
+                particles.push(new Particle(particles.length));
             }
         })
         canvas.addEventListener('mousemove', function (e) {
@@ -79,27 +79,28 @@
             mouse.x = e.x;
             mouse.y = e.y;
             for (let i = 0; i < 2; i++) {
-                particles.push(new Particle);
+                particles.push(new Particle(particles.length));
             }
         })
         class Particle {
-            constructor() {
+            constructor(i) {
                 this.x = mouse.x;
                 this.y = mouse.y;
                 this.speedX = Math.random() * 3 - 1.5;
                 this.speedY = Math.random() * 3 - 1.5;
-                this.color = 'rgb(255,255,255)';
+                this.color = 'rgb(0,0,0)';
                 this.size = Math.random() * 5 + 1;
+                this.life = 50;
             }
             update() {
                 this.x += this.speedX;
                 this.y += this.speedY;
                 this.size -= 0.1;
+                this.life--;
             }
             draw() {
                 ctx.fillStyle = this.color;
-                ctx.beginPath();
-                //ctx.arc(this.x, this.y, 5, 0, Math.PI * 2);
+               // ctx.beginPath();
                 ctx.fill();
             }
         }
@@ -120,7 +121,7 @@
                         ctx.stroke();
                     }
                 }
-                if (particles.size < 0.3) {
+                if (particles[i].life < 0.3) {
                     particles.splice(i, 1);
                     i--;
                 }

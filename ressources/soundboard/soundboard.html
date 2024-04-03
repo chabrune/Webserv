@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>soundboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="object">
+
+        </div>
+        <div class="object">
+
+        </div>
+        <div class="object">
+
+        </div>
+        <div class="object">
+
+        </div>
+        <div class="object">
+
+        </div>
+        <div class="object">
+
+        </div>
+        <div class="object">
+
+        </div>
+        <div class="object">
+
+        </div>
+        <div class="object">
+
+        </div>
+        <div class="object">
+
+        </div>
+        <div class="object">
+
+        </div>
+        <div class="object">
+
+        </div>
+        <div class="object">
+
+        </div>
+        <div class="object">
+
+        </div>
+        <div class="object">
+
+        </div>
+        <div class="object">
+
+        </div>
+        <div class="object">
+
+        </div>
+        <div class="object">
+
+        </div>
+        <div class="object">
+
+        </div>
+        <div class="object">
+
+        </div>
+        <div class="object">
+
+        </div>
+        <div class="object">
+
+        </div>
+        <div class="object">
+
+        </div>
+        <div class="object">
+
+        </div>
+    </div>
+
+    <audio id="audio"></audio>
+
+    <script>
+        const container = document.getElementsByClassName('container')[0];
+        const BPM = 130;
+        const DELAY = 60000 / 130;
+        N = 0;
+
+        class Case {
+            constructor() {
+                this.instrument = "none";
+            }
+        }
+        let cases = [];
+        for (i = 0; i < 24; i++) {
+            cases.push(new Case());
+        }
+
+        container.addEventListener('click', function(event) {
+            console.log(event.target)
+            event.target.setAttribute('style', 'border-color: white;')
+        });
+
+        const loop = setInterval(function() {
+            container.children[N].setAttribute('style', 'background: #FFFFFF7B;');
+            container.children[N + 8].setAttribute('style', 'background: #FFFFFF7B;');
+            container.children[N + 16].setAttribute('style', 'background: #FFFFFF7B;');
+            if (N > 0) {
+                container.children[N - 1].setAttribute('style', 'background: #232323;');
+                container.children[N + 7].setAttribute('style', 'background: #232323;');
+                container.children[N + 15].setAttribute('style', 'background: #232323;');
+            } else if (N === 0) {
+                container.children[7].setAttribute('style', 'background: #232323;');
+                container.children[15].setAttribute('style', 'background: #232323;');
+                container.children[23].setAttribute('style', 'background: #232323;');
+            }
+            N++;
+            if (N > 7)
+                N = 0;
+        }, DELAY);
+    </script>
+</body>
+</html>
