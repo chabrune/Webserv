@@ -69,7 +69,6 @@ int main(int argc, char **argv)
         std::cout << GREEN << "-debug is on" << RESET << std::endl;
     try {
         Serv.inputParsing(std::string(argv[1]), frr);
-        //createTestServer(&frr);
         frr.run();
     } catch (std::exception &e) {
         std::cerr << RED << "error: " << e.what() << RESET << std::endl;

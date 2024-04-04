@@ -159,12 +159,12 @@ void ServerConf::serv_upload(std::string &line, size_t currentServerIndex, Mommy
 	size_t i = 0;
 	for (; i < line.length() && std::isspace(static_cast<unsigned char>(line[i])); i++) {}
 	line = line.substr(i);
-	i = 13;
+	i = 12;
 	int start = i;
 	while (i < line.length() && !isspace(line[i]))
 		i++;
 	std::string path = line.substr(start, i - start);
-	if(line != "allow_upload " + path)
+	if(line != "upload_path " + path)
 		throw std::logic_error("Config file : Server : Check upload path");
 	frr.servers[currentServerIndex]->upload_path = path;
 }
@@ -497,12 +497,12 @@ void ServerConf::location_upload(std::string &line, size_t currentServerIndex, M
 	size_t i = 0;
 	for (; i < line.length() && std::isspace(static_cast<unsigned char>(line[i])); i++) {}
 	line = line.substr(i);
-	i = 13;
+	i = 12;
 	int start = i;
 	while (i < line.length() && !isspace(line[i]))
 		i++;
 	std::string path = line.substr(start, i - start);
-	if(line != "allow_upload " + path)
+	if(line != "upload_path " + path)
 		throw std::logic_error("Config file : Location : Check upload path");
 	frr.servers[currentServerIndex]->locations[currentLocationIndex]->upload_path = path;
 }
@@ -565,7 +565,7 @@ void ServerConf::inputParsing(std::string argv, Mommy& frr)
             serv_name_line(line, currentServerIndex, frr);
 		else if(isInsideServerSection && !isInsideLocationSection && line.find("listen ") != std::string::npos)
             serv_port(line, currentServerIndex, frr);
-		else if(isInsideServerSection && !isInsideLocationSection && line.find("allow_upload ") != std::string::npos)
+		else if(isInsideServerSection && !isInsideLocationSection && line.find("upload_path ") != std::string::npos)
             serv_upload(line, currentServerIndex, frr);
 		else if(isInsideServerSection && !isInsideLocationSection && line.find("root ") != std::string::npos)
 			serv_root(line, currentServerIndex, frr);
@@ -585,7 +585,7 @@ void ServerConf::inputParsing(std::string argv, Mommy& frr)
 			serv_autoindex(line, currentServerIndex, frr);
 		else if(isInsideLocationSection && line.find("root ") != std::string::npos)
 			location_root(line, currentServerIndex, frr, currentLocationIndex);
-		else if(isInsideLocationSection && line.find("allow_upload ") != std::string::npos)
+		else if(isInsideLocationSection && line.find("upload_path ") != std::string::npos)
 			location_upload(line, currentServerIndex, frr, currentLocationIndex);
 		else if(isInsideLocationSection && line.find("allow ") != std::string::npos)
 			location_allowed_methods(line, currentServerIndex, frr, currentLocationIndex);
@@ -603,6 +603,8 @@ void ServerConf::inputParsing(std::string argv, Mommy& frr)
 			location_client_max_body_size(line, currentServerIndex, frr, currentLocationIndex);
 		else if(isInsideLocationSection && line.find("return ") != std::string::npos)
 			location_return(line, currentServerIndex, frr, currentLocationIndex);
+		else
+			throw std::logic_error("Check config");
     }
 }
 

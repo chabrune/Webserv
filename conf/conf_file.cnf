@@ -5,16 +5,16 @@ server {
     index /cyber.html
     allow GET
     autoindex on
-    allow_upload /path
+    upload_path /path
     location /tmp {
         autoindex on
         root ressources/tmp
-        allow_upload /upload
+        upload_path /upload
         allow GET
         return 301 https://www.winxclubfrance.com/
     }
     location /autoindex/upload {
-        allow_uploads /
+        upload_path /
         root ressources/upload
         allow GET POST
         index upload.html
@@ -31,7 +31,7 @@ server {
     index /cyber.html
     autoindex off
     allow GET POST DELETE
-    allow_uploads /uploads
+    upload_path /uploads
 
     location /autoindex {
         root ressources/autoindex
@@ -52,10 +52,16 @@ server {
     }
 
     location /autoindex/upload {
-        allow_uploads /
+        upload_path /
         root ressources/upload
         allow GET POST
         index upload.html
+    }
+
+    location /autoindex/mlp {
+        root ressources/mlp
+        allow GET POST
+        index index.html
     }
 
     location /autoindex/errors {
