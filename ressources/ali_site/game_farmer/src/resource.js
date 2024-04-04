@@ -18,8 +18,7 @@ class Resource {
 
 	addResourceToBar(number) {
 		const img = resourceBarElement.querySelector(`li img[id="${this.icon.id}"]`);
-		const li = img.closest("li").querySelector('span');
-		console.log(li);
-		li.textContent = (parseInt(li.textContent) + number).toString()
+		const span = img.parentElement.querySelector('span');
+		span.textContent = (parseInt(span.textContent) + number).toString()
 	}
 }

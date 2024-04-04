@@ -1,8 +1,9 @@
 class BlockElement {
-    constructor(images) {
+    constructor(images, blockAction) {
         if (this.constructor === BlockElement)
             throw new Error("Abstract classes can't be instantiated.");
         this.images = images;
+        this.blockAction = blockAction;
     }
 
     setIcon(icon) {
@@ -12,11 +13,6 @@ class BlockElement {
 
     setNaturalSpawnChance(naturalSpawnChance) {
         this.naturalSpawnChance = naturalSpawnChance;
-        return this;
-    }
-
-    setBlockAction(blockAction) {
-        this.blockAction = blockAction;
         return this;
     }
 
@@ -35,11 +31,34 @@ class BlockElement {
         throw new Error("This function need to be implemented");
     }
 
+    setHtmlDisplayCategory(htmlDisplayCategory) {
+        this.htmlDisplayCategory = htmlDisplayCategory;
+        return this;
+    }
+
+    setBlockChild(blockChild) {
+        this.blockChild = blockChild;
+        return this;
+    }
+
     getResource() {
         return this.resource;
     }
 
     getResourceNumber() {
         return this.resourceNumber;
+    }
+
+    getBlockChild() {
+        return this.blockChild;
+    }
+
+    getFirstImage() {
+        return this.images[0];
+    }
+
+
+    build() {
+
     }
 }

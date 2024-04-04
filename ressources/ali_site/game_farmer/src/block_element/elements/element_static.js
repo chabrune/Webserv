@@ -1,6 +1,6 @@
 class ElementStatic extends BlockElement {
-	constructor(image) {
-		super(image);
+	constructor(images, blockAction = new BlockActionDefault()) {
+		super(images, blockAction);
 	}
 
 	setElementToSquare(square) {

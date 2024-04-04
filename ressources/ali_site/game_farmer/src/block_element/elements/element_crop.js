@@ -1,19 +1,10 @@
 class ElementCrop extends BlockElement {
-	constructor(images, icon, displayName, timeToGrowth) {
-		super(images);
+	constructor(images, displayName, timeToGrowth) {
+		super(images, new BlockActionHarvest());
 		this.timeToGrowth = timeToGrowth;
-		this.icon = icon;
+		this.icon = images[images.length - 1];
 		this.displayName = displayName;
-
-		let htmlElement = document.getElementById('dropup-crop');
-
-		let div = document.createElement('div');
-		div.appendChild(this.icon);
-
-		let spanHTML = `<span class="txt">${this.displayName}</span>`;
-
-		div.insertAdjacentHTML('beforeend', spanHTML);
-		htmlElement.appendChild(div);
+		this.htmlDisplayCategory = TOOLBAR_CATEGORY.CROP;
 	}
 
 	setElementToSquare(square) {
@@ -30,5 +21,16 @@ class ElementCrop extends BlockElement {
 
 	#cropGrowthCalculation(stage) {
 		return (this.timeToGrowth * stage + (Math.random() * this.timeToGrowth)) * globalGrowthSpeed;
+	}
+
+	build() {
+		let div = document.createElement('div');
+		div.appendChild(this.icon);
+
+		let spanHTML = `<span class="txt">${this.displayName}</span>`;
+
+		div.insertAdjacentHTML('beforeend', spanHTML);
+		this.htmlDisplayCategory.appendChild(div);
+		return this;
 	}
 }

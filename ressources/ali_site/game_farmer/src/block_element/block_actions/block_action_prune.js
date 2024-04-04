@@ -1,4 +1,4 @@
-class BlockActionHarvest extends BlockAction {
+class BlockActionPrune extends BlockAction {
 	constructor() {
 		super();
 	}
@@ -7,7 +7,6 @@ class BlockActionHarvest extends BlockAction {
 		const block = getBlockFromId(square.querySelectorAll('img')[1].getAttribute("id"))
 		block.getResource().addResourceToBar(block.getResourceNumber());
 		square.removeChild(square.querySelectorAll('img')[1]);
-		square.removeChild(square.querySelector('.ground'));
-		square.appendChild(IMG.GRASS.cloneNode(true));
+		square.appendChild(block.getBlockChild().getFirstImage().cloneNode(true));
 	}
 }

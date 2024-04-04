@@ -1,5 +1,5 @@
 class ElementGround extends BlockElement {
-	constructor(images) {
-		super(images);
+	constructor(images, blockAction = new BlockActionDefault()) {
+		super(images, blockAction);
 	}
 }
