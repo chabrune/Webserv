@@ -55,6 +55,7 @@ extern int g_error;
 # define FORBIDDEN 9
 # define CONFLICT 10
 # define TOOLARGEENTITY 12
+# define INTERNERROR 13
 
 enum Methods
 {
@@ -76,6 +77,7 @@ public:
         errorPages[404] = "ressources/default/404.html";
         errorPages[405] = "ressources/default/405.html";
         errorPages[409] = "ressources/default/409.html";
+        errorPages[413] = "ressources/default/413.html";
         errorPages[414] = "ressources/default/414.html";
         errorPages[500] = "ressources/default/500.html";
     }

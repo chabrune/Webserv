@@ -9,14 +9,8 @@ Post::Post(Server & server) : AResponse(server), done(false), processing(false)
 }
 
 void Post::treatBuffer(std::string & buffer, Request &request) {
-    size_t original_size = buffer.size();
-    std::cout << YELLOW << "buffer size: " << original_size << RESET << std::endl;
-    // std::cout << YELLOW << "VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV" << RESET << std::endl;
-    // std::cout << YELLOW << buffer << RESET << std::endl;
-    // std::cout << YELLOW << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << RESET << std::endl;
     while (!buffer.empty()) 
     {
-        // file 
         if (buffer.find("--" + request.getBoundary()) == 0) 
         {
             size_t filenamePos = buffer.find("filename=\"");
@@ -24,60 +18,59 @@ void Post::treatBuffer(std::string & buffer, Request &request) {
                 continue;
             } else {
                 size_t slash = buffer.find("\"", filenamePos + 10);
-                // std::cout << RED << slash << RESET << std::endl;
                 this->_filename = buffer.substr(filenamePos + 10, slash - filenamePos - 10);
                 this->_filePath = this->_uri + '/' + this->_filename;
-                
             }
             buffer = buffer.substr(buffer.find("\r\n\r\n") + 4, buffer.size());
         }
         if (this->_filePath.empty()) {
-            // Gerer erreur psq ya rien a creer
+            this->done = true;
+            return;
         }
         std::ofstream file(this->_filePath.c_str(), std::ios_base::out | std::ios_base::app);
         size_t nextBound = buffer.find("--" + request.getBoundary());
+        std::string content;
         if (buffer.find("--" + request.getBoundary() + "--") == nextBound && nextBound != std::string::npos) {
-            file << buffer.substr(0, buffer.size() - (request.getBoundary().size() + 8));
+            content = buffer.substr(0, buffer.size() - (request.getBoundary().size() + 8));
             buffer.clear();
-            std::cout << RED << "DONE TRUE !?" << RESET << std::endl;
             this->done = true;
         } else if (nextBound != std::string::npos) {
-            file << buffer.substr(0, nextBound - 2);
+            content = buffer.substr(0, nextBound - 2);
             buffer = buffer.substr(nextBound, buffer.size() - 2);
         } else {
-            file << buffer;
+            content = buffer;
             buffer.clear();
         }
+        if (static_cast<unsigned long>(request.len) > this->server->getMaxBodySizeFrom(this->_uri)) {
+            g_error = TOOLARGEENTITY;
+            file.close();
+            return;
+        }
+        file << content;
         file.close();
     }
 }
 
 void Post::execPost(Server & server, Request &request, bool & readyToSend) {
-        try {
+    try {
         std::string buffer;
         if (!this->processing) {
-//            this->fileExist = tryAccess_Post(&server); // ??
-            this->_uri = server.getRootFrom(request.getPathToFile()) + request.subLocation(server.getLocationFrom(request.getPathToFile()));
+            request.tryAccess_Post(&server, &request);
+            this->_uri = server.getRootFrom(request.getPathToFile()) + request.subLocation(server.getLocationFrom(request.getPathToFile())) + server.getUploadFolderFrom(request.getPathToFile());
             buffer = request.getBody();
-            if(buffer.size() > server.max_body_size) // ??
-            {
-                g_error = TOOLARGEENTITY;
-                throw Request::tooLongRequest();
-            }
         }
         if (!this->done && this->processing) { // Si le dernier boundary est toujours pas arrive
             long tmp;
             buffer.resize(HTTP_BUFFER_SIZE);
             tmp = recv(request.getSockfd(), &(buffer[0]), HTTP_BUFFER_SIZE, 0);
             if (tmp < 0) {
-                std::cout << YELLOW << "recv failed or enmpty, exiting POST, value: " << tmp << RESET << std::endl;
+                if (DEBUG)
+                    std::cerr << YELLOW << "recv failed or enmpty, exiting POST, value: " << tmp << RESET << std::endl;
                 readyToSend = true;
                 throw Request::recvFailure();
             }
             buffer.resize(tmp);
             request.len += tmp;
-            std::cout << RED << "total lu: " << request.len << RESET << std::endl;
-
         }
         if (server.isCgi(request.getExtension())) {
             buffer.push_back('\n');
@@ -88,8 +81,12 @@ void Post::execPost(Server & server, Request &request, bool & readyToSend) {
         }
         treatBuffer(buffer, request);
         if (this->done) {
-            std::cout << MAGENTA << "Post is done" << RESET << std::endl;
+            if (DEBUG)
+                std::cout << MAGENTA << "Post is done" << RESET << std::endl;
+            if (g_error == TOOLARGEENTITY)
+                throw Request::tooLongRequest();
             this->_isGenerated = true;
+            this->_content = "<h1 style=\"font-family: sans-serif; color: #343434;\">Upload Successfull</h1>";
             this->headerGenBuilder("");
             readyToSend = true;
         }

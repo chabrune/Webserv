@@ -10,6 +10,7 @@ Cgi::Cgi(AResponse &response, Request &request, Server &server, const std::strin
     if (DEBUG)
         std::cout << GREEN << "Cgi build. " << *this << std::endl;
     pipeCreatorAndExec(buffer);
+    pipeCreatorAndExec(buffer);
     readPipeValue(response, request);
     closeAllPipe();
     if (DEBUG)
@@ -71,7 +72,8 @@ void Cgi::pipeCreatorAndExec(const std::string &buffer) {
         std::cout << buffer << std::endl;
         dup2(_pipe_in[0], STDIN_FILENO);
         dup2(_pipe_out[1], STDOUT_FILENO);
-        write(_pipe_in[1], buffer.c_str(), buffer.length());
+        if (buffer.empty())
+            write(_pipe_in[1], buffer.c_str(), buffer.length());
         closeAllPipe();
         execve(this->_argv[0], const_cast<char **>(this->_argv.data()), const_cast<char **>(this->_env.data()));
     }

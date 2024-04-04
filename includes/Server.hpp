@@ -22,6 +22,7 @@ class Server : public ServerConf
         std::string & getIndexFrom(const std::string & path);
         std::string getErrorPage(int err, const std::string & path);
         std::string getPathFrom(const std::string & path);
+        std::string getUploadFolderFrom(const std::string & path);
         unsigned long getMaxBodySizeFrom(const std::string & path);
 
         class socketCreationError : public std::exception {

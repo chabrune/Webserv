@@ -58,6 +58,11 @@ std::string AResponse::getCodeHeader(std::string * path, Server* server,  const 
     if (g_error == MISSINGSLASH || g_error == INVALIDSLASH) {
         return ("HTTP/1.1 301 Moved Permanently\n");
     } else if (g_error == TOOLARGEENTITY) {
+        try {
+            *path += server->getErrorPage(413, uri);
+        } catch (std::exception &e) {
+            *path = __defaultErrorPages[413];
+        }
         return ("HTTP/1.1 413 Request Entity Too Large\n");
     } else if (g_error == FORBIDDEN) {
         try {
@@ -135,7 +140,7 @@ void AResponse::handleRequestError(Server* server, const std::string & uri) {
     std::string codePath;
 
     if (DEBUG)
-        std::cout << RED << "Sending error code, reason: " << errno << RESET << std::endl;
+        std::cout << RED << "Sending error code, reason: " << g_error << RESET << std::endl;
     if (g_error == MISSINGSLASH || g_error == INVALIDSLASH) {
         redirectWellSlashed(uri);
         return;

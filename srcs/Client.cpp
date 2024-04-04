@@ -23,7 +23,7 @@ void Client::sendResponse() {
                 std::cerr << RED << "TA MERE LE HEADER" << RESET << std::endl;
         this->headerSent = true;
     }
-    if (this->response->getGenerated() || this->request.getMethod() == "POST")
+    if (this->response->getGenerated())
         sendGeneratedContent();
     else if (this->server->isCgi(request.getExtension()))
         sendCgiContent();

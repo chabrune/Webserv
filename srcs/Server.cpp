@@ -27,8 +27,8 @@ void Server::setup(void)
     int optval = 1;
     if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &optval, sizeof(int)) == -1)
         throw socketConfigError();
-    this->timeout.tv_sec = TIMEOUT;
-    this->timeout.tv_usec = 0;
+    this->timeout.tv_sec = 0;
+    this->timeout.tv_usec = TIMEOUT;
     if (setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, (struct timeval *)&this->timeout, sizeof(this->timeout)) == -1)
         throw socketConfigError();
     if (setsockopt(sockfd, SOL_SOCKET, SO_SNDTIMEO, (struct timeval *)&this->timeout, sizeof(this->timeout)) == -1)
@@ -88,9 +88,6 @@ std::string & Server::getIndexFrom(const std::string & path) {
 std::vector<std::string> & Server::getAllowedMethodsFrom(const std::string &path) {
     Location * location = getLocationFrom(path);
     if (location) {
-//        for (std::vector<std::string>::iterator it = location->allowed_methods.begin(); it != location->allowed_methods.end(); it++) {
-//            std::cout << YELLOW << *it << RESET << std::endl;
-//        }
         return (location->allowed_methods);
     }
     return (this->allowed_methods);
@@ -125,4 +122,12 @@ unsigned long Server::getMaxBodySizeFrom(const std::string &path) {
         return (location->max_body_size);
     }
     return (this->max_body_size);
+}
+
+std::string Server::getUploadFolderFrom(const std::string &path) {
+    Location * location = getLocationFrom(path);
+    if (location) {
+        return (location->upload_path);
+    }
+    return (this->upload_path);
 }

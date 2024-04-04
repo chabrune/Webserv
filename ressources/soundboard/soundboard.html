@@ -85,29 +85,36 @@
 
     <script>
         const container = document.getElementsByClassName('container')[0];
-        const BPM = 130;
-        const DELAY = 60000 / 130;
-        N = 0;
+        const BPM = 250;
+        const DELAY = 60000 / BPM;
+        const sounds = {
+            kick: new Audio('kick.wav'),
+            clap: new Audio('clap.mp3')
+        };
 
-        class Case {
-            constructor() {
-                this.instrument = "none";
-            }
-        }
-        let cases = [];
-        for (i = 0; i < 24; i++) {
-            cases.push(new Case());
-        }
+        let N = 0;
 
         container.addEventListener('click', function(event) {
-            console.log(event.target)
-            event.target.setAttribute('style', 'border-color: white;')
+            if (!event.target.classList.contains('active')) {
+                event.target.classList.add('active');
+            } else {
+                event.target.classList.remove('active');
+            }
         });
 
         const loop = setInterval(function() {
             container.children[N].setAttribute('style', 'background: #FFFFFF7B;');
             container.children[N + 8].setAttribute('style', 'background: #FFFFFF7B;');
             container.children[N + 16].setAttribute('style', 'background: #FFFFFF7B;');
+
+            if (container.children[N].classList.contains('active')) {
+                playSound(sounds.kick);
+            }
+
+            if (container.children[N + 8].classList.contains('active')) {
+                playSound(sounds.clap);
+            }
+
             if (N > 0) {
                 container.children[N - 1].setAttribute('style', 'background: #232323;');
                 container.children[N + 7].setAttribute('style', 'background: #232323;');
@@ -117,10 +124,18 @@
                 container.children[15].setAttribute('style', 'background: #232323;');
                 container.children[23].setAttribute('style', 'background: #232323;');
             }
+
             N++;
-            if (N > 7)
+            if (N > 7) {
                 N = 0;
+            }
         }, DELAY);
+
+        function playSound(sound) {
+            sound.pause();
+            sound.currentTime = 0;
+            sound.play();
+        }
     </script>
 </body>
 </html>
