@@ -165,12 +165,6 @@ void Mommy::run(void) {
                 }
                 if (it->second->sent) 
                 {
-                    if (it->second->request.getMethod() == "POST") {
-                        std::string buffer;
-                        buffer.resize(HTTP_BUFFER_SIZE);
-                        if (recv(it->second->request.getSockfd(), &(buffer[0]), HTTP_BUFFER_SIZE, 0) > 0)
-                            continue; // Laisser le client discuter s'il a encore des trucs a dire sinon pas content et NS_ERROR_NET_RESET
-                    }
                     if (close(it->second->sockfd) == -1)
                         std::cerr << RED << "error: failed to close fd after sending response" << RESET << std::endl;
                     std::cout << YELLOW << "❌ connection closed for " << GREEN << *(it->second) << RESET << std::endl;

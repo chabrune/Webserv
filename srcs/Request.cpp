@@ -93,8 +93,10 @@ void Request::parseHeaders(const std::string& headers)
     pos = headers.find("filename=");
     if (pos != std::string::npos) {
         std::string value = headers.substr(pos + 10);
-        int i = 0;
-        for(; value[i] != '"'; i++) {}
+        if (value.empty())
+            return;
+        size_t i = 0;
+        for(; i < value.length() && value[i] != '"'; i++) {}
         this->_Postfilename = value.substr(0, i);
     }
     pos = headers.find("Content-Length: ");
@@ -107,20 +109,16 @@ void Request::parseHeaders(const std::string& headers)
 void Request::tryAccess_Post(Server *server, Request *request)
 {
     std::string tester = server->getRootFrom(this->getPathToFile()) + this->subLocation(server->getLocationFrom(this->getPathToFile())) + server->getUploadFolderFrom(this->getPathToFile());
-    std::cout << tester << std::endl;
     if (access(tester.c_str(), F_OK) != 0)
     {
-        std::cout << "existe po" << std::endl;
         g_error = NOTFOUND;
         throw accessError();
     }
     if (server->isCgi(request->getExtension()) && access(tester.c_str(), X_OK) != 0) {
         g_error = FORBIDDEN;
-        std::cout << "ta pa le droit dexec" << std::endl;
         throw accessError();
     } else if (access(tester.c_str(), W_OK) != 0) {
         g_error = FORBIDDEN;
-        std::cout << "ecrire non" << std::endl;
         throw accessError();
     }
 }

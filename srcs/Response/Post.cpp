@@ -9,8 +9,19 @@ Post::Post(Server & server) : AResponse(server), done(false), processing(false)
 }
 
 void Post::treatBuffer(std::string & buffer, Request &request) {
+    size_t baseSize = buffer.size();
+    bool looped = false;
     while (!buffer.empty()) 
     {
+        if (looped && baseSize == buffer.size()) {
+            g_error = BADREQUEST;
+            throw requestError();
+        } else if (looped) {
+            baseSize = buffer.size();
+            looped = false;
+        } else {
+            looped = true;
+        }
         if (buffer.find("--" + request.getBoundary()) == 0) 
         {
             size_t filenamePos = buffer.find("filename=\"");
@@ -52,6 +63,8 @@ void Post::treatBuffer(std::string & buffer, Request &request) {
 }
 
 void Post::execPost(Server & server, Request &request, bool & readyToSend) {
+    if (DEBUG)
+        std::cout << MAGENTA << "starting POST" << RESET << std::endl;
     try {
         std::string buffer;
         if (!this->processing) {
@@ -65,7 +78,7 @@ void Post::execPost(Server & server, Request &request, bool & readyToSend) {
             tmp = recv(request.getSockfd(), &(buffer[0]), HTTP_BUFFER_SIZE, 0);
             if (tmp < 0) {
                 if (DEBUG)
-                    std::cerr << YELLOW << "recv failed or enmpty, exiting POST, value: " << tmp << RESET << std::endl;
+                    std::cerr << YELLOW << "recv failed or empty" << tmp << RESET << std::endl;
                 readyToSend = true;
                 throw Request::recvFailure();
             }

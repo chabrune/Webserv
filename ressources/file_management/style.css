@@ -1,0 +1,21 @@
+
+html {
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    background: linear-gradient(0deg, rgb(39, 16, 16) 0%, rgb(93, 35, 55) 100%);
+}
+
+h1 {
+    margin: 0;
+}
+
+body {
+    font-family: sans-serif;
+    color: whitesmoke;
+    margin: 10vh 10vw;
+}
+
+.delete-section {
+    margin: 5vh 0;
+}

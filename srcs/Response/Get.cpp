@@ -11,7 +11,7 @@ Get::Get(Server &server, Request &request) : AResponse(server) {
         if (request.getIsDir())
             generateAutoindex(request);
         else if (server.isCgi(request.getExtension())) {
-            Cgi(*this, request, server, 0);
+            Cgi(*this, request, server, "");
             headerFileBuilder(request.getFileType(), request);
         }
         else {

@@ -16,14 +16,23 @@ std::ostream & operator<<(std::ostream & out, const Client & cli) {
 }
 
 void Client::sendResponse() {
+    // Ne pas couper le client s'il continu d'envoyer du body meme si on a detecter une erreur sinon NS_ERROR_NET_RESET
+    if (this->request.getMethod() == "POST") {
+        std::string buffer;
+        buffer.resize(HTTP_BUFFER_SIZE);
+        if (recv(this->request.getSockfd(), &(buffer[0]), HTTP_BUFFER_SIZE, 0) > 0)
+            return;
+    }
     // Send Header
     if (!this->headerSent) {
-        if (send(this->sockfd, &this->response->getHeader()[0], this->response->getHeader().size(), 0) == -1)
-            if (DEBUG)
-                std::cerr << RED << "TA MERE LE HEADER" << RESET << std::endl;
+        if (send(this->sockfd, &this->response->getHeader()[0], this->response->getHeader().size(), 0) == -1) {
+            std::cerr << RED << "❗ connection lost for " << GREEN << *this << RESET << std::endl;
+            this->sent = true;
+            return;
+        }
         this->headerSent = true;
     }
-    if (this->response->getGenerated())
+    else if (this->response->getGenerated())
         sendGeneratedContent();
     else if (this->server->isCgi(request.getExtension()))
         sendCgiContent();

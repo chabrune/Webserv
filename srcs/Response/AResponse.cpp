@@ -85,7 +85,7 @@ std::string AResponse::getCodeHeader(std::string * path, Server* server,  const 
             *path = __defaultErrorPages[404];
         }
         return ("HTTP/1.1 404 Not Found\n");
-    }else if (g_error == ISDIRECTORY || g_error == BADHEADER) {
+    }else if (g_error == ISDIRECTORY || g_error == BADHEADER || g_error == BADREQUEST) {
         try {
             *path += server->getErrorPage(400, uri);
         } catch (std::exception &e) {

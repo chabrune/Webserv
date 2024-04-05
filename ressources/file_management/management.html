@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete and Create Files</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h1>Delete and Create Files</h1>
+in ressources/file_management/data
+<div class="delete-section">
+    <label for="filename">Enter filename to delete:</label>
+    <input type="text" id="filename" name="filename">
+    <button onclick="deleteData()">Delete Data</button>
+    <b><div id="delete-response"></div></b>
+</div>
+
+<div class="post-section">
+    Or create a file:<br><br>
+    <form id="create-form">
+        <label for="filename">Filename:</label><br>
+        <input type="text" id="newfilename" name="filename"><br>
+        <label for="content">Content:</label><br>
+        <textarea id="content" name="content"></textarea><br>
+        <button type="submit">Submit</button>
+    </form>
+    <b><div id="post-response"></div></b>
+</div>
+
+
+<script>
+    function deleteData() {
+        var filename = document.getElementById('filename').value;
+        if (filename.length < 1)
+            return;
+        fetch('data/' + filename, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+            .then(response => {
+                document.getElementById('delete-response').innerText = 'Server Response Code: ' + response.status;
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+                // Gérer les erreurs
+                document.getElementById('delete-response').innerText = 'Error: ' + error.message;
+            });
+    }
+
+    document.getElementById('create-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        var formData = new FormData();
+        var filename = document.getElementById('newfilename').value;
+        if (filename.length < 1)
+            return;
+        var content = document.getElementById('content').value;
+
+        var fileBlob = new Blob([content], { type: 'text/plain' });
+
+        formData.append('newfile', fileBlob, filename);
+
+        fetch('/autoindex/file_management/data/', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                document.getElementById('post-response').innerText = 'Server Response Code: ' + response.status;
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+                document.getElementById('create-response').innerText = 'Error: ' + error.message;
+            });
+    });
+</script>
+</body>
+</html>

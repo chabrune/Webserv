@@ -9,9 +9,9 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <netdb.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <iostream>
 #include <map>
 #include <vector>
@@ -19,10 +19,10 @@
 #include <string>
 #include <list>
 #include <sstream>
-#include <ctype.h>
+#include <cctype>
 #include <sys/time.h>
 #include <arpa/inet.h>
-#include <signal.h>
+#include <csignal>
 #include <netdb.h>
 #include <sys/stat.h>
 #include <cerrno>
@@ -38,7 +38,7 @@
 # define HTTP_BUFFER_SIZE 1000000
 # define SND_BUFFER_SIZE 1000000
 # define CONNECTIONS_NUMBER_LIMIT 2000
-# define TIMEOUT 1 // Seconds before select exit
+# define TIMEOUT 10 // useconds before select exit
 
 class   requestError : public std::exception {};
 
@@ -56,6 +56,7 @@ extern int g_error;
 # define CONFLICT 10
 # define TOOLARGEENTITY 12
 # define INTERNERROR 13
+# define BADREQUEST 14
 
 enum Methods
 {

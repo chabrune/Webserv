@@ -70,10 +70,10 @@ server {
         autoindex on
     }
 
-    location /autoindex/delete {
-        root ressources/delete
-        allow GET DELETE
-        index delete.html
+    location /autoindex/file_management {
+        root ressources/file_management
+        allow GET POST DELETE
+        index management.html
     }
 
     location /autoindex/fireworks {

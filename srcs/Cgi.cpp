@@ -49,6 +49,7 @@ void Cgi::cgiBuilder(Request &request, Server &server) {
 
 void Cgi::pipeCreatorAndExec(const std::string &buffer) {
     if (pipe(this->_pipe_out) < 0) {
+        if (DEBUG)
         std::cout << "pipe1 marche po" << std::endl;
         exit(1);
     }
@@ -69,7 +70,6 @@ void Cgi::pipeCreatorAndExec(const std::string &buffer) {
         if (DEBUG)
             std::cout << "Chdir in folder " << getPathFullName() << " return result: " << this->_exit_status << std::endl;
         std::cout << this->_argv[0] << std::endl;
-        std::cout << buffer << std::endl;
         dup2(_pipe_in[0], STDIN_FILENO);
         dup2(_pipe_out[1], STDOUT_FILENO);
         if (buffer.empty())
@@ -78,7 +78,6 @@ void Cgi::pipeCreatorAndExec(const std::string &buffer) {
         execve(this->_argv[0], const_cast<char **>(this->_argv.data()), const_cast<char **>(this->_env.data()));
     }
     wait(&this->_exit_status);
-
 }
 
 void Cgi::readPipeValue(AResponse &response, Request &request) {
