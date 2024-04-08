@@ -515,6 +515,23 @@ bool ServerConf::requirements_serv(Mommy& frr, size_t currentServerIndex)
 	return(true);
 }
 
+void ServerConf::check_multiple_port(Mommy &frr)
+{
+	std::vector<Server*>::iterator it = frr.servers.begin();
+	for(; it != frr.servers.end(); it++)
+	{
+        int port = (*it)->port;
+		std::vector<Server*>::iterator it2 = it;
+		it2++;
+		for(; it2 != frr.servers.end(); it2++)
+		{
+			if(port == (*it2)->port)
+				throw std::logic_error("Same port multiple times");
+		}
+	}
+}
+
+
 void ServerConf::inputParsing(std::string argv, Mommy& frr)
 {
     std::ifstream file(argv.c_str());
@@ -606,6 +623,7 @@ void ServerConf::inputParsing(std::string argv, Mommy& frr)
 		else
 			throw std::logic_error("Check config");
     }
+	check_multiple_port(frr);
 }
 
 bool ServerConf::isCgi(const std::string &extension) const {
