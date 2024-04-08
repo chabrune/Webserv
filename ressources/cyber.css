@@ -14,10 +14,33 @@
     box-sizing: border-box;
 }
 
-html {
-    height: 150%;
-    width: 100%;
+body {
+    padding: 0;
+    margin: 0;
     background: linear-gradient(0deg, rgb(39, 16, 16) 0%, rgb(93, 35, 55) 100%);
+}
+
+p {
+    color: whitesmoke;
+    font-family: 'Cyber', sans-serif;
+    font-size: 20px;
+}
+
+a {
+    text-decoration: none;
+    color: #25ebde;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+#cub3d {
+    margin: 5vh 0 20vh 0;
+    width: 640px;
+    height: 360px;
+    border-radius: 10px 10px;
+    filter: drop-shadow(0px 0px 10px #b23356);
 }
 
 .git-section {

@@ -34,7 +34,7 @@ server {
     upload_path /uploads
 
     location /autoindex {
-        root ressources/autoindex
+        root ressources
         autoindex on
         allow GET
     }
@@ -45,7 +45,7 @@ server {
         allow GET
     }
 
-    location /autoindex/cgi {
+    location /autoindex/ali_site {
         root ressources/ali_site
         allow GET POST
         index index.html
