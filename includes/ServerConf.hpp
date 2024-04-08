@@ -16,7 +16,7 @@ class ServerConf
         ~ServerConf();
         ServerConf(const ServerConf &src);
         ServerConf& operator=(const ServerConf &rhs);
-
+        void check_multiple_port(Mommy &frr);
         void inputParsing(std::string argv, Mommy& frr);
         void serv_line(std::string &line);
         void serv_name_line(std::string& line, size_t currentServerIndex, Mommy& frr);
@@ -42,21 +42,20 @@ class ServerConf
         bool requirements_serv(Mommy& frr, size_t currentServerIndex);
         void serv_upload(std::string &line, size_t currentServerIndex, Mommy& frr);
         void location_upload(std::string &line, size_t currentServerIndex, Mommy& frr, size_t currentLocationIndex);
-
-
-        const std::string& getRoot() const { return this->root; }
-        const std::string& getServerName() const { return this->server_name; }
-        int getPort() const { return this->port; }
-        const std::vector<std::string>& getAllowedMethods() const { return this->allowed_methods; }
-        const std::string& getIndex() const { return this->index; }
-        const std::map<unsigned int, std::string>& getErrorsPages() const { return this->errors_pages; }
-        unsigned long getMaxBodySize() const { return this->max_body_size; }
-        const std::vector<Location*>& getLocations() const { return this->locations; }
-        const std::string &getCgiPathFromExtension(const std::string &extension) { return this->cgi_values[extension]; }
         bool isCgi(const std::string &extension) const;
-        bool getAutoindex() const { return this->autoindex; }
-        const std::map<unsigned int, std::string>& getToReturn() const { return this->to_return; }
+        const std::string& getRoot() const;
+        const std::string& getServerName() const;
+        int getPort() const;
+        const std::vector<std::string>& getAllowedMethods() const;
+        const std::string& getIndex() const;
+        const std::map<unsigned int, std::string>& getErrorsPages() const;
+        unsigned long getMaxBodySize() const;
+        std::vector<Location*>& getLocations();
+        const std::string &getCgiPathFromExtension(const std::string &extension);
+        bool getAutoindex() const;
+        std::map<unsigned int, std::string>& getToReturn();
 
+    protected:
         bool isReturn;
         std::vector<Location*> locations; // Contain all the locations that are in an other class
         bool autoindex; // Set on/off autoindex (directory listing page. If an index is given and founded, the index is returned, otherwise the directory listing page appear to replace the index)

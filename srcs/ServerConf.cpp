@@ -515,6 +515,23 @@ bool ServerConf::requirements_serv(Mommy& frr, size_t currentServerIndex)
 	return(true);
 }
 
+void ServerConf::check_multiple_port(Mommy &frr)
+{
+	std::vector<Server*>::iterator it = frr.servers.begin();
+	for(; it != frr.servers.end(); it++)
+	{
+        int port = (*it)->port;
+		std::vector<Server*>::iterator it2 = it;
+		it2++;
+		for(; it2 != frr.servers.end(); it2++)
+		{
+			if(port == (*it2)->port)
+				throw std::logic_error("Same port multiple times");
+		}
+	}
+}
+
+
 void ServerConf::inputParsing(std::string argv, Mommy& frr)
 {
     std::ifstream file(argv.c_str());
@@ -604,8 +621,11 @@ void ServerConf::inputParsing(std::string argv, Mommy& frr)
 		else if(isInsideLocationSection && line.find("return ") != std::string::npos)
 			location_return(line, currentServerIndex, frr, currentLocationIndex);
 		else
-			throw std::logic_error("Check config");
+			throw std::logic_error("is detected in configuration file");
     }
+	check_multiple_port(frr);
+	if(isInsideLocationSection == true || isInsideServerSection == true)
+		throw std::logic_error("Mismatched brackets in configuration file");
 }
 
 bool ServerConf::isCgi(const std::string &extension) const {
@@ -614,4 +634,48 @@ bool ServerConf::isCgi(const std::string &extension) const {
             return true;
     }
     return false;
+}
+
+const std::string& ServerConf::getRoot() const {
+	 return this->root; 
+}
+
+const std::string& ServerConf::getServerName() const {
+	 return this->server_name; 
+}
+
+int ServerConf::getPort() const {
+	 return this->port; 
+}
+
+const std::vector<std::string>& ServerConf::getAllowedMethods() const {
+	 return this->allowed_methods; 
+}
+
+const std::string& ServerConf::getIndex() const {
+	 return this->index; 
+}
+
+const std::map<unsigned int, std::string>& ServerConf::getErrorsPages() const {
+	 return this->errors_pages; 
+}
+
+unsigned long ServerConf::getMaxBodySize() const {
+	 return this->max_body_size; 
+}
+
+std::vector<Location*>& ServerConf::getLocations() {
+	 return this->locations; 
+}
+
+const std::string &ServerConf::getCgiPathFromExtension(const std::string &extension) {
+	 return this->cgi_values[extension]; 
+}
+
+bool ServerConf::getAutoindex() const {
+	 return this->autoindex; 
+}
+
+std::map<unsigned int, std::string>& ServerConf::getToReturn() {
+	 return this->to_return; 
 }

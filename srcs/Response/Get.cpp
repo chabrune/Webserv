@@ -53,8 +53,8 @@ bool Get::findServerStatusCode(std::map<unsigned int, std::string>::iterator itf
 //Jpense que ca n'ira pas voir pour modif
 bool Get::findReturnLocations(Server* server)
 {
-    std::vector<Location*>::iterator itl = server->locations.begin();
-    for(; itl != server->locations.end(); itl++)
+    std::vector<Location*>::iterator itl = server->getLocations().begin();
+    for(; itl != server->getLocations().end(); itl++)
     {
         if(!(*itl)->to_return.empty())
             return true;
@@ -65,8 +65,8 @@ bool Get::findReturnLocations(Server* server)
 bool Get::findLocationStatusCode(Server *server, std::string ptf)
 {
     bool uri = false, found = false;
-    std::vector<Location*>::iterator itl = server->locations.begin();
-    for(; itl != server->locations.end(); itl++)
+    std::vector<Location*>::iterator itl = server->getLocations().begin();
+    for(; itl != server->getLocations().end(); itl++)
     {
         std::map<unsigned int, std::string>::iterator it = (*itl)->to_return.begin();
         for (; it != (*itl)->to_return.end(); it++)
@@ -85,22 +85,22 @@ bool Get::findLocationStatusCode(Server *server, std::string ptf)
 //VOIR NGINX POUR CODE INEXISTANT EX : 999 // POUR L'INSTANT INGORER
 bool Get::handleReturn(Server *server, Request& request)
 {
-    if(!server->to_return.empty() && !findReturnLocations(server))
+    if(!server->getToReturn().empty() && !findReturnLocations(server))
         return (this->_isGenerated = false);
     std::string ptf = request.getPathToFile();
     // std::cout << GREEN << "TA SOEUR EN SLIP" << RESET << std::endl;
-    if (findServerStatusCode(server->to_return.begin()))
+    if (findServerStatusCode(server->getToReturn().begin()))
     {
         // std::cout << GREEN << "TA SOEUR EN CALBAR" << RESET << std::endl;
-        std::map<unsigned int, std::string>::iterator it = server->to_return.begin();
+        std::map<unsigned int, std::string>::iterator it = server->getToReturn().begin();
         if(it->first != 301 && it->first != 302 && it->first != 303 && it->first != 307)
         {
             std::stringstream ss;
             ss << "HTTP/1.1 " << it->first << " " << __defaultErrorCodes.errorCodes[it->first] << "\r\n";
             ss << "\r\n";
             this->_header = ss.str();
-            this->_content = server->to_return[it->first];
-            this->_contentSize = server->to_return[it->first].length();
+            this->_content = server->getToReturn()[it->first];
+            this->_contentSize = server->getToReturn()[it->first].length();
         }
         else if(it->first == 301 || it->first == 302 || it->first == 303 || it->first == 307)
         {
