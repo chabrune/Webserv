@@ -30,8 +30,7 @@ server {
     cgi .py /usr/bin/python3
     index /cyber.html
     autoindex off
-    allow GET POST DELETE
-    upload_path /uploads
+    allow GET
 
     location /autoindex {
         root ressources
@@ -51,6 +50,13 @@ server {
         index index.html
     }
 
+    location /upload {
+        upload_path /
+        root ressources/upload
+        allow GET POST
+        index upload.html
+    }
+
     location /autoindex/upload {
         upload_path /
         root ressources/upload
@@ -68,6 +74,12 @@ server {
         root ressources/default
         allow GET
         autoindex on
+    }
+
+    location /file_management {
+        root ressources/file_management
+        allow GET POST DELETE
+        index management.html
     }
 
     location /autoindex/file_management {

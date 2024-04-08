@@ -12,6 +12,13 @@ nathan:
   - c'est le 10 avril 2021 mais trql
   - '123'
   password: euh
+oui:
+  Credit card:
+  - '878979846546546546879798486684687'
+  - ouioui
+  - ouioui
+  - '123'
+  password: oui
 salut:
   Credit card:
   - abc

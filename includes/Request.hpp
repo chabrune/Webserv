@@ -30,6 +30,7 @@ class Request {
 		const int &getSockfd() const;
 		const std::string &getHost() const;
         const bool &getIsDir() const;
+        const std::string & getContentType() const;
 		bool isKeepalive() const;
         void tryAccess_Get(Server *server);
         void tryAccess_Delete(Server *server);

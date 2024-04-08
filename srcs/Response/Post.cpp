@@ -34,9 +34,8 @@ void Post::treatBuffer(std::string & buffer, Request &request) {
             }
             buffer = buffer.substr(buffer.find("\r\n\r\n") + 4, buffer.size());
         }
-        if (this->_filePath.empty()) {
-            this->done = true;
-            return;
+        if (this->_filePath.empty() && request.getContentType().find("multipart") == std::string::npos) {
+            this->_filePath = this->_uri;
         }
         std::ofstream file(this->_filePath.c_str(), std::ios_base::out | std::ios_base::app);
         size_t nextBound = buffer.find("--" + request.getBoundary());
@@ -63,13 +62,13 @@ void Post::treatBuffer(std::string & buffer, Request &request) {
 }
 
 void Post::execPost(Server & server, Request &request, bool & readyToSend) {
-    if (DEBUG)
-        std::cout << MAGENTA << "starting POST" << RESET << std::endl;
     try {
         std::string buffer;
         if (!this->processing) {
             request.tryAccess_Post(&server, &request);
             this->_uri = server.getRootFrom(request.getPathToFile()) + request.subLocation(server.getLocationFrom(request.getPathToFile())) + server.getUploadFolderFrom(request.getPathToFile());
+            if (_uri[_uri.length() - 1] == '/')
+                _uri.erase(_uri.length() - 1, 1);
             buffer = request.getBody();
         }
         if (!this->done && this->processing) { // Si le dernier boundary est toujours pas arrive
@@ -79,11 +78,17 @@ void Post::execPost(Server & server, Request &request, bool & readyToSend) {
             if (tmp < 0) {
                 if (DEBUG)
                     std::cerr << YELLOW << "recv failed or empty" << tmp << RESET << std::endl;
-                readyToSend = true;
-                throw Request::recvFailure();
+                if (request.getContentType().find("multipart") == std::string::npos) {
+                    buffer.resize(0);
+                    this->done = true;
+                } else {
+                    readyToSend = true;
+                    throw Request::recvFailure();
+                }
+            } else {
+                buffer.resize(tmp);
+                request.len += tmp;
             }
-            buffer.resize(tmp);
-            request.len += tmp;
         }
         if (server.isCgi(request.getExtension())) {
             buffer.push_back('\n');
@@ -92,7 +97,8 @@ void Post::execPost(Server & server, Request &request, bool & readyToSend) {
             readyToSend = true;
             return;
         }
-        treatBuffer(buffer, request);
+        if (!buffer.empty())
+            treatBuffer(buffer, request);
         if (this->done) {
             if (DEBUG)
                 std::cout << MAGENTA << "Post is done" << RESET << std::endl;

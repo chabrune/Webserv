@@ -83,7 +83,7 @@ void Request::parseHeaders(const std::string& headers)
     size_t pos = headers.find("Content-Type: ");
     if (pos != std::string::npos) {
         std::string value = headers.substr(pos + 14);
-        this->_contentType = value.substr(0, value.find_first_of(';'));
+        this->_contentType = value.substr(0, value.find_first_of('\n'));
     }
     pos = headers.find("boundary=");
     if (pos != std::string::npos) {
@@ -109,10 +109,33 @@ void Request::parseHeaders(const std::string& headers)
 void Request::tryAccess_Post(Server *server, Request *request)
 {
     std::string tester = server->getRootFrom(this->getPathToFile()) + this->subLocation(server->getLocationFrom(this->getPathToFile())) + server->getUploadFolderFrom(this->getPathToFile());
+    if (tester[tester.length() - 1] == '/')
+        tester.erase(tester.length() - 1, 1);
     if (access(tester.c_str(), F_OK) != 0)
     {
-        g_error = NOTFOUND;
-        throw accessError();
+        if (request->getContentType().find("multipart") != std::string::npos) {
+            g_error = NOTFOUND;
+            throw accessError();
+        } else {
+            try {
+                std::ofstream file(tester.c_str(), std::ios_base::out | std::ios_base::app);
+                file.close();
+            } catch (std::exception &e) {
+                g_error = FORBIDDEN;
+                throw requestError();
+            }
+            return;
+        }
+    } else if (request->getContentType().find("multipart") == std::string::npos) {
+        struct stat filestat;
+        if (stat(tester.c_str(), &filestat) != 0) {
+            g_error = INTERNERROR;
+            throw requestError();
+        }
+        if (S_ISDIR(filestat.st_mode)) {
+            g_error = ISDIRECTORY;
+            throw requestError();
+        }
     }
     if (server->isCgi(request->getExtension()) && access(tester.c_str(), X_OK) != 0) {
         g_error = FORBIDDEN;
@@ -137,12 +160,15 @@ void Request::tryAccess_Delete(Server *server) {
     }
     struct stat filestat;
     if (stat(tester.c_str(), &filestat) != 0) {
+        g_error = INTERNERROR;
         throw requestError();
     } else {
         if (S_ISDIR(filestat.st_mode)) {
             DIR *dir = opendir(tester.c_str());
-            if (!dir)
+            if (!dir) {
+                g_error = INTERNERROR;
                 throw requestError();
+            }
             struct dirent *entry;
             while ((entry = readdir(dir)) != NULL) {
                 if (std::string(entry->d_name) != "." && std::string(entry->d_name) != "..") {
@@ -190,6 +216,9 @@ void Request::tryAccess_Get(Server *server) {
                 throw accessError();
             }
         }
+    } else {
+        g_error = INTERNERROR;
+        throw requestError();
     }
 }
 
@@ -312,5 +341,9 @@ const int& Request::getContentLenght() const
 const int& Request::getSockfd() const
 {
     return _sockfd;
+}
+
+const std::string & Request::getContentType() const {
+    return _contentType;
 }
 
