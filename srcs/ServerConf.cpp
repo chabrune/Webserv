@@ -621,9 +621,11 @@ void ServerConf::inputParsing(std::string argv, Mommy& frr)
 		else if(isInsideLocationSection && line.find("return ") != std::string::npos)
 			location_return(line, currentServerIndex, frr, currentLocationIndex);
 		else
-			throw std::logic_error("Check config");
+			throw std::logic_error("is detected in configuration file");
     }
 	check_multiple_port(frr);
+	if(isInsideLocationSection == true || isInsideServerSection == true)
+		throw std::logic_error("Mismatched brackets in configuration file");
 }
 
 bool ServerConf::isCgi(const std::string &extension) const {
@@ -632,4 +634,48 @@ bool ServerConf::isCgi(const std::string &extension) const {
             return true;
     }
     return false;
+}
+
+const std::string& ServerConf::getRoot() const {
+	 return this->root; 
+}
+
+const std::string& ServerConf::getServerName() const {
+	 return this->server_name; 
+}
+
+int ServerConf::getPort() const {
+	 return this->port; 
+}
+
+const std::vector<std::string>& ServerConf::getAllowedMethods() const {
+	 return this->allowed_methods; 
+}
+
+const std::string& ServerConf::getIndex() const {
+	 return this->index; 
+}
+
+const std::map<unsigned int, std::string>& ServerConf::getErrorsPages() const {
+	 return this->errors_pages; 
+}
+
+unsigned long ServerConf::getMaxBodySize() const {
+	 return this->max_body_size; 
+}
+
+std::vector<Location*>& ServerConf::getLocations() {
+	 return this->locations; 
+}
+
+const std::string &ServerConf::getCgiPathFromExtension(const std::string &extension) {
+	 return this->cgi_values[extension]; 
+}
+
+bool ServerConf::getAutoindex() const {
+	 return this->autoindex; 
+}
+
+std::map<unsigned int, std::string>& ServerConf::getToReturn() {
+	 return this->to_return; 
 }

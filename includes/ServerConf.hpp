@@ -42,18 +42,18 @@ class ServerConf
         bool requirements_serv(Mommy& frr, size_t currentServerIndex);
         void serv_upload(std::string &line, size_t currentServerIndex, Mommy& frr);
         void location_upload(std::string &line, size_t currentServerIndex, Mommy& frr, size_t currentLocationIndex);
-        const std::string& getRoot() const { return this->root; }
-        const std::string& getServerName() const { return this->server_name; }
-        int getPort() const { return this->port; }
-        const std::vector<std::string>& getAllowedMethods() const { return this->allowed_methods; }
-        const std::string& getIndex() const { return this->index; }
-        const std::map<unsigned int, std::string>& getErrorsPages() const { return this->errors_pages; }
-        unsigned long getMaxBodySize() const { return this->max_body_size; }
-        std::vector<Location*>& getLocations() { return this->locations; }
-        const std::string &getCgiPathFromExtension(const std::string &extension) { return this->cgi_values[extension]; }
         bool isCgi(const std::string &extension) const;
-        bool getAutoindex() const { return this->autoindex; }
-        std::map<unsigned int, std::string>& getToReturn() { return this->to_return; }
+        const std::string& getRoot() const;
+        const std::string& getServerName() const;
+        int getPort() const;
+        const std::vector<std::string>& getAllowedMethods() const;
+        const std::string& getIndex() const;
+        const std::map<unsigned int, std::string>& getErrorsPages() const;
+        unsigned long getMaxBodySize() const;
+        std::vector<Location*>& getLocations();
+        const std::string &getCgiPathFromExtension(const std::string &extension);
+        bool getAutoindex() const;
+        std::map<unsigned int, std::string>& getToReturn();
 
     protected:
         bool isReturn;
