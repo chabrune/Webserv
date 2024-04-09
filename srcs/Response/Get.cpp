@@ -30,7 +30,9 @@ void Get::headerFileBuilder(std::string file_type, Request &request) {
     if (this->_isGenerated) {
         file_type = "text/html";
     }
-    header_tmp << "HTTP/1.1 200 OK\nContent-Type: " << file_type << "\nContent-Length: " << this->_contentSize << "\r\n";
+    if (getHeaderCode().empty())
+        setHeaderCode("200 OK");
+    header_tmp << "HTTP/1.1 " << getHeaderCode() << "\nContent-Type: " << file_type << "\nContent-Length: " << this->_contentSize << "\r\n";
     std::string cookie_line = request.getCookie();
     while (!cookie_line.empty()) {
         size_t equalsChar = cookie_line.find('=');
