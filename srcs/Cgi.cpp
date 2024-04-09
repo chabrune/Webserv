@@ -67,7 +67,7 @@ void Cgi::pipeCreatorAndExec(const std::string &buffer) {
                 std::cout << "Chdir in folder " << getPathFullName() << " return result: " << this->_exit_status << std::endl;
             dup2(_pipe_in[0], STDIN_FILENO);
             dup2(_pipe_out[1], STDOUT_FILENO);
-            if (buffer.empty())
+            if (!buffer.empty())
                 write(_pipe_in[1], buffer.c_str(), buffer.length());
             closeAllPipe();
             execve(this->_argv[0], const_cast<char **>(this->_argv.data()), const_cast<char **>(this->_env.data()));

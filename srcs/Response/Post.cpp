@@ -13,6 +13,7 @@ void Post::treatBuffer(std::string & buffer, Request &request) {
     bool looped = false;
     while (!buffer.empty()) 
     {
+        std::cout << buffer << std::endl;
         if (looped && baseSize == buffer.size()) {
             g_error = BADREQUEST;
             throw requestError();
@@ -36,8 +37,8 @@ void Post::treatBuffer(std::string & buffer, Request &request) {
         }
         if (this->_filePath.empty() && request.getContentType().find("multipart") == std::string::npos) {
             this->_filePath = this->_uri;
+            this->done = true;
         }
-        std::ofstream file(this->_filePath.c_str(), std::ios_base::out | std::ios_base::app);
         size_t nextBound = buffer.find("--" + request.getBoundary());
         std::string content;
         if (buffer.find("--" + request.getBoundary() + "--") == nextBound && nextBound != std::string::npos) {
@@ -51,11 +52,12 @@ void Post::treatBuffer(std::string & buffer, Request &request) {
             content = buffer;
             buffer.clear();
         }
+        std::cout << request.len << " " << this->server->getMaxBodySizeFrom(this->_uri) << std::endl;
         if (static_cast<unsigned long>(request.len) > this->server->getMaxBodySizeFrom(this->_uri)) {
             g_error = TOOLARGEENTITY;
-            file.close();
             return;
         }
+        std::ofstream file(this->_filePath.c_str(), std::ios_base::out | std::ios_base::app);
         file << content;
         file.close();
     }
@@ -70,6 +72,7 @@ void Post::execPost(Server & server, Request &request, bool & readyToSend) {
             if (_uri[_uri.length() - 1] == '/')
                 _uri.erase(_uri.length() - 1, 1);
             buffer = request.getBody();
+            request.len = static_cast<long>(buffer.size());
         }
         if (!this->done && this->processing) { // Si le dernier boundary est toujours pas arrive
             long tmp;
@@ -102,8 +105,10 @@ void Post::execPost(Server & server, Request &request, bool & readyToSend) {
         if (this->done) {
             if (DEBUG)
                 std::cout << MAGENTA << "Post is done" << RESET << std::endl;
-            if (g_error == TOOLARGEENTITY)
+            if (g_error == TOOLARGEENTITY) {
+                std::cout << "bah ouai\n";
                 throw Request::tooLongRequest();
+            }
             this->_isGenerated = true;
             this->_content = "<h1 style=\"font-family: sans-serif; color: #343434;\">Upload Successfull</h1>";
             this->headerGenBuilder("");

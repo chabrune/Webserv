@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Don't do that</title>
+    <style>
+        body {
+            height: 100vh;
+            padding: 0;
+            margin: 0;
+            background: linear-gradient(0deg, rgb(39, 16, 16) 0%, rgb(93, 35, 55) 100%);
+        }
+
+        #confirmBtn {
+            position: absolute;
+            opacity: 1;
+            top: 20px;
+            border: 5px solid #AA2824;
+            transform: translate(-40%, 0);
+            transition: 0.5s;
+        }
+
+        #confirmBtn:hover {
+            top: 10px;
+            border-radius: 10px 0 10px 0;
+            background: #AA2824;
+            padding: 25px;
+            margin: 25px;
+            box-shadow: 0 0 100px 50px rgba(170, 40, 36, 0.5);
+        }
+
+        #changeColorBtn {
+            opacity: 0;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -40%);
+            border-radius: 10px 2px;
+            border: 2px solid #AA2824;
+        }
+
+        .btn {
+            position: relative;
+            padding: 20px;
+            margin: 20px;
+            color: #fff;
+            font-family: 'Cyber', sans-serif;
+            font-weight: bold;
+            filter: drop-shadow(0 0 0.25rem #a01336);
+            background-color: #3C0D0F;
+        }
+
+        #pablo {
+            border-radius: 10px 10px;
+            z-index: -1;
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -40%);
+            opacity: 0;
+            filter: drop-shadow(0px 0px 10px #b23356);
+        }
+    </style>
+</head>
+<body>
+    <center>
+        <button id="confirmBtn" class="btn">
+            Confirm you want to crash the server
+        </button>
+    </center>
+    <button id=changeColorBtn class="btn">
+        Click here to make the server crash
+    </button>
+    <center>
+        <img src="pablo.jpg" id="pablo">
+    </center>
+    <script>
+        let confirmBtn = document.getElementById('confirmBtn');
+        let changeColorBtn = document.getElementById('changeColorBtn');
+        let  n = 0;
+        let confirmed = false;
+
+        confirmBtn.addEventListener('click', (e) => {
+            confirmBtn.style.opacity = 0;
+            changeColorBtn.style.opacity = 1;
+            confirmed = true;
+        });
+
+        changeColorBtn.addEventListener('mousemove', (e) => {
+            if (!confirmed)
+                return;
+            n++;
+            let randomPositionTop = Math.floor(Math.random() * 2000) % (window.innerHeight - 150);
+            let randomPositionRight = Math.floor(Math.random() * 2000) % (window.innerWidth - 350);
+
+            if (n > 5) {
+                let pablo = document.getElementById('pablo');
+                let currentOpacity = parseFloat(window.getComputedStyle(pablo).opacity);
+                pablo.style.opacity = Math.max(currentOpacity + (currentOpacity / 5), 0.01);
+            }
+
+
+            changeColorBtn.style.top = `${randomPositionTop}px`;
+            changeColorBtn.style.left = `${randomPositionRight}px`;
+        });
+
+        changeColorBtn.addEventListener('click', redirect);
+        function redirect() {
+            if (!confirmed)
+                return;
+            window.location = "https://www.youtube.com/embed/R4dyRTAfsKc?autoplay=1";
+        }
+    </script>
+</body>
+</html>
