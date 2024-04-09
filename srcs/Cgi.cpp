@@ -10,7 +10,6 @@ Cgi::Cgi(AResponse &response, Request &request, Server &server, const std::strin
     if (DEBUG)
         std::cout << GREEN << "Cgi build. " << *this << std::endl;
     pipeCreatorAndExec(buffer);
-    pipeCreatorAndExec(buffer);
     readPipeValue(response, request);
     closeAllPipe();
     if (DEBUG)
@@ -59,7 +58,41 @@ void Cgi::pipeCreatorAndExec(const std::string &buffer) {
         close(_pipe_out[1]);
         exit(1);
     }
-    _pid = fork();
+    pid_t intermediate_pid = fork();
+    if (intermediate_pid == 0) {
+        pid_t worker_pid = fork();
+        if (worker_pid == 0) {
+            this->_exit_status = chdir(getPathFullName().c_str());
+            if (DEBUG)
+                std::cout << "Chdir in folder " << getPathFullName() << " return result: " << this->_exit_status << std::endl;
+            dup2(_pipe_in[0], STDIN_FILENO);
+            dup2(_pipe_out[1], STDOUT_FILENO);
+            if (buffer.empty())
+                write(_pipe_in[1], buffer.c_str(), buffer.length());
+            closeAllPipe();
+            execve(this->_argv[0], const_cast<char **>(this->_argv.data()), const_cast<char **>(this->_env.data()));
+        }
+
+        pid_t timeout_pid = fork();
+        if (timeout_pid == 0) {
+            sleep(2);
+            _exit(0);
+        }
+
+        pid_t exited_pid = wait(NULL);
+        if (exited_pid == worker_pid)
+            kill(timeout_pid, SIGKILL);
+        else {
+            //timeout msg
+            kill(worker_pid, SIGKILL);
+        }
+        _exit(0);
+    }
+    waitpid(intermediate_pid, 0, 0);
+
+
+
+    /*_pid = fork();
     if (_pid < 0) {
         std::cout << "fork marche po" << std::endl;
         exit(1);
@@ -75,9 +108,9 @@ void Cgi::pipeCreatorAndExec(const std::string &buffer) {
         if (buffer.empty())
             write(_pipe_in[1], buffer.c_str(), buffer.length());
         closeAllPipe();
-        execve(this->_argv[0], const_cast<char **>(this->_argv.data()), const_cast<char **>(this->_env.data()));
+        this->_exit_status = execve(this->_argv[0], const_cast<char **>(this->_argv.data()), const_cast<char **>(this->_env.data()));
     }
-    wait(&this->_exit_status);
+    wait(&this->_exit_status);*/
 }
 
 void Cgi::readPipeValue(AResponse &response, Request &request) {
