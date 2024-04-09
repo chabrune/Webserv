@@ -8,7 +8,7 @@ Post::Post(Server & server) : AResponse(server), done(false), processing(false)
 
 }
 
-void Post::treatBuffer(std::string & buffer, Request &request) {
+void Post::treatBuffer(Server &server, std::string & buffer, Request &request) {
     size_t baseSize = buffer.size();
     bool looped = false;
     while (!buffer.empty()) 
@@ -37,9 +37,19 @@ void Post::treatBuffer(std::string & buffer, Request &request) {
         if (this->_filePath.empty() && request.getContentType().find("multipart") == std::string::npos) {
             this->_filePath = this->_uri;
         }
-        std::ofstream file(this->_filePath.c_str(), std::ios_base::out | std::ios_base::app);
         size_t nextBound = buffer.find("--" + request.getBoundary());
         std::string content;
+        size_t extension_index =this->_filename.find_last_of('.');
+        std::string extension;
+        if (extension_index != std::string::npos)
+            extension = this->_filename.substr(extension_index + 1, this->_filename.size() - extension_index);
+
+        if (server.isCgi(extension)) {
+            content = buffer.substr(0, nextBound - 2);
+            buffer = buffer.substr(nextBound, buffer.size() - 2);
+            Cgi(*this, request, server, buffer);
+            //std::cout << "oui" << std::endl;
+        }
         if (buffer.find("--" + request.getBoundary() + "--") == nextBound && nextBound != std::string::npos) {
             content = buffer.substr(0, buffer.size() - (request.getBoundary().size() + 8));
             buffer.clear();
@@ -53,9 +63,9 @@ void Post::treatBuffer(std::string & buffer, Request &request) {
         }
         if (static_cast<unsigned long>(request.len) > this->server->getMaxBodySizeFrom(this->_uri)) {
             g_error = TOOLARGEENTITY;
-            file.close();
             return;
         }
+        std::ofstream file(this->_filePath.c_str(), std::ios_base::out | std::ios_base::app);
         file << content;
         file.close();
     }
@@ -90,15 +100,8 @@ void Post::execPost(Server & server, Request &request, bool & readyToSend) {
                 request.len += tmp;
             }
         }
-        if (server.isCgi(request.getExtension())) {
-            buffer.push_back('\n');
-            Cgi(*this, request, server, buffer);
-            this->headerFileBuilder(request.getFileType(), request);
-            readyToSend = true;
-            return;
-        }
         if (!buffer.empty())
-            treatBuffer(buffer, request);
+            treatBuffer(server, buffer, request);
         if (this->done) {
             if (DEBUG)
                 std::cout << MAGENTA << "Post is done" << RESET << std::endl;

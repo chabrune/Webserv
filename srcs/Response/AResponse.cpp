@@ -198,3 +198,11 @@ long long AResponse::getContentSize() {
 bool & AResponse::modIsPosting() {
     return this->_isPosting;
 }
+
+const std::string &AResponse::getHeaderCode() {
+    return this->_header_code;
+}
+
+void AResponse::setHeaderCode(const std::string &header_code) {
+    this->_header_code = header_code;
+}

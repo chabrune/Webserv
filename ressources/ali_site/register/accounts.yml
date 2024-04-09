@@ -5,6 +5,13 @@ C'est mwa:
   - 06/1999
   - '123'
   password: motdepassesupersecretewadjawohdiuawhuidhawuodwhad
+ali:
+  Credit card:
+  - '164149'
+  - ali
+  - '189'
+  - '489'
+  password: test
 nathan:
   Credit card:
   - '1234567891234567'
@@ -19,6 +26,13 @@ oui:
   - ouioui
   - '123'
   password: oui
+sal:
+  Credit card:
+  - '15'
+  - fds
+  - '19'
+  - '49'
+  password: salo
 salut:
   Credit card:
   - abc

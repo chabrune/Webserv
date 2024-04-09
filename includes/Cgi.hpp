@@ -21,7 +21,7 @@ public:
 
 private:
     void cgiBuilder(Request &request, Server &server);
-    void pipeCreatorAndExec(const std::string &buffer);
+    void pipeCreatorAndExec(AResponse &response, const std::string &buffer);
     void readPipeValue(AResponse &response, Request &request);
     void parseCookieFromCgi(std::string &buffer, Request &request);
     void closeAllPipe();

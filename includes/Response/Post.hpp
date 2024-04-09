@@ -9,7 +9,7 @@ class Post : public AResponse {
     public:
         Post() {};
         Post(Server & server);
-        void treatBuffer(std::string & buffer, Request &request);
+        void treatBuffer(Server &server, std::string & buffer, Request &request);
         void execPost(Server & server, Request &request, bool & readyToSend);
     private:
         bool done;

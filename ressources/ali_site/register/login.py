@@ -8,20 +8,6 @@ def print_login():
     utils.read_html_file("login.html")
 
 
-def loginold():
-    session = authUser(form.getvalue('username'), form.getvalue('password'))
-    if session is None:
-        utils.printUserMsg("Failed To Login, Username or Passowrd is wrong!")
-    else:
-        print("Correct Crenditales :D",file=sys.stderr)
-        cookies.clear()
-        cookies["SID"] = session.getSid()
-        cookies["SID"]["expires"] = 120 # Session Expires after 2 mins
-        print("HTTP/1.1 301 OK")
-        print(cookies.output())
-        print("location: acc.py")
-        print("\r\n")
-
 def login():
     auth(form.getvalue('username'), form.getvalue('password'))
 
@@ -34,25 +20,11 @@ def auth(username, password):
             cookies.clear()
             cookies["SID"] = 4168
             cookies["SID"]["expires"] = 120 # Session Expires after 2 mins
-            print("HTTP/1.1 301 OK")
             print(cookies.output())
-            print("location: login.py")
             print("\r\n")
         else:
             utils.printUserMsg("Error there is no account with this username and password")
 
-
-def authUser(name, password):
-    if os.path.exists('cgi/accounts'):
-        with open('cgi/accounts', 'rb') as f:
-            database = pickle.load(f)
-            if name in database.user_pass and database.user_pass[name] == password:
-                session = Session(database.user_firstname[name])
-                return session
-            else:
-                return None
-    else:
-        return None
 
 form = cgi.FieldStorage()
 cookies = SimpleCookie()

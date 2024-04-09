@@ -23,6 +23,8 @@ class AResponse {
         void setContent(const std::string &content);
         void setContentSize(long long size);
         void handleRequestError(Server* server, const std::string & uri);
+        void setHeaderCode(const std::string &header_code);
+        const std::string &getHeaderCode();
 
 
 	protected:
@@ -41,4 +43,5 @@ class AResponse {
         long long _contentSize;
         bool _isGenerated;
         bool _isPosting;
+        std::string _header_code;
 };
