@@ -16,12 +16,14 @@
             opacity: 1;
             top: 20px;
             border: 5px solid #AA2824;
-            transform: translate(-40%, 0);
+            left: 50%;
+            transform: translate(-55%, -0);
             transition: 0.5s;
         }
 
         #confirmBtn:hover {
             top: 10px;
+            transform: translate(-56%, -0);
             border-radius: 10px 0 10px 0;
             background: #AA2824;
             padding: 25px;
@@ -62,11 +64,9 @@
     </style>
 </head>
 <body>
-    <center>
-        <button id="confirmBtn" class="btn">
-            Confirm you want to crash the server
-        </button>
-    </center>
+    <button id="confirmBtn" class="btn">
+        Confirm you want to crash the server
+    </button>
     <button id=changeColorBtn class="btn">
         Click here to make the server crash
     </button>
@@ -90,7 +90,7 @@
                 return;
             n++;
             let randomPositionTop = Math.floor(Math.random() * 2000) % (window.innerHeight - 150);
-            let randomPositionRight = Math.floor(Math.random() * 2000) % (window.innerWidth - 350);
+            let randomPositionRight = Math.max(Math.floor(Math.random() * 5000) % (window.innerWidth - 170), 150);
 
             if (n > 5) {
                 let pablo = document.getElementById('pablo');

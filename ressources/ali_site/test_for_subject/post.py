@@ -24,4 +24,4 @@ print("<button>Click here to return</button>")
 print("</a>")
 
 print("</body>")
-print("</html>")fname=sasa&lname=sa
+print("</html>")fname=sasa&lname=safname=hey&lname=heyfname=hey&lname=heyfname=hey&lname=heyfname=hey&lname=heyfname=hey&lname=hey

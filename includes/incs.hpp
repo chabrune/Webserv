@@ -38,7 +38,7 @@
 # define HTTP_BUFFER_SIZE 1000000
 # define SND_BUFFER_SIZE 1000000
 # define CONNECTIONS_NUMBER_LIMIT 2000
-# define TIMEOUT 100 // useconds before select exit
+# define TIMEOUT 10000 // useconds before select exit
 
 class   requestError : public std::exception {};
 
