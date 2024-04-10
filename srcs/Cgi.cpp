@@ -13,7 +13,7 @@ Cgi::Cgi(AResponse &response, Request &request, Server &server, const std::strin
     readPipeValue(response, request);
     closeAllPipe();
     if (DEBUG)
-        std::cout << "Successfully cgi execution." << std::endl;
+        std::cout << "Cgi execution done" << std::endl;
 }
 
 void Cgi::cgiBuilder(Request &request, Server &server) {
@@ -74,6 +74,7 @@ void Cgi::pipeCreatorAndExec(AResponse &response, const std::string &buffer) {
             write(_pipe_in[1], buffer.c_str(), buffer.length());
         closeAllPipe();
         execve(this->_argv[0], const_cast<char **>(this->_argv.data()), const_cast<char **>(this->_env.data()));
+        exit(1);
     }
     wait(&_exit_status);
     if (DEBUG)
@@ -81,7 +82,7 @@ void Cgi::pipeCreatorAndExec(AResponse &response, const std::string &buffer) {
 }
 
 void Cgi::readPipeValue(AResponse &response, Request &request) {
-    if (this->_exit_status == 14) {
+    if (this->_exit_status == 14 || this->_exit_status == 512 || this->_exit_status == 256) {
         request.setFileType("text/html");
         response.setContent("timeout");
         response.setContentSize(8);

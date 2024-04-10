@@ -6,3 +6,5 @@ data = sys.stdin.readline().strip()  # Read a single line and remove newline cha
 
 with open("fromPostPython.txt", "w+") as my_file:
     my_file.write(data)
+
+print("done")

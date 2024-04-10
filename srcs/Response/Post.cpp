@@ -35,12 +35,14 @@ void Post::treatBuffer(std::string & buffer, Request &request) {
             buffer = buffer.substr(buffer.find("\r\n\r\n") + 4, buffer.size());
         }
         if (this->_filePath.empty() && request.getContentType().find("multipart") == std::string::npos) {
+            size_t slash2 = this->_uri.find_last_of('/');
+            this->_filename = this->_uri .substr(slash2 + 1, this->_uri.length() - slash2);
             this->_filePath = this->_uri;
             this->done = true;
         }
         size_t nextBound = buffer.find("--" + request.getBoundary());
         std::string content;
-        size_t extension_index =this->_filename.find_last_of('.');
+        size_t extension_index = this->_filename.find_last_of('.');
         std::string extension;
         if (extension_index != std::string::npos)
             extension = this->_filename.substr(extension_index + 1, this->_filename.size() - extension_index);
@@ -59,9 +61,16 @@ void Post::treatBuffer(std::string & buffer, Request &request) {
             g_error = TOOLARGEENTITY;
             return;
         }
-        std::ofstream file(this->_filePath.c_str(), std::ios_base::out | std::ios_base::app);
-        file << content;
-        file.close();
+        if (this->server->isCgi(extension)) {
+            request.setFileName(this->_filename);
+            request.setExtension(extension);
+            content += '\n';
+            Cgi(*this, request, *this->server, content);
+        } else {
+            std::ofstream file(this->_filePath.c_str(), std::ios_base::out | std::ios_base::app);
+            file << content;
+            file.close();
+        }
     }
 }
 
