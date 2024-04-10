@@ -26,6 +26,7 @@ class Request {
         void addCookie(const std::string &value);
 		const std::string &getFileType() const;
 		const std::string &getExtension() const;
+        void setExtension(const std::string &extension);
 		const int &getContentLenght() const;
 		const int &getSockfd() const;
 		const std::string &getHost() const;

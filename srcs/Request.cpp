@@ -311,6 +311,10 @@ const std::string &Request::getExtension() const {
 	return extension;
 }
 
+void Request::setExtension(const std::string &extension) {
+    this->extension = extension;
+}
+
 const bool &Request::getIsDir() const {
     return isDir;
 }

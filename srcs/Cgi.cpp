@@ -46,15 +46,8 @@ void Cgi::cgiBuilder(Request &request, Server &server) {
     _env.push_back(0);
 }
 
-void timeoutHandler(int signum) {
-    (void)signum;
-    std::cerr << "Timeout occurred. Killing the child process." << std::endl;
-    exit(14);
-}
-
 void Cgi::pipeCreatorAndExec(AResponse &response, const std::string &buffer) {
     (void) response;
-    std::cout << "buffer " << buffer << std::endl;
     if (pipe(this->_pipe_out) < 0) {
         if (DEBUG)
         std::cout << "pipe1 marche po" << std::endl;
@@ -69,7 +62,7 @@ void Cgi::pipeCreatorAndExec(AResponse &response, const std::string &buffer) {
 
     pid_t worker_pid = fork();
     if (worker_pid == 0) {
-        signal(SIGALRM, timeoutHandler);
+        signal(SIGALRM, 0);
         alarm(4);
 
         this->_exit_status = chdir(getPathFullName().c_str());
@@ -81,9 +74,10 @@ void Cgi::pipeCreatorAndExec(AResponse &response, const std::string &buffer) {
             write(_pipe_in[1], buffer.c_str(), buffer.length());
         closeAllPipe();
         execve(this->_argv[0], const_cast<char **>(this->_argv.data()), const_cast<char **>(this->_env.data()));
-        exit(5);
     }
     wait(&_exit_status);
+    if (DEBUG)
+        std::cout << "Cgi exec result " << this->_exit_status << std::endl;
 }
 
 void Cgi::readPipeValue(AResponse &response, Request &request) {
