@@ -9,11 +9,11 @@ Post::Post(Server & server) : AResponse(server), done(false), processing(false)
 }
 
 void Post::treatBuffer(Server &server, std::string & buffer, Request &request) {
+    (void)server;
     size_t baseSize = buffer.size();
     bool looped = false;
     while (!buffer.empty()) 
     {
-        std::cout << buffer << std::endl;
         if (looped && baseSize == buffer.size()) {
             g_error = BADREQUEST;
             throw requestError();
@@ -45,13 +45,6 @@ void Post::treatBuffer(Server &server, std::string & buffer, Request &request) {
         std::string extension;
         if (extension_index != std::string::npos)
             extension = this->_filename.substr(extension_index + 1, this->_filename.size() - extension_index);
-
-        if (server.isCgi(extension)) {
-            content = buffer.substr(0, nextBound - 2);
-            buffer = buffer.substr(nextBound, buffer.size() - 2);
-            Cgi(*this, request, server, buffer);
-            //std::cout << "oui" << std::endl;
-        }
         if (buffer.find("--" + request.getBoundary() + "--") == nextBound && nextBound != std::string::npos) {
             content = buffer.substr(0, buffer.size() - (request.getBoundary().size() + 8));
             buffer.clear();

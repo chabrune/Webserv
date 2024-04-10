@@ -628,6 +628,12 @@ void ServerConf::inputParsing(std::string argv, Mommy& frr)
 		throw std::logic_error("Mismatched brackets in configuration file");
 }
 
+
+/*
+ * Call this function with an extension (without the '.' at the beginning)
+ * To determine if it is a CGI
+*/
+
 bool ServerConf::isCgi(const std::string &extension) const {
     for (std::map<std::string, std::string>::const_iterator it = this->cgi_values.begin(); it != this->cgi_values.end() ;it++) {
         if (it->first == extension)

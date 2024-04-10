@@ -4,7 +4,6 @@
 #include "../includes/Response/AResponse.hpp"
 
 Cgi::Cgi(AResponse &response, Request &request, Server &server, const std::string &buffer) {
-    std::cout << "enter" << std::endl;
     if (DEBUG)
         std::cout << MAGENTA << "New Cgi is under building.." << std::endl;
     cgiBuilder(request, server);
@@ -47,8 +46,15 @@ void Cgi::cgiBuilder(Request &request, Server &server) {
     _env.push_back(0);
 }
 
+void timeoutHandler(int signum) {
+    (void)signum;
+    std::cerr << "Timeout occurred. Killing the child process." << std::endl;
+    exit(14);
+}
+
 void Cgi::pipeCreatorAndExec(AResponse &response, const std::string &buffer) {
-    std::cout << "bufer " << buffer << std::endl;
+    (void) response;
+    std::cout << "buffer " << buffer << std::endl;
     if (pipe(this->_pipe_out) < 0) {
         if (DEBUG)
         std::cout << "pipe1 marche po" << std::endl;
@@ -60,44 +66,35 @@ void Cgi::pipeCreatorAndExec(AResponse &response, const std::string &buffer) {
         close(_pipe_out[1]);
         exit(1);
     }
-    pid_t intermediate_pid = fork();
-    int exit_status = 0;
-    if (intermediate_pid == 0) {
-        pid_t worker_pid = fork();
-        if (worker_pid == 0) {
-            this->_exit_status = chdir(getPathFullName().c_str());
-            if (DEBUG)
-                std::cout << "Chdir in folder " << getPathFullName() << " return result: " << this->_exit_status << std::endl;
-            dup2(_pipe_in[0], STDIN_FILENO);
-            dup2(_pipe_out[1], STDOUT_FILENO);
-            if (!buffer.empty())
-                write(_pipe_in[1], buffer.c_str(), buffer.length());
-            closeAllPipe();
-            execve(this->_argv[0], const_cast<char **>(this->_argv.data()), const_cast<char **>(this->_env.data()));
-        }
 
-        pid_t timeout_pid = fork();
-        if (timeout_pid == 0) {
-            sleep(2);
-            _exit(0);
-        }
+    pid_t worker_pid = fork();
+    if (worker_pid == 0) {
+        signal(SIGALRM, timeoutHandler);
+        alarm(4);
 
-        pid_t exited_pid = wait(NULL);
-        if (exited_pid == worker_pid)
-            kill(timeout_pid, SIGKILL);
-        else {
-            //timeout msg
-            (void) response;
-            kill(worker_pid, SIGKILL);
-            exit_status = 0;
-        }
-        _exit(0);
+        this->_exit_status = chdir(getPathFullName().c_str());
+        if (DEBUG)
+            std::cout << "Chdir in folder " << getPathFullName() << " return result: " << this->_exit_status << std::endl;
+        dup2(_pipe_in[0], STDIN_FILENO);
+        dup2(_pipe_out[1], STDOUT_FILENO);
+        if (!buffer.empty())
+            write(_pipe_in[1], buffer.c_str(), buffer.length());
+        closeAllPipe();
+        execve(this->_argv[0], const_cast<char **>(this->_argv.data()), const_cast<char **>(this->_env.data()));
+        exit(5);
     }
-    waitpid(intermediate_pid, &exit_status, 0);
-    std::cout << exit_status << std::endl;
+    wait(&_exit_status);
 }
 
 void Cgi::readPipeValue(AResponse &response, Request &request) {
+    if (this->_exit_status == 14) {
+        request.setFileType("text/html");
+        response.setContent("timeout");
+        response.setContentSize(8);
+        response.setHeaderCode("500 KO");
+        return;
+    }
+
     std::string buffer;
     buffer.resize(1024);
     //char c;
