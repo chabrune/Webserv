@@ -36,6 +36,7 @@ class Request {
         void tryAccess_Get(Server *server);
         void tryAccess_Delete(Server *server);
         void tryAccess_Post(Server *server, Request *request);
+        void tryExecAccess(std::string path);
         void isAllowed(Server *server);
         const std::string& getBody() const;
         const std::string& getPostFilename() const;

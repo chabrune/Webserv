@@ -8,6 +8,7 @@ Post::Post(Server & server) : AResponse(server), done(false), processing(false)
 
 }
 
+
 void Post::treatBuffer(std::string & buffer, Request &request) {
     size_t baseSize = buffer.size();
     bool looped = false;
@@ -62,6 +63,11 @@ void Post::treatBuffer(std::string & buffer, Request &request) {
             return;
         }
         if (this->server->isCgi(extension)) {
+            try {
+                request.tryExecAccess(server->getRootFrom(request.getPathToFile()) + request.subLocation(server->getLocationFrom(request.getPathToFile())) + this->_filename);
+            } catch (std::exception &e) {
+                return;
+            }
             request.setFileName(this->_filename);
             request.setExtension(extension);
             content += '\n';
@@ -105,6 +111,8 @@ void Post::execPost(Server & server, Request &request, bool & readyToSend) {
                 std::cout << MAGENTA << "Post is done" << RESET << std::endl;
             if (g_error == TOOLARGEENTITY) {
                 throw Request::tooLongRequest();
+            } else if (g_error == NOTFOUND || g_error == FORBIDDEN) {
+                throw Request::accessError();
             }
             this->_isGenerated = true;
             this->headerGenBuilder("");

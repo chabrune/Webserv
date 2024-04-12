@@ -222,6 +222,17 @@ void Request::tryAccess_Get(Server *server) {
     }
 }
 
+void Request::tryExecAccess(std::string path) {
+    if (access(path.c_str(), F_OK) != 0) {
+        g_error = NOTFOUND;
+        throw accessError();
+    }
+    if (access(path.c_str(), X_OK) != 0) {
+        g_error = FORBIDDEN;
+        throw accessError();
+    }
+}
+
 int isWellSlashed(std::string & str) {
     for (size_t i = 0; str[i + 1]; i++) {
         if (str[i] == '/' && str[i + 1] == '/')
