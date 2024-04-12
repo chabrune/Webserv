@@ -108,34 +108,28 @@ button:hover, input[type="submit"]:hover {
 }
 
 /* Styles pour l'image du logo */
-.logo-img {
-    width: 100%; /* Définit la largeur à 100% */
-    object-fit: contain; /* Assure que l'image remplisse l'espace disponible sans être déformée */
-    max-width:200px; /* Définit une largeur maximale de 200px */
-    height: auto; /* Définit la hauteur automatiquement en fonction de la largeur */
+.dogo_img {
+    border-radius: 85%; /* Arrondit les coins pour former un cercle */
+    width: 319px;
+    height: 145px;
+    object-position: center 28%;
+    /* width: 100%; Définit la largeur à 100% */
+    object-fit: cover; /* Assure que l'image remplisse l'espace disponible sans être déformée */
+    /* max-width:200px; Définit une largeur maximale de 200px */
+    /* height: auto; Définit la hauteur automatiquement en fonction de la largeur */
 }
-
-/* Styles pour le texte du logo */
-.logo-text {
-    object-fit: contain; /* Assure que le contenu remplisse l'espace disponible sans être déformé */
-    display: flex; /* Utilise Flexbox pour la disposition */
-    justify-content: center; /* Centre les enfants horizontalement */
-    align-items: center; /* Centre les enfants verticalement */
-    width: 145px; /* Définit la largeur à 145px */
-    height: 145px; /* Définit la hauteur à 145px */
-    background-color: #fff; /* Définit la couleur de fond à blanc */
-    border-radius: 50%; /* Arrondit les coins pour former un cercle */
-}
-
-/* Styles pour l'image du texte du logo */
-.logo-text-img {
-    width: 100%; /* Définit la largeur à 100% */
-    object-fit: contain; /* Assure que l'image remplisse l'espace disponible sans être déformée */
-    height: auto; /* Définit la hauteur automatiquement en fonction de la largeur */
-}
-
 /* display: flex; justify-content: space-between; align-items: center;
 object-fit: cover; width: 319px; height: 145px; object-position: center 28%; */
+
+/* Styles pour l'image du texte du logo */
+.logo_img {
+    width: 319px;
+    height: 145px;
+    /* width: 100%; Définit la largeur à 100% */
+    object-fit: contain; /* Assure que l'image remplisse l'espace disponible sans être déformée */
+    /* height: auto; Définit la hauteur automatiquement en fonction de la largeur */
+    border-radius: 50%; /* Arrondit les coins pour former un cercle */
+}
 
 /* Styles pour la section .page_container */
 .page_container {
