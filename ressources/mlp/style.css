@@ -1,142 +1,228 @@
-.logo{
-    text-align: center;
-    color:white;
+/* Body */
+body {
+    font-family: 'Forum', serif;  /* Définit la police de caractères du corps du document */
+    background: #5A3F37; /* Définit la couleur de fond du corps du document */
+    background: -webkit-linear-gradient(to top, #2C7744, #5A3F37);  /* Définit un dégradé linéaire pour les anciens navigateurs WebKit */
+    background: linear-gradient(to top, #2C7744, #5A3F37); /* Définit un dégradé linéaire pour les navigateurs modernes */
+    color: #ffffff; /* Définit la couleur du texte pour le corps du document */
+    line-height: 1.6; /* Définit la hauteur de ligne du texte */
+    padding: 0; /*Ajoute un padding horizontal de x rem */
+    animation: fade-in 2s ease-in-out; /* Applique une animation nommée 'fade-in' sur 2 secondes */
 }
 
-body{
-    background: #5A3F37;
-    background: -webkit-linear-gradient(to bottom, #2C7744, #5A3F37);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to bottom, #2C7744, #5A3F37); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-    animation: fade-in 2s ease-in-out;
-    color:whitesmoke;
-    
-}
+/* Keyframes pour l'animation 'fade-in' */
 @keyframes fade-in {
     0% {
-      opacity: 0;
+      opacity: 0; /* Commence l'animation avec une opacité de 0 */
     }
     100% {
-      opacity: 1;
+      opacity: 1; /* Termine l'animation avec une opacité de 1 */
     }
 }
 
-a {
-    color: inherit;
-    text-decoration: none;
+/* Styles pour tous les titres h1 à h6 */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: normal; /* Définit le poids de la police à normal */
+    margin-bottom: 1rem; /* Ajoute une marge inférieure de 1 rem */
+    text-align: center; /* Centre le texte des listes */
 }
 
-li:hover {
-    background-color: #555;
-}
-
-li:active {
-    transform: translateY(2px);
-    box-shadow: 0 2px 0 #222;
-}
-  
-
-.dogo{
-    object-fit: cover;
-    width: 319px;
-    height: 145px;
-    float: left; 
-    object-position: center 28.33%;
-}
-
-.mlp{
-    object-fit: cover;
-    width: 319px;
-    height: 145px
-}
-
-p, h1{
-    font-family: "Forum", serif;
-    font-weight:400;
-    font-style: normal;
-    font-size: 1.5em;
-    text-align: center;
-}
-
-.container{
-    padding: 100px;
-    clear:both;
-}
-
-h1{
-    font-size: 2em;
-}
-
+/* Styles pour les listes non ordonnées */
 ul {
-    list-style-type: none;
-    text-align: center;
+    list-style-type: none; /* Supprime les puces des listes */
+    text-align: center; /* Centre le texte des listes */
 }
-  
+
+/* Styles pour les éléments de liste */
 li {
-    display: inline-block;
-    margin-right: 120px;
-    font-weight: 500;
-    font-size: 1.1em;
-    padding: 10px 20px;
-    background-color: #333;
-    color: #fff;
-    text-decoration: none;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-    border-radius: 20px; /* Boutons arrondis */
+    display: inline-block; /* Affiche les éléments de liste en ligne */
+    margin-right: 120px; /* Ajoute une marge à droite de 120px */
+    font-weight: 500; /* Définit le poids de la police à 500 */
+    font-size: 1.1em; /* Définit la taille de la police à 1.1em */
+    padding: 10px 20px; /* Ajoute un padding de 10px en haut/bas et 20px à gauche/droite */
+    background-color: #333; /* Définit la couleur de fond des éléments de liste */
+    color: #fff; /* Définit la couleur du texte à blanc */
+    text-decoration: none; /* Supprime la décoration du texte */
+    border-radius: 20px; /* Définit un rayon de bordure de 20px pour des coins arrondis */
+    transition: background-color 0.3s ease; /* Ajoute une transition sur la couleur de fond */
 }
 
-#page-footer {
-    background-color: black;
-    color: white;
-    padding: 20px 0; /* Ajoute un espacement interne */
-    text-align: center; /* Centre le contenu horizontalement */
-    width: 100%; /* Étend le bas de page sur toute la largeur */
-    position: absolute; /* Positionne le bas de page en bas de la page */
-    bottom: 0;
+/* Styles pour les éléments de liste au survol */
+li:hover {
+    background-color: #555; /* Change la couleur de fond au survol */
 }
 
+/* Styles pour les éléments de liste lorsqu'ils sont cliqués */
+li:active {
+    transform: translateY(2px); /* Déplace l'élément légèrement vers le bas */
+    box-shadow: 0 2px 0 #222; /* Ajoute une ombre pour un effet enfoncé */
+}
+
+/* Styles pour les paragraphes */
+p {
+    margin-bottom: 1.5rem; /* Ajoute une marge inférieure de 1.5 rem */
+}
+
+/* Styles pour les liens */
+a {
+    text-decoration: none; /* Supprime le soulignement des liens */
+    color: inherit; /* Les liens héritent de la couleur de leur parent */
+}
+
+/* Styles pour les liens au survol */
+a:hover {
+    text-decoration: underline; /* Ajoute un soulignement au survol */
+}
+
+/* Styles pour les boutons et les inputs de type submit */
+button, input[type="submit"] {
+    background-color: #0066cc; /* Définit la couleur de fond */
+    border: none; /* Supprime les bordures */
+    color: #fff; /* Définit la couleur du texte à blanc */
+    padding: 0.5rem 1rem; /* Ajoute un padding */
+    border-radius: 0.25rem; /* Arrondit les coins */
+    cursor: pointer; /* Change le curseur en pointeur */
+}
+
+/* Styles pour les boutons et les inputs de type submit au survol */
+button:hover, input[type="submit"]:hover {
+    background-color: #0051a3; /* Assombrit la couleur de fond au survol */
+}
+
+/* Styles pour la classe .page */
+.page {
+    width: 100%; /* Définit une largeur maximale de 90% */
+    object-fit: contain;
+    margin: 0 auto; /* Centre le bloc */
+    padding: 0; /* Supprime le padding */
+}
+
+/* Styles pour le conteneur du logo */
+.logo-container {
+    background-color: white; /* Définit la couleur de fond à blanc */
+    display: flex; /* Utilise Flexbox pour la disposition */
+    justify-content: space-between; /* Répartit l'espace entre les enfants */
+    align-items: center; /* Centre les enfants verticalement */
+    margin: 0 auto; /* Centre le bloc horizontalement */
+    padding: 1rem 0; /* Ajoute un padding vertical de 1 rem */
+}
+
+/* Styles pour l'image du logo */
+.logo-img {
+    width: 100%; /* Définit la largeur à 100% */
+    object-fit: contain; /* Assure que l'image remplisse l'espace disponible sans être déformée */
+    max-width:200px; /* Définit une largeur maximale de 200px */
+    height: auto; /* Définit la hauteur automatiquement en fonction de la largeur */
+}
+
+/* Styles pour le texte du logo */
+.logo-text {
+    object-fit: contain; /* Assure que le contenu remplisse l'espace disponible sans être déformé */
+    display: flex; /* Utilise Flexbox pour la disposition */
+    justify-content: center; /* Centre les enfants horizontalement */
+    align-items: center; /* Centre les enfants verticalement */
+    width: 145px; /* Définit la largeur à 145px */
+    height: 145px; /* Définit la hauteur à 145px */
+    background-color: #fff; /* Définit la couleur de fond à blanc */
+    border-radius: 50%; /* Arrondit les coins pour former un cercle */
+}
+
+/* Styles pour l'image du texte du logo */
+.logo-text-img {
+    width: 100%; /* Définit la largeur à 100% */
+    object-fit: contain; /* Assure que l'image remplisse l'espace disponible sans être déformée */
+    height: auto; /* Définit la hauteur automatiquement en fonction de la largeur */
+}
+
+/* display: flex; justify-content: space-between; align-items: center;
+object-fit: cover; width: 319px; height: 145px; object-position: center 28%; */
+
+/* Styles pour la section .page_container */
+.page_container {
+    width: 100%; /* Définit la largeur à 100% */
+    display: flex; /* Utilise Flexbox pour la disposition */
+    flex-direction: column; /* Organise les enfants en colonne */
+    align-items: center; /* Centre les enfants horizontalement */
+    text-align: center; /* Centre le texte */
+}
+
+/* Styles pour l'image dans .container_img */
+.page_container_img {
+    width: 100%; /* Définit la largeur à 100% */
+    margin-bottom: 2rem; /* Ajoute une marge inférieure de 2 rem */
+}
+
+/* Styles pour le pied de page */
 .footer {
-    background-color: #333;
-    color: #fff;
-    padding: 40px 0;
+    width: 100%; /* Définit la largeur à 100% */
+    background: #232526;  /* Définit la couleur de fond */
+    background: -webkit-linear-gradient(to top, #414345, #232526);  /* Définit un dégradé linéaire pour les anciens navigateurs WebKit */
+    background: linear-gradient(to top, #414345, #232526); /* Définit un dégradé linéaire pour les navigateurs modernes */
+    color: #fff; /* Définit la couleur du texte à blanc */
+    padding: 2rem 0; /* Ajoute un padding vertical de 2 rem */
 }
-  
+
+/* Styles pour le contenu du pied de page */
 .footer-content {
-    display: flex;
-    justify-content: space-between;
-    max-width: 1200px;
-    margin: 0 auto;
+    display: flex; /* Utilise Flexbox pour la disposition */
+    justify-content: space-between; /* Répartit l'espace entre les enfants */
+    align-items: center; /* Centre les enfants verticalement */
+    flex-wrap: wrap; /* Permet aux enfants de passer à la ligne suivante si nécessaire */
 }
-  
+
+/* Styles pour les sections dans le pied de page */
 .footer-section {
-    flex-basis: 30%;
+    flex-basis: calc(33.333% - 2rem); /* Définit une base flexible, en soustrayant 2rem pour l'espacement */
+    margin-bottom: 2rem; /* Ajoute une marge inférieure de 2 rem */
 }
-  
+
+/* Styles pour les titres h2 dans les sections du pied de page */
 .footer-section h2 {
-    font-size: 18px;
-    margin-bottom: 20px;
+    color: #fff; /* Définit la couleur du texte à blanc */
+    margin-bottom: 1rem; /* Ajoute une marge inférieure de 1 rem */
 }
-  
-.footer-section p,
-.footer-section ul li a {
-    color: #ccc;
-    font-size: 14px;
-    line-height: 1.5;
+
+/* Styles pour les paragraphes dans les sections du pied de page */
+.footer-section p {
+    color: #ccc; /* Définit la couleur du texte à gris clair */
+    margin-bottom: 1rem; /* Ajoute une marge inférieure de 1 rem */
 }
-  
-.footer-section ul li {
-    margin-bottom: 10px;
+
+/* Styles pour les liens dans les sections du pied de page */
+.footer-section a {
+    color: #fff; /* Définit la couleur du texte à blanc */
+    text-decoration: underline; /* Ajoute un soulignement */
 }
-  
-.footer-section .read-more {
-    color: #fff;
-    text-decoration: none;
+
+/* Styles pour les liens dans les sections du pied de page au survol */
+.footer-section a:hover {
+    color: #ccc; /* Assombrit la couleur du texte au survol */
 }
-  
+
+/* Styles pour les champs de saisie dans le formulaire de contact */
+.contact-input {
+    background-color: #444; /* Définit la couleur de fond */
+    border: none; /* Supprime les bordures */
+    color: #fff; /* Définit la couleur du texte à blanc */
+    padding: 0.5rem; /* Ajoute un padding de 0.5 rem */
+    width: 100%; /* Définit la largeur à 100% */
+    margin-bottom: 1rem; /* Ajoute une marge inférieure de 1 rem */
+}
+
+/* Styles pour le bouton de soumission dans le formulaire de contact */
+.contact-btn {
+    background-color: #0066cc; /* Définit la couleur de fond */
+    border: none; /* Supprime les bordures */
+    color: #fff; /* Définit la couleur du texte à blanc */
+    padding: 0.5rem 1rem; /* Ajoute un padding de 0.5 rem en haut/bas et 1 rem à gauche/droite */
+    border-radius: 0.25rem; /* Arrondit les coins */
+    cursor: pointer; /* Change le curseur en pointeur */
+    width: auto; /* Définit la largeur automatiquement en fonction du contenu */
+}
+
+/* Styles pour la partie inférieure du pied de page */
 .footer-bottom {
-    text-align: center;
-    margin-top: 40px;
-    font-size: 14px;
-    color: #ccc;
+    text-align: center; /* Centre le texte */
+    margin-top: 2rem; /* Ajoute une marge supérieure de 2 rem */
+    color: #ccc; /* Définit la couleur du texte à gris clair */
 }
-  
