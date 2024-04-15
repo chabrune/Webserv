@@ -2,16 +2,26 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Raycast</title>
     <style>
-        body {
-            background: whitesmoke;
+        html {
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            background: linear-gradient(0deg, rgb(39, 16, 16) 0%, rgb(93, 35, 55) 100%);
+        }
+
+        p {
+            font-family: sans-serif;
+            color: whitesmoke;
+            text-align: center;
         }
 
         #gameCanvas {
             margin: 0 auto;
             padding: 0;
-            border: 3px black inset;
+            border: 3px #b23356 inset;
+            filter: drop-shadow(0px 0px 10px #b23356);
             border-radius: 2px 2px;
             display: block;
         }
@@ -23,5 +33,7 @@
     <script src="input.js"></script>
     <script src="performance.js"></script>
     <script src="imgs.js"></script>
+    <p>Move with W A S D, ↑ ↓ and turn with A E, ← →</p>
+
 </body>
 </html>

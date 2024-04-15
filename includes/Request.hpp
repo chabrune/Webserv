@@ -52,11 +52,16 @@ class Request {
 			}
 		};
 
-		class tooLongRequest : public requestError {
+		class tooLongUri : public requestError {
 			const char *what() const throw() {
-				return ("request exceeded buffer size");
+				return ("uri is too big");
 			}
 		};
+    class tooLongRequest : public requestError {
+        const char *what() const throw() {
+            return ("too long body");
+        }
+    };
         class accessError : public requestError {
             const char *what() const throw() {
                 return ("can't access file or directory");

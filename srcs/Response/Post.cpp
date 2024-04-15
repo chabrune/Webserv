@@ -80,7 +80,7 @@ void Post::treatBuffer(std::string & buffer, Request &request) {
     }
 }
 
-void Post::execPost(Server & server, Request &request, bool & readyToSend) {
+void Post::execPost(Server & server, Request &request, bool & readyToSend, fd_set * lset) {
     try {
         std::string buffer;
         if (!this->processing) {
@@ -93,6 +93,9 @@ void Post::execPost(Server & server, Request &request, bool & readyToSend) {
             this->_content = "<h1 style=\"font-family: sans-serif; color: #343434;\">Upload Successfull</h1>";
         }
         if (!this->done && this->processing) { // Si le dernier boundary est toujours pas arrive
+            if (!FD_ISSET(request.getSockfd(), lset)) {
+                return;
+            }
             long tmp;
             buffer.resize(HTTP_BUFFER_SIZE);
             tmp = recv(request.getSockfd(), &(buffer[0]), HTTP_BUFFER_SIZE, 0);

@@ -86,7 +86,7 @@ void Cgi::readPipeValue(AResponse &response, Request &request) {
         request.setFileType("text/html");
         response.setContent("timeout");
         response.setContentSize(8);
-        response.setHeaderCode("500 KO");
+        response.setHeaderCode("500 Internal Server Error");
         return;
     }
 

@@ -10,7 +10,7 @@ class Post : public AResponse {
         Post() {};
         Post(Server & server);
         void treatBuffer(std::string & buffer, Request &request);
-        void execPost(Server & server, Request &request, bool & readyToSend);
+        void execPost(Server & server, Request &request, bool & readyToSend, fd_set * lset);
     private:
         bool done;
         bool processing;

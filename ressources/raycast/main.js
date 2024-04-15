@@ -110,10 +110,10 @@ function drawMap() {
                 continue;
             if (convY < 0 || convX < 0 || convY > map.length - 1 || convX > map[0].length - 1
                 || map[convY][convX] === 1) {
-                ctx.fillStyle = 'black';
+                ctx.fillStyle = 'rgba(18,8,8,0.76)';
                 ctx.fillRect(x, y, 1, 1);
             } else {
-                ctx.fillStyle = 'grey';
+                ctx.fillStyle = 'rgba(196,125,125,0.46)';
                 ctx.fillRect(x, y, 1, 1);
             }
         }
@@ -272,7 +272,7 @@ function	columns_drawing(dda)
     ctx.moveTo(dda.ray, tcd.wall_line_h);
     ctx.lineTo(dda.ray, height);
     ctx.lineWidth = 1;
-    ctx.strokeStyle = 'darkgreen';
+    ctx.strokeStyle = '#120808';
     ctx.stroke();
 }
 

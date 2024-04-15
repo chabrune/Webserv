@@ -1,6 +1,5 @@
 #include "../includes/Mommy.hpp"
 #include "../includes/Response/Get.hpp"
-#include "../includes/Response/Post.hpp"
 #include "../includes/Response/Delete.hpp"
 
 int g_error = 0;
@@ -60,7 +59,7 @@ void Mommy::treatRequest(Server *server, Client *cli) {
             }
             Post* postResponse = dynamic_cast<Post*>(cli->response);
             if (postResponse) {
-                postResponse->execPost(*cli->server, cli->request, cli->readyToSend);
+                postResponse->execPost(*cli->server, cli->request, cli->readyToSend, &this->lset);
             } else {
                 g_error = INTERNERROR;
                 throw requestError();
@@ -100,7 +99,7 @@ void Mommy::run(void) {
 						cli->request = Request(*it, cli->sockfd);
                         FD_SET(cli->sockfd, &this->cset);
                     } 
-                    catch (Request::tooLongRequest &e) 
+                    catch (Request::tooLongUri &e)
                     {
                        cli->request.tooLong = true;
                     } 
@@ -120,7 +119,7 @@ void Mommy::run(void) {
                 }
             }
             for (std::map<int, Client*>::iterator it = this->clients.begin(); it != this->clients.end(); it++) {
-                if (FD_ISSET(it->second->sockfd, &this->cset)) 
+                if (FD_ISSET(it->second->sockfd, &this->cset) || FD_ISSET(it->second->sockfd, &this->lset))
                 {
                     try 
                     {
@@ -154,7 +153,8 @@ void Mommy::run(void) {
                             } 
                             catch (std::exception &e) 
                             {
-                                std::cout << RED << e.what() << RESET << std::endl;
+                                if (DEBUG)
+                                    std::cout << RED << e.what() << RESET << std::endl;
                             }
                         }
                     } 

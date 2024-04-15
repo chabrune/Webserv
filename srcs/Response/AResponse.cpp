@@ -71,7 +71,7 @@ std::string AResponse::getCodeHeader(std::string * path, Server* server,  const 
             *path = __defaultErrorPages[403];
         }
         return ("HTTP/1.1 403 Forbidden\n");
-    } else if (g_error == TOOLONGREQUEST) {
+    } else if (g_error == TOOLONGURI) {
         try {
             *path += server->getErrorPage(414, uri);
         } catch (std::exception &e) {

@@ -13,6 +13,8 @@ Request::Request(Server *server, int sockfd) : tooLong(false), _sockfd(sockfd), 
     this->len = recv(_sockfd, &(buffer[0]), HTTP_BUFFER_SIZE, 0);
     if (this->len <= 0)
         throw recvFailure();
+    else if (this->len >= HTTP_BUFFER_SIZE)
+        throw tooLongUri();
     buffer.resize(this->len);
     if (DEBUG)  
 	    std::cout << "No errors found, starting to parse.." << std::endl;
@@ -59,7 +61,9 @@ void Request::parseRequest(Server *server, std::string &str) {
         this->_body = str.substr(start + 4);
         str.erase(start, str.length() - start);
     }
-
+    if (this->_path_to_file.size() > MAX_URI_SIZE) {
+        throw tooLongUri();
+    }
     //cookie
     size_t cookie_index = str.find("Cookie:");
     if (cookie_index == std::string::npos) {
@@ -243,8 +247,8 @@ int isWellSlashed(std::string & str) {
 
 void Request::isAllowed(Server *server) {
     if (this->tooLong) {
-        g_error = TOOLONGREQUEST;
-        throw tooLongRequest();
+        g_error = TOOLONGURI;
+        throw tooLongUri();
     }
     if (isWellSlashed(this->_path_to_file) == -1) {
         g_error = INVALIDSLASH;

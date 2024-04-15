@@ -35,6 +35,7 @@
 #  define DEBUG 0 // false by default, automatically set to true with "make debug"
 # endif
 
+# define MAX_URI_SIZE 100
 # define HTTP_BUFFER_SIZE 1000000
 # define SND_BUFFER_SIZE 1000000
 # define CONNECTIONS_NUMBER_LIMIT 2000
@@ -57,6 +58,7 @@ extern int g_error;
 # define TOOLARGEENTITY 12
 # define INTERNERROR 13
 # define BADREQUEST 14
+# define TOOLONGURI 15
 
 enum Methods
 {
