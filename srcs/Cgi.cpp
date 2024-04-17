@@ -1,5 +1,4 @@
 #include "../includes/Cgi.hpp"
-#include "../includes/Server.hpp"
 #include "../includes/Request.hpp"
 #include "../includes/Response/AResponse.hpp"
 
@@ -9,7 +8,7 @@ Cgi::Cgi(AResponse &response, Request &request, Server &server, const std::strin
     cgiBuilder(request, server);
     if (DEBUG)
         std::cout << GREEN << "Cgi build. " << *this << std::endl;
-    pipeCreatorAndExec(response, buffer);
+    pipeCreatorAndExec(buffer);
     readPipeValue(response, request);
     closeAllPipe();
     if (DEBUG)
@@ -46,8 +45,7 @@ void Cgi::cgiBuilder(Request &request, Server &server) {
     _env.push_back(0);
 }
 
-void Cgi::pipeCreatorAndExec(AResponse &response, const std::string &buffer) {
-    (void) response;
+void Cgi::pipeCreatorAndExec(const std::string &buffer) {
     if (pipe(this->_pipe_out) < 0) {
         if (DEBUG)
         std::cout << "pipe1 marche po" << std::endl;
@@ -92,8 +90,6 @@ void Cgi::readPipeValue(AResponse &response, Request &request) {
 
     std::string buffer;
     buffer.resize(1024);
-    //char c;
-
     if (this->_exit_status < 0) {
         std::cout << "error" << std::endl;
         return;
@@ -101,9 +97,6 @@ void Cgi::readPipeValue(AResponse &response, Request &request) {
     read(_pipe_out[0], &buffer[0], 1024);
     if (buffer.find("Set-Cookie:") != std::string::npos)
         parseCookieFromCgi(buffer, request);
-    /*while (read(_pipe_out[0], &c, 1) > 0) {
-        buffer += c;
-    }*/
     size_t first_line_index = buffer.find_first_of('\n');
     std::string first_line = buffer.substr(0, first_line_index);
     if (first_line.find("Content-Type") == std::string::npos) {

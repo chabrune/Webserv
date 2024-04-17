@@ -1,7 +1,5 @@
 
 #include "../../includes/Response/Post.hpp"
-#include "../../includes/Response/AResponse.hpp"
-#include "../../includes/Server.hpp"
 
 Post::Post(Server & server) : AResponse(server), done(false), processing(false)
 {
@@ -100,8 +98,9 @@ void Post::execPost(Server & server, Request &request, bool & readyToSend, fd_se
             buffer.resize(HTTP_BUFFER_SIZE);
             tmp = recv(request.getSockfd(), &(buffer[0]), HTTP_BUFFER_SIZE, 0);
             if (tmp < 0) {
-                if (DEBUG)
-                    std::cerr << YELLOW << "recv failed" << RESET << std::endl;
+                std::cerr << RED << "❗ connection lost" << RESET << std::endl;
+                this->done = true;
+                return;
             } else {
                 buffer.resize(tmp);
                 request.len += tmp;
@@ -114,8 +113,8 @@ void Post::execPost(Server & server, Request &request, bool & readyToSend, fd_se
                 std::cout << MAGENTA << "Post is done" << RESET << std::endl;
             if (g_error == TOOLARGEENTITY) {
                 throw Request::tooLongRequest();
-            } else if (g_error == NOTFOUND || g_error == FORBIDDEN) {
-                throw Request::accessError();
+            } else if (g_error != 0) {
+                throw requestError();
             }
             this->_isGenerated = true;
             this->headerGenBuilder("");
@@ -126,43 +125,3 @@ void Post::execPost(Server & server, Request &request, bool & readyToSend, fd_se
         throw;
     }
 }
-
-/*
-    Voir pour gerer le max body size (+ renvoyer le bon code erreur)
-    Implementer le allow_upload pour les routes (allowed ou non) (idem renvoyer le bon code)
-    POST CGI ??? 
-    Try_AccessPost ?
-
-
-    S'arreter a l'header pour les autres requetes et body pour post
-    C LE BORDEL AVEC LES DEUX MERGE MAIS JE DOIS ALLER GRIMPER BISOUS NOUTNOUT
-    check path si allowed || A VOIR
-    separer body header dans request || OK
-    parse header content type : (pour upload) multipart/form-data avec numero boundary || OK
-    utiliser ce numero pour split tout les body
-    non bloquant ?
-    parser file name || OK
-    supprimmer "header" boundary pour parser le body pour le fichier
-    verifier max body size
-    lire le fichier upload
-    std::fstream() ecraser si existe TRONC
-    sinon le creer et write le contenu dans le nouveau fichier
-    si pas allowed ou si erreur return code erreur HTTP correspondant pour POST
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// J'ai regle 2 3 ptits trucs dont la size qui etait bizarre

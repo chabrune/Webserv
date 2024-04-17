@@ -1,8 +1,6 @@
 
 #include "../includes/utils.hpp"
 
-
-
 std::string erasesSidesChar(std::string str, char c) {
     std::string res = str;
     if (!res.empty() && res[0] == c)

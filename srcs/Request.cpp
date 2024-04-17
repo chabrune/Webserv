@@ -140,6 +140,9 @@ void Request::tryAccess_Post(Server *server, Request *request)
             g_error = ISDIRECTORY;
             throw requestError();
         }
+    } else if (request->getBoundary().empty() || request->getBody().find("--" + request->getBoundary()) == std::string::npos) {
+        g_error = BADREQUEST;
+        throw requestError();
     }
     if (server->isCgi(request->getExtension()) && access(tester.c_str(), X_OK) != 0) {
         g_error = FORBIDDEN;

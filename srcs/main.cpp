@@ -1,7 +1,4 @@
 #include "../includes/Mommy.hpp"
-#include "../includes/incs.hpp"
-#include "../includes/Server.hpp"
-#include "../includes/Location.hpp"
 
 Mommy frr;
 Server Serv;

@@ -1,7 +1,6 @@
 #include "../includes/ServerConf.hpp"
 #include "../includes/Server.hpp"
 #include "../includes/Mommy.hpp"
-#include "../includes/incs.hpp"
 
 ServerConf::ServerConf() {
     this->autoindex = false;
