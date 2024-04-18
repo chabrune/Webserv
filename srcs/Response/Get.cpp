@@ -8,6 +8,7 @@ Get::Get(Server &server, Request &request) : AResponse(server) {
             return;
         request.tryAccess_Get(&server);
         this->_uri = server.getRootFrom(request.getPathToFile()) + request.subLocation(server.getLocationFrom(request.getPathToFile()));
+        this->_uri = removeConsecutivesSlash(_uri);
         if (request.getIsDir())
             generateAutoindex(request);
         else if (server.isCgi(request.getExtension())) {

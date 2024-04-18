@@ -25,7 +25,7 @@ class AResponse {
         void handleRequestError(Server* server, const std::string & uri);
         void setHeaderCode(const std::string &header_code);
         const std::string &getHeaderCode();
-
+        void setGenerated(bool b);
 
 	protected:
         void defaultFileBuilder(const Request &request);

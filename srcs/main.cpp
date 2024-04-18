@@ -36,10 +36,14 @@ void quit(int sig) {
 int main(int argc, char **argv)
 {
     (void)argv;
+    std::string confPath;
     if(argc != 2)
     {
-        std::cerr << "./webserv [configuration file]" << std::endl;
-        return (1);
+        std::cout << YELLOW << "./webserv [configuration file]" << std::endl;
+        std::cout << "setting default configuration..." << RESET << std::endl;
+        confPath = "./conf/.default.cnf";
+    } else {
+        confPath = argv[1];
     }
     int ret = 0;
     signal(SIGINT, quit);
@@ -48,7 +52,7 @@ int main(int argc, char **argv)
     if (DEBUG)
         std::cout << GREEN << "-debug is on" << RESET << std::endl;
     try {
-        Serv.inputParsing(std::string(argv[1]), frr);
+        Serv.inputParsing(confPath, frr);
         frr.run();
     } catch (std::exception &e) {
         std::cerr << RED << "error: " << e.what() << RESET << std::endl;

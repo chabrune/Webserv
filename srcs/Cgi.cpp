@@ -9,10 +9,22 @@ Cgi::Cgi(AResponse &response, Request &request, Server &server, const std::strin
     if (DEBUG)
         std::cout << GREEN << "Cgi build. " << *this << std::endl;
     pipeCreatorAndExec(buffer);
+    if (_exit_status != 0) {
+        g_error = INTERNERROR;
+        response.setGenerated(false);
+        closeAllPipe();
+        for (std::vector<const char *>::iterator it = this->_argv.begin(); it != _argv.end(); it++)
+            free(const_cast<char*>(*it));
+        for (std::vector<const char *>::iterator it = this->_env.begin(); it != _env.end(); it++)
+            free(const_cast<char*>(*it));
+        throw requestError();
+    }
     readPipeValue(response, request);
     closeAllPipe();
     if (DEBUG)
         std::cout << "Cgi execution done" << std::endl;
+
+    response.setGenerated(true);
 }
 
 void Cgi::cgiBuilder(Request &request, Server &server) {
@@ -48,16 +60,20 @@ void Cgi::cgiBuilder(Request &request, Server &server) {
 void Cgi::pipeCreatorAndExec(const std::string &buffer) {
     if (pipe(this->_pipe_out) < 0) {
         if (DEBUG)
-        std::cout << "pipe1 marche po" << std::endl;
-        exit(1);
+            std::cout << "pipe1 marche po" << std::endl;
+        g_error = INTERNERROR;
+        throw requestError();
     }
     if (pipe(this->_pipe_in) < 0) {
-        std::cout << "pipe2 marche po" << std::endl;
+        if (DEBUG)
+            std::cout << "pipe2 marche po" << std::endl;
         close(_pipe_out[0]);
         close(_pipe_out[1]);
-        exit(1);
+        g_error = INTERNERROR;
+        throw requestError();
     }
 
+    int ret = 0;
     pid_t worker_pid = fork();
     if (worker_pid == 0) {
         signal(SIGALRM, 0);
@@ -71,7 +87,7 @@ void Cgi::pipeCreatorAndExec(const std::string &buffer) {
         if (!buffer.empty())
             write(_pipe_in[1], buffer.c_str(), buffer.length());
         closeAllPipe();
-        execve(this->_argv[0], const_cast<char **>(this->_argv.data()), const_cast<char **>(this->_env.data()));
+        ret = execve(this->_argv[0], const_cast<char **>(this->_argv.data()), const_cast<char **>(this->_env.data()));
         exit(1);
     }
     wait(&_exit_status);
@@ -80,14 +96,6 @@ void Cgi::pipeCreatorAndExec(const std::string &buffer) {
 }
 
 void Cgi::readPipeValue(AResponse &response, Request &request) {
-    if (this->_exit_status == 14 || this->_exit_status == 512 || this->_exit_status == 256) {
-        request.setFileType("text/html");
-        response.setContent("timeout");
-        response.setContentSize(8);
-        response.setHeaderCode("500 Internal Server Error");
-        return;
-    }
-
     std::string buffer;
     buffer.resize(1024);
     if (this->_exit_status < 0) {
@@ -117,7 +125,7 @@ void Cgi::parseCookieFromCgi(std::string &buffer, Request &request) {
         lineEnd = buffer.find('\n', lineStart);
         request.addCookie("; " +  buffer.substr(lineStart + 12, lineEnd - (lineStart + 12)));
         buffer.erase(lineStart, lineEnd - lineStart);
-    } while((lineStart = buffer.find("Set-Cookie:")) != std::string::npos);
+    } while(!buffer.empty() && (lineStart = buffer.find("Set-Cookie:")) != std::string::npos);
 }
 
 void Cgi::closeAllPipe() {

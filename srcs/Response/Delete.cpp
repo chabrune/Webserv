@@ -5,6 +5,7 @@ Delete::Delete(Server &server, Request &request) : AResponse(server) {
         try {
             request.tryAccess_Delete(&server);
             this->_uri = server.getRootFrom(request.getPathToFile()) + request.subLocation(server.getLocationFrom(request.getPathToFile()));
+            this->_uri = removeConsecutivesSlash(_uri);
             this->doDel();
         } catch (std::exception &e) {
             throw ;
