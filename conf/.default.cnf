@@ -1,0 +1,10 @@
+
+server {
+    listen 8080
+    server_name localhost
+    root ressources/default
+    client_max_body_size 1000000000
+    index /index.html
+    autoindex off
+    allow GET
+}

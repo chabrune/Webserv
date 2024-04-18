@@ -54,12 +54,13 @@ void AResponse::headerGenBuilder(std::string file_type) {
 
 std::string AResponse::getCodeHeader(std::string * path, Server* server,  const std::string & uri) {
     if (path)
-        *path = server->getRootFrom(uri) + "/";
+        *path = server->getRootFrom("/") + "/";
     if (g_error == MISSINGSLASH || g_error == INVALIDSLASH) {
         return ("HTTP/1.1 301 Moved Permanently\n");
     } else if (g_error == TOOLARGEENTITY) {
         try {
             *path += server->getErrorPage(413, uri);
+            std::cout << *path << std::endl;
         } catch (std::exception &e) {
             *path = __defaultErrorPages[413];
         }
@@ -120,14 +121,7 @@ void AResponse::redirectWellSlashed(const std::string & uri) {
     std::string newuri = uri;
     this->_header = getCodeHeader(0, 0, uri);
     if (g_error == INVALIDSLASH) {
-        size_t i = 0;
-        while (i + 1 < newuri.size()) {
-            if (newuri[i] == '/' && newuri[i + 1] == '/') {
-                newuri.erase(i, 1);
-            } else {
-                i++;
-            }
-        }
+        removeConsecutivesSlash(newuri);
     } else {
         newuri += "/";
     }
@@ -173,6 +167,10 @@ void AResponse::setContent(const std::string &content) {
 
 void AResponse::setContentSize(long long size) {
     this->_contentSize = size;
+}
+
+void AResponse::setGenerated(bool b) {
+    this->_isGenerated = b;
 }
 
 std::string &AResponse::getUri() {

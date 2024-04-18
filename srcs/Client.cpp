@@ -34,8 +34,6 @@ void Client::sendResponse() {
     }
     else if (this->response->getGenerated())
         sendGeneratedContent();
-    else if (this->server->isCgi(request.getExtension()))
-        sendCgiContent();
     else
         sendInfileContent();
 }
@@ -63,15 +61,9 @@ void Client::sendGeneratedContent() {
     }
 }
 
-void Client::sendCgiContent() {
-    // Send file content
-    send(this->sockfd, this->response->getContent().c_str(), this->response->getContent().size(), 0);
-    this->sent = true;
-}
-
 void Client::sendInfileContent() {
     char buffer[SND_BUFFER_SIZE + 1];
-    memset(buffer, 0, SND_BUFFER_SIZE + 1);
+    memset(buffer, '\0', SND_BUFFER_SIZE + 1);
 
     // Send file content
     long size = std::min(static_cast<long long>(SND_BUFFER_SIZE), this->response->getContentSize() - this->contentSent);

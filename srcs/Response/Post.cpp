@@ -10,7 +10,7 @@ Post::Post(Server & server) : AResponse(server), done(false), processing(false)
 void Post::treatBuffer(std::string & buffer, Request &request) {
     size_t baseSize = buffer.size();
     bool looped = false;
-    while (!buffer.empty()) 
+    while (!buffer.empty())
     {
         if (looped && baseSize == buffer.size()) {
             g_error = BADREQUEST;
@@ -69,6 +69,7 @@ void Post::treatBuffer(std::string & buffer, Request &request) {
             request.setFileName(this->_filename);
             request.setExtension(extension);
             content += '\n';
+            std::cout << "in" << std::endl;
             Cgi(*this, request, *this->server, content);
         } else {
             std::ofstream file(this->_filePath.c_str(), std::ios_base::out | std::ios_base::app);
@@ -84,7 +85,8 @@ void Post::execPost(Server & server, Request &request, bool & readyToSend, fd_se
         if (!this->processing) {
             request.tryAccess_Post(&server, &request);
             this->_uri = server.getRootFrom(request.getPathToFile()) + request.subLocation(server.getLocationFrom(request.getPathToFile())) + server.getUploadFolderFrom(request.getPathToFile());
-            if (_uri[_uri.length() - 1] == '/')
+            this->_uri = removeConsecutivesSlash(_uri);
+            if (_uri.length() > 1 && _uri[_uri.length() - 1] == '/')
                 _uri.erase(_uri.length() - 1, 1);
             buffer = request.getBody();
             request.len = static_cast<long>(buffer.size());

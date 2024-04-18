@@ -133,7 +133,6 @@ void Mommy::run(void) {
                             }
                             catch (requestError &e) 
                             {
-
                                 if (!it->second->response)
                                     it->second->response = new AResponse(*it->second->server);
                                 it->second->response->handleRequestError(it->second->server, it->second->request.getPathToFile());
