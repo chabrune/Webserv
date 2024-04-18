@@ -17,7 +17,7 @@ server {
         upload_path /
         root ressources/upload
         allow GET POST
-        index upload.html
+        index /upload.html
         return 301 https://www.winxclubfrance.com/
     }
 }
@@ -48,27 +48,27 @@ server {
     location /autoindex/ali_site {
         root ressources/ali_site
         allow GET POST
-        index index.html
+        index /index.html
     }
 
     location /upload {
         upload_path /
         root ressources/upload
         allow GET POST
-        index upload.html
+        index /upload.html
     }
 
     location /autoindex/upload {
         upload_path /
         root ressources/upload
         allow GET POST
-        index upload.html
+        index /upload.html
     }
 
     location /autoindex/mlp {
         root ressources/mlp
         allow GET POST
-        index index.html
+        index /index.html
     }
 
     location /autoindex/errors {
@@ -80,19 +80,19 @@ server {
     location /file_management {
         root ressources/file_management
         allow GET POST DELETE
-        index management.html
+        index /management.html
     }
 
     location /autoindex/file_management {
         root ressources/file_management
         allow GET POST DELETE
-        index management.html
+        index /management.html
     }
 
     location /autoindex/fireworks {
         root ressources/fireworks
         allow GET DELETE
-        index fireworks.html
+        index /fireworks.html
     }
 
     location /autoindex/game {
@@ -103,6 +103,6 @@ server {
     location /autoindex/dj_drogonj {
         root ressources/dj_drogonj
         allow GET
-        index disco.html
+        index /disco.html
     }
 }
