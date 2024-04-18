@@ -125,6 +125,8 @@ void ServerConf::serv_index(std::string &line, size_t currentServerIndex, Mommy&
 	if(index.length() > 1)
 		if(index[index.length() - 1] == '/')
 			throw std::logic_error("Config file : Server : Check index");
+	if(index[0] != '/')
+		throw std::logic_error("Config file : Server : Check index");
 	if(line != "index " + index)
 		throw std::logic_error("Config file : Server : Check index");
 	frr.servers[currentServerIndex]->index = index;
@@ -396,6 +398,8 @@ void ServerConf::location_index(std::string &line, size_t currentServerIndex, Mo
 	std::string index = line.substr(start, i - start);
 	if(index.length() > 1)
 		if(index[index.length() - 1] == '/')
+			throw std::logic_error("Config file : Location : Check index");
+	if(index[0] != '/')
 			throw std::logic_error("Config file : Location : Check index");
 	if(line != "index " + index)
 		throw std::logic_error("Config file : Location : Check index");

@@ -1,5 +1,6 @@
 /* Body */
 body {
+    margin: 0;
     font-family: 'Forum', serif;  /* Définit la police de caractères du corps du document */
     background: #5A3F37; /* Définit la couleur de fond du corps du document */
     background: -webkit-linear-gradient(to top, #2C7744, #5A3F37);  /* Définit un dégradé linéaire pour les anciens navigateurs WebKit */
@@ -23,7 +24,7 @@ body {
 /* Styles pour tous les titres h1 à h6 */
 h1, h2, h3, h4, h5, h6 {
     font-weight: normal; /* Définit le poids de la police à normal */
-    margin-bottom: 1rem; /* Ajoute une marge inférieure de 1 rem */
+    /* margin-bottom: 1rem; Ajoute une marge inférieure de 1 rem */
     text-align: center; /* Centre le texte des listes */
 }
 
@@ -41,7 +42,7 @@ li {
     font-size: 1.1em; /* Définit la taille de la police à 1.1em */
     padding: 10px 20px; /* Ajoute un padding de 10px en haut/bas et 20px à gauche/droite */
     background-color: #333; /* Définit la couleur de fond des éléments de liste */
-    color: #fff; /* Définit la couleur du texte à blanc */
+    color: rgb(238, 41, 179); /* Définit la couleur du texte à blanc */
     text-decoration: none; /* Supprime la décoration du texte */
     border-radius: 20px; /* Définit un rayon de bordure de 20px pour des coins arrondis */
     transition: background-color 0.3s ease; /* Ajoute une transition sur la couleur de fond */
@@ -93,8 +94,6 @@ button:hover, input[type="submit"]:hover {
 .page {
     width: 100%; /* Définit une largeur maximale de 90% */
     object-fit: contain;
-    margin: 0 auto; /* Centre le bloc */
-    padding: 0; /* Supprime le padding */
 }
 
 /* Styles pour le conteneur du logo */
@@ -125,6 +124,7 @@ object-fit: cover; width: 319px; height: 145px; object-position: center 28%; */
 .logo_img {
     width: 319px;
     height: 145px;
+    position: relative;
     /* width: 100%; Définit la largeur à 100% */
     object-fit: contain; /* Assure que l'image remplisse l'espace disponible sans être déformée */
     /* height: auto; Définit la hauteur automatiquement en fonction de la largeur */
@@ -140,10 +140,93 @@ object-fit: cover; width: 319px; height: 145px; object-position: center 28%; */
     text-align: center; /* Centre le texte */
 }
 
+.text-overlay{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.text-overlay h2{
+    background-color:#3e3e3e;
+    color:rgb(238, 41, 179);
+}
+
+
 /* Styles pour l'image dans .container_img */
 .page_container_img {
     width: 100%; /* Définit la largeur à 100% */
     margin-bottom: 2rem; /* Ajoute une marge inférieure de 2 rem */
+}
+
+.shop_img_container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+    padding-top: 1rem;
+}
+
+.shop_img_container img{
+    width: 258px;
+    height: 258px;
+    object-fit: cover;
+    object-position: 50% 50%;
+    transition: transform 0.3s ease-in-out;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+}
+
+.shop_img_container img:hover {
+    transform: scale(1.05);
+}
+
+.gerard {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+    display: flex;
+    align-items: center;
+}
+  
+.left-image {
+    margin-right: auto;
+    flex: 0 0 50vw;
+    max-height: 100vh;
+    overflow: hidden;
+}
+
+.left-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    margin-left: auto;
+}
+
+.right-text{
+    flex: 0 0 50vw;
+    text-align: center;
+}
+
+.right-text h1{
+    color: rgb(238, 41, 179);
+}
+
+.insta{
+    display: flex;
+    align-items: center;
+}
+
+.insta video{
+    /* position: absolute; */
+    margin: auto;
+    /* min-height: 100%; */
+    /* min-width: 100%; */
+    inset: -100%;
 }
 
 /* Styles pour le pied de page */
@@ -184,7 +267,7 @@ object-fit: cover; width: 319px; height: 145px; object-position: center 28%; */
 
 /* Styles pour les liens dans les sections du pied de page */
 .footer-section a {
-    color: #fff; /* Définit la couleur du texte à blanc */
+    color: rgb(238, 41, 179); /* Définit la couleur du texte à blanc */
     text-decoration: underline; /* Ajoute un soulignement */
 }
 
@@ -205,7 +288,7 @@ object-fit: cover; width: 319px; height: 145px; object-position: center 28%; */
 
 /* Styles pour le bouton de soumission dans le formulaire de contact */
 .contact-btn {
-    background-color: #0066cc; /* Définit la couleur de fond */
+    background-color:rgb(238, 41, 179); /* Définit la couleur de fond */
     border: none; /* Supprime les bordures */
     color: #fff; /* Définit la couleur du texte à blanc */
     padding: 0.5rem 1rem; /* Ajoute un padding de 0.5 rem en haut/bas et 1 rem à gauche/droite */
