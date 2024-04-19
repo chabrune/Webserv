@@ -2,10 +2,10 @@
 body {
     margin: 0;
     font-family: 'Forum', serif;  /* Définit la police de caractères du corps du document */
-    background: #5A3F37; /* Définit la couleur de fond du corps du document */
-    background: -webkit-linear-gradient(to top, #2C7744, #5A3F37);  /* Définit un dégradé linéaire pour les anciens navigateurs WebKit */
-    background: linear-gradient(to top, #2C7744, #5A3F37); /* Définit un dégradé linéaire pour les navigateurs modernes */
-    color: #ffffff; /* Définit la couleur du texte pour le corps du document */
+    background: #C66666;/* Définit la couleur de fond du corps du document */
+    background: -webkit-linear-gradient(to top, #fffdc9, #EAB7B1);  /* Définit un dégradé linéaire pour les anciens navigateurs WebKit */
+    background: linear-gradient(to top, #fffdc9, #EAB7B1); /* Définit un dégradé linéaire pour les navigateurs modernes */
+    color: #C66666; /* Définit la couleur du texte pour le corps du document */
     line-height: 1.6; /* Définit la hauteur de ligne du texte */
     padding: 0; /*Ajoute un padding horizontal de x rem */
     animation: fade-in 2s ease-in-out; /* Applique une animation nommée 'fade-in' sur 2 secondes */
@@ -41,8 +41,8 @@ li {
     font-weight: 500; /* Définit le poids de la police à 500 */
     font-size: 1.1em; /* Définit la taille de la police à 1.1em */
     padding: 10px 20px; /* Ajoute un padding de 10px en haut/bas et 20px à gauche/droite */
-    background-color: #333; /* Définit la couleur de fond des éléments de liste */
-    color: rgb(238, 41, 179); /* Définit la couleur du texte à blanc */
+    background-color: #ffcece; /* Définit la couleur de fond des éléments de liste */
+    color: #C66666;/* Définit la couleur du texte à blanc */
     text-decoration: none; /* Supprime la décoration du texte */
     border-radius: 20px; /* Définit un rayon de bordure de 20px pour des coins arrondis */
     transition: background-color 0.3s ease; /* Ajoute une transition sur la couleur de fond */
@@ -50,7 +50,7 @@ li {
 
 /* Styles pour les éléments de liste au survol */
 li:hover {
-    background-color: #555; /* Change la couleur de fond au survol */
+    background-color: #ffceceb1; /* Change la couleur de fond au survol */
 }
 
 /* Styles pour les éléments de liste lorsqu'ils sont cliqués */
@@ -98,7 +98,7 @@ button:hover, input[type="submit"]:hover {
 
 /* Styles pour le conteneur du logo */
 .logo-container {
-    background-color: white; /* Définit la couleur de fond à blanc */
+    background-color: #878E64; /* Définit la couleur de fond à blanc */
     display: flex; /* Utilise Flexbox pour la disposition */
     justify-content: space-between; /* Répartit l'espace entre les enfants */
     align-items: center; /* Centre les enfants verticalement */
@@ -133,6 +133,7 @@ object-fit: cover; width: 319px; height: 145px; object-position: center 28%; */
 
 /* Styles pour la section .page_container */
 .page_container {
+    position: relative;
     width: 100%; /* Définit la largeur à 100% */
     display: flex; /* Utilise Flexbox pour la disposition */
     flex-direction: column; /* Organise les enfants en colonne */
@@ -151,12 +152,20 @@ object-fit: cover; width: 319px; height: 145px; object-position: center 28%; */
     text-align: center;
 }
 
-.text-overlay h2{
-    background-color:#3e3e3e;
-    color:rgb(238, 41, 179);
+@media (max-width: 1000px) {
+    .text-overlay {
+        font-size: 12px;
+    }
 }
 
+.text-overlay h2{
+    background-color:#f1e5e5;
+    color:#C66666;    border-radius: 10px;
+}
 
+.violette {
+    padding: 0 50px;
+}
 /* Styles pour l'image dans .container_img */
 .page_container_img {
     width: 100%; /* Définit la largeur à 100% */
@@ -205,29 +214,60 @@ object-fit: cover; width: 319px; height: 145px; object-position: center 28%; */
     object-fit: cover;
     display: block;
     margin-left: auto;
+    border-radius: 6px;
 }
 
 .right-text{
     flex: 0 0 50vw;
     text-align: center;
+    font-size: 18px;
 }
 
 .right-text h1{
-    color: rgb(238, 41, 179);
+    color: #878E64;
 }
 
-.insta{
+.video_container{
+    /* background-color: #5A3F37; */
+}
+
+.insta_video{
     display: flex;
-    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
-.insta video{
-    /* position: absolute; */
-    margin: auto;
-    /* min-height: 100%; */
-    /* min-width: 100%; */
-    inset: -100%;
+.insta_video video {
+    width: 500px;
+    height: 900px;
+    margin-right: 100px;
+    margin-top: 100px;
+    margin-bottom: 20px;
+    object-fit: cover;
+    border-radius: 8px;
 }
+
+.text_container{
+    justify-content: center;
+    display: flex;
+    padding-bottom: 20px;
+}
+
+.text_container a {
+    display: inline-block;
+    /* background-color: #5A3F37; */
+    color: #C66666;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: 2px solid #C66666;
+    transition: background-color 0.3s ease;
+}
+  
+.text_container a:hover {
+    background-color: #7B6056;
+}
+  
 
 /* Styles pour le pied de page */
 .footer {
@@ -253,6 +293,10 @@ object-fit: cover; width: 319px; height: 145px; object-position: center 28%; */
     margin-bottom: 2rem; /* Ajoute une marge inférieure de 2 rem */
 }
 
+.footer-section li{
+    color:#FDF6C6;
+}
+
 /* Styles pour les titres h2 dans les sections du pied de page */
 .footer-section h2 {
     color: #fff; /* Définit la couleur du texte à blanc */
@@ -267,7 +311,7 @@ object-fit: cover; width: 319px; height: 145px; object-position: center 28%; */
 
 /* Styles pour les liens dans les sections du pied de page */
 .footer-section a {
-    color: rgb(238, 41, 179); /* Définit la couleur du texte à blanc */
+    color: #FDF6C6;/* Définit la couleur du texte à blanc */
     text-decoration: underline; /* Ajoute un soulignement */
 }
 
@@ -288,7 +332,7 @@ object-fit: cover; width: 319px; height: 145px; object-position: center 28%; */
 
 /* Styles pour le bouton de soumission dans le formulaire de contact */
 .contact-btn {
-    background-color:rgb(238, 41, 179); /* Définit la couleur de fond */
+    background-color:#FDF6C6;/* Définit la couleur de fond */
     border: none; /* Supprime les bordures */
     color: #fff; /* Définit la couleur du texte à blanc */
     padding: 0.5rem 1rem; /* Ajoute un padding de 0.5 rem en haut/bas et 1 rem à gauche/droite */
