@@ -258,22 +258,22 @@ function	columns_drawing(dda)
     ctx.moveTo(dda.ray, 0);
     ctx.lineTo(dda.ray, tcd.ceil_floor_line_h);
     ctx.lineWidth = 1;
-    ctx.strokeStyle = 'lightblue';
+    ctx.strokeStyle = '#4b5b78';
     ctx.stroke();
 
-    ctx.beginPath();
-    ctx.moveTo(dda.ray,tcd.ceil_floor_line_h);
-    ctx.lineTo(dda.ray, tcd.wall_line_h);
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = 'grey';
-    ctx.stroke();
-
-    ctx.beginPath();
-    ctx.moveTo(dda.ray, tcd.wall_line_h);
-    ctx.lineTo(dda.ray, height);
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = '#120808';
-    ctx.stroke();
+    let texX;
+    if (tcd.ceil_floor_line_h < 0)
+        tcd.ceil_floor_line_h = 0;
+    if (tcd.wall_line_h > height)
+        tcd.wall_line_h = height;
+    if (dda.hit_hv === 1) {
+        texX = (dda.r_xy[1] % (mapWallPic1.width - 1));
+    } else {
+        texX = (dda.r_xy[0] % (mapWallPic1.width - 1));
+    }
+    if (texX < 0)
+        texX = 0;
+    ctx.drawImage(mapWallPic1, texX, 0, 1, mapWallPic1.height, dda.ray, tcd.ceil_floor_line_h, 1, tcd.wall_line_h  - tcd.ceil_floor_line_h);
 }
 
 function	raycasting()
