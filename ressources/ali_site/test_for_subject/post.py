@@ -2,8 +2,6 @@
 
 import sys
 
-#!/usr/bin/env python3
-
 # Set the content type to HTML
 print("Content-Type: text/html\n")
 

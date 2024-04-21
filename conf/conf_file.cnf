@@ -46,9 +46,9 @@ server {
     }
 
     location /autoindex/ali_site {
-        root ressources/ali_site
+        root ressources/ali_site/test_for_subject
         allow GET POST
-        index /index.html
+        index /testmain.html
     }
 
     location /upload {
