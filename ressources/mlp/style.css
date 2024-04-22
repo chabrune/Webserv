@@ -70,26 +70,6 @@ a {
     color: inherit; /* Les liens héritent de la couleur de leur parent */
 }
 
-/* Styles pour les liens au survol */
-a:hover {
-    text-decoration: underline; /* Ajoute un soulignement au survol */
-}
-
-/* Styles pour les boutons et les inputs de type submit */
-button, input[type="submit"] {
-    background-color: #0066cc; /* Définit la couleur de fond */
-    border: none; /* Supprime les bordures */
-    color: #fff; /* Définit la couleur du texte à blanc */
-    padding: 0.5rem 1rem; /* Ajoute un padding */
-    border-radius: 0.25rem; /* Arrondit les coins */
-    cursor: pointer; /* Change le curseur en pointeur */
-}
-
-/* Styles pour les boutons et les inputs de type submit au survol */
-button:hover, input[type="submit"]:hover {
-    background-color: #0051a3; /* Assombrit la couleur de fond au survol */
-}
-
 /* Styles pour la classe .page */
 .page {
     width: 100%; /* Définit une largeur maximale de 90% */
@@ -98,7 +78,10 @@ button:hover, input[type="submit"]:hover {
 
 /* Styles pour le conteneur du logo */
 .logo-container {
-    background-color: #878E64; /* Définit la couleur de fond à blanc */
+    background: #C66666;/* Définit la couleur de fond du corps du document */
+    background: -webkit-linear-gradient(to top, #EBBCB3, #ebeade);  /* Définit un dégradé linéaire pour les anciens navigateurs WebKit */
+    background: linear-gradient(to top, #EBBCB3, #ebeade); /* Définit un dégradé linéaire pour les navigateurs modernes */
+    /* background-color: #878E64; Définit la couleur de fond à blanc */
     display: flex; /* Utilise Flexbox pour la disposition */
     justify-content: space-between; /* Répartit l'espace entre les enfants */
     align-items: center; /* Centre les enfants verticalement */
@@ -112,6 +95,8 @@ button:hover, input[type="submit"]:hover {
     width: 319px;
     height: 145px;
     object-position: center 28%;
+    margin-right: 10rem;
+    margin-left: 10rem;
     /* width: 100%; Définit la largeur à 100% */
     object-fit: cover; /* Assure que l'image remplisse l'espace disponible sans être déformée */
     /* max-width:200px; Définit une largeur maximale de 200px */
@@ -160,7 +145,8 @@ object-fit: cover; width: 319px; height: 145px; object-position: center 28%; */
 
 .text-overlay h2{
     background-color:#f1e5e5;
-    color:#C66666;    border-radius: 10px;
+    color:#C66666;
+    border-radius: 10px;
 }
 
 .violette {
@@ -176,7 +162,7 @@ object-fit: cover; width: 319px; height: 145px; object-position: center 28%; */
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    gap: 20px;
+    gap: auto;
     padding-top: 1rem;
 }
 
@@ -223,14 +209,6 @@ object-fit: cover; width: 319px; height: 145px; object-position: center 28%; */
     font-size: 18px;
 }
 
-.right-text h1{
-    color: #878E64;
-}
-
-.video_container{
-    /* background-color: #5A3F37; */
-}
-
 .insta_video{
     display: flex;
     flex-wrap: wrap;
@@ -240,8 +218,7 @@ object-fit: cover; width: 319px; height: 145px; object-position: center 28%; */
 .insta_video video {
     width: 500px;
     height: 900px;
-    margin-right: 100px;
-    margin-top: 100px;
+    margin-right: 160px;
     margin-bottom: 20px;
     object-fit: cover;
     border-radius: 8px;
@@ -250,7 +227,7 @@ object-fit: cover; width: 319px; height: 145px; object-position: center 28%; */
 .text_container{
     justify-content: center;
     display: flex;
-    padding-bottom: 20px;
+    margin: 3rem;
 }
 
 .text_container a {
@@ -268,82 +245,151 @@ object-fit: cover; width: 319px; height: 145px; object-position: center 28%; */
     background-color: #7B6056;
 }
   
-
 /* Styles pour le pied de page */
 .footer {
-    width: 100%; /* Définit la largeur à 100% */
-    background: #232526;  /* Définit la couleur de fond */
-    background: -webkit-linear-gradient(to top, #414345, #232526);  /* Définit un dégradé linéaire pour les anciens navigateurs WebKit */
-    background: linear-gradient(to top, #414345, #232526); /* Définit un dégradé linéaire pour les navigateurs modernes */
-    color: #fff; /* Définit la couleur du texte à blanc */
-    padding: 2rem 0; /* Ajoute un padding vertical de 2 rem */
+    width: 100%;
+    background: #C66666;
+    color: #fff;
+    padding: 2rem 0;
 }
-
+  
 /* Styles pour le contenu du pied de page */
 .footer-content {
-    display: flex; /* Utilise Flexbox pour la disposition */
-    justify-content: space-between; /* Répartit l'espace entre les enfants */
-    align-items: center; /* Centre les enfants verticalement */
-    flex-wrap: wrap; /* Permet aux enfants de passer à la ligne suivante si nécessaire */
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
 }
-
+  
 /* Styles pour les sections dans le pied de page */
 .footer-section {
-    flex-basis: calc(33.333% - 2rem); /* Définit une base flexible, en soustrayant 2rem pour l'espacement */
-    margin-bottom: 2rem; /* Ajoute une marge inférieure de 2 rem */
+    flex-basis: calc(33.333% - 2rem);
 }
-
-.footer-section li{
-    color:#FDF6C6;
-}
-
-/* Styles pour les titres h2 dans les sections du pied de page */
-.footer-section h2 {
-    color: #fff; /* Définit la couleur du texte à blanc */
-    margin-bottom: 1rem; /* Ajoute une marge inférieure de 1 rem */
-}
-
-/* Styles pour les paragraphes dans les sections du pied de page */
-.footer-section p {
-    color: #ccc; /* Définit la couleur du texte à gris clair */
-    margin-bottom: 1rem; /* Ajoute une marge inférieure de 1 rem */
-}
-
-/* Styles pour les liens dans les sections du pied de page */
-.footer-section a {
-    color: #FDF6C6;/* Définit la couleur du texte à blanc */
-    text-decoration: underline; /* Ajoute un soulignement */
-}
-
-/* Styles pour les liens dans les sections du pied de page au survol */
-.footer-section a:hover {
-    color: #ccc; /* Assombrit la couleur du texte au survol */
-}
-
+  
 /* Styles pour les champs de saisie dans le formulaire de contact */
-.contact-input {
-    background-color: #444; /* Définit la couleur de fond */
-    border: none; /* Supprime les bordures */
-    color: #fff; /* Définit la couleur du texte à blanc */
-    padding: 0.5rem; /* Ajoute un padding de 0.5 rem */
-    width: 100%; /* Définit la largeur à 100% */
-    margin-bottom: 1rem; /* Ajoute une marge inférieure de 1 rem */
+.contact-input-message,
+.contact-input-mail {
+    background-color: #444;
+    border: none;
+    color: #fff;
+    width: 98%;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
 }
 
+.contact-input-mail{
+    width: 30%;
+}
+  
 /* Styles pour le bouton de soumission dans le formulaire de contact */
 .contact-btn {
-    background-color:#FDF6C6;/* Définit la couleur de fond */
-    border: none; /* Supprime les bordures */
-    color: #fff; /* Définit la couleur du texte à blanc */
-    padding: 0.5rem 1rem; /* Ajoute un padding de 0.5 rem en haut/bas et 1 rem à gauche/droite */
-    border-radius: 0.25rem; /* Arrondit les coins */
-    cursor: pointer; /* Change le curseur en pointeur */
-    width: auto; /* Définit la largeur automatiquement en fonction du contenu */
+    background-color: #ffcece;
+    border: none;
+    color: #C66666;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
 }
-
+  
+/* Styles pour les boutons et les inputs de type submit */
+button, input[type="submit"] {
+    border: none;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+}
+  
+/* Styles pour les boutons et les inputs de type submit au survol */
+button:hover, input[type="submit"]:hover {
+    background-color: #ffceceb1;
+    transition: background-color 0.3s ease;
+}
+  
 /* Styles pour la partie inférieure du pied de page */
 .footer-bottom {
-    text-align: center; /* Centre le texte */
-    margin-top: 2rem; /* Ajoute une marge supérieure de 2 rem */
-    color: #ccc; /* Définit la couleur du texte à gris clair */
+    text-align: center;
+    margin-top: 2rem;
+    color: #ccc;
 }
+
+/* A PROPOS */
+.a-propos-container {
+    font-size: large;
+    width: 60%;
+    display: flex;
+    align-items: center;
+    border: 2px solid #C66666;
+    margin: 5rem 10rem;
+}
+  
+.a-propos-container img {
+    width: auto;
+    height: auto;
+    object-fit: cover;
+    object-position: 50% 50%;
+}
+  
+.a-propos-text {
+    width: 50%;
+    padding: 2rem;
+    margin-left: 4rem;
+}
+  
+.a-propos-text p {
+    text-align: left;
+    margin: 0;
+}
+  
+.notre-histoire {
+    font-size: large;
+    border: 2px solid #C66666;
+    margin: 5rem 30rem;
+    padding: 2rem;
+}
+  
+.notre-histoire h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+  
+.notre-histoire p {
+    text-align: justify;
+    line-height: 1.6;
+}
+  
+/* Média query pour les écrans plus petits */
+@media (max-width: 1024px) {
+    .a-propos-container {
+        flex-direction: column;
+        width: 80%;
+        margin: 5rem auto;
+    }
+  
+    .a-propos-container img {
+        width: 100%;
+        height: auto;
+    }
+  
+    .a-propos-text {
+        width: 100%;
+        padding: 2rem 0;
+        margin-left: 0;
+    }
+  
+    .notre-histoire {
+        width: 80%;
+        margin: 5rem auto;
+    }
+}
+  
+/* Média query pour les écrans encore plus petits */
+@media (max-width: 768px) {
+    .a-propos-container {
+        width: 90%;
+    }
+    .notre-histoire {
+        width: 90%;
+    }
+}
+  

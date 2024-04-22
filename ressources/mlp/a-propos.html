@@ -2,43 +2,56 @@
 <html lang="fr">
     <head>
         <meta charset="UTF-8">
-        <title>Home | MLP ❤</title>
+        <title>A propos | MLP ❤</title>
         <link href="style.css" rel="stylesheet">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Forum&display=swap" rel="stylesheet">
     </head>
-
     <body>
         <div class="page">
             <header>
-                <a href="index.html"> <div style="color:white; background-color:white;">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <img src="images/dogo.png" alt="" style="object-fit: cover; width: 319px; height: 145px; object-position: center 28%;">
-                            <div style="text-align: center;">
-                                <img src="https://static.wixstatic.com/media/3f85bc_a6a57b591a7447cf96f265bccecbcdad~mv2.png/v1/fill/w_319,h_145,al_c,q_85,enc_auto/3f85bc_a6a57b591a7447cf96f265bccecbcdad~mv2.png" alt="" style="object-fit: cover; width: 319px; height: 145px">
-                            </div>
-                            <img src="images/dogo.png" alt="" style="object-fit: cover; width: 319px; height: 145px; object-position: center 28%;">
+                <a href="index.html">
+                    <div class="logo-container">
+                        <img src="images/dogo.png" alt="" class="dogo_img">
+                        <div class="logo_img">
+                            <img src="https://static.wixstatic.com/media/3f85bc_a6a57b591a7447cf96f265bccecbcdad~mv2.png/v1/fill/w_319,h_145,al_c,q_85,enc_auto/3f85bc_a6a57b591a7447cf96f265bccecbcdad~mv2.png" alt="" class="logo_img">
                         </div>
-                    </div> 
+                        <img src="images/dogo.png" alt="" class="dogo_img">
+                    </div>
                 </a>
             </header>
-            <div>
-            <ul>
-                <a href="a-propos.html"><li>A propos</li></a>
-                <a href="boutique.html"> <li>Boutique</li></a>
-                <a href="maison.html"> <li>Maison</li></a>
-                <a href="atelier.html"> <li>Atelier</li></a>
-            </ul>
-        </div>
+            <nav>
+                <ul>
+                    <li><a href="a-propos.html">A propos</a></li>
+                    <li><a href="boutique.html">Boutique</a></li>
+                    <li><a href="maison.html">Maison</a></li>
+                    <li><a href="atelier.html">Atelier</a></li>
+                </ul>
+            </nav>
+            <div class="a-propos-container">
+                <img src="https://static.wixstatic.com/media/3f85bc_638ef7a37662455cb49aa6118c5e30c5~mv2.jpg/v1/fill/w_554,h_665,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/3f85bc_638ef7a37662455cb49aa6118c5e30c5~mv2.jpg" alt="IMG_9871.jpg">
+                <div class="a-propos-text">
+                  <p>Fondée en 2016, par Emmanuelle Porreaux, Marie la pirate est une marque qui tire son nom de son deuxième prénom et de son surnom de petite fille donc ne vous étonnez pas si tout le monde l'appelle comme cela !!</p>
+                  <p>Elevée aux loisirs créatifs et publicitaire de formation, c'est après plusieurs années passées dans la décoration et en imaginant en parallèle un atelier de créations textiles et un blog de DIY qu'Emmanuelle a pris la décision de créer sa marque.</p>
+                </div>
+              </div>
+              
+              <div class="notre-histoire">
+                <h2>Notre histoire</h2>
+                <p>Marie la pirate est une maison éthique et responsable installée dans les Vosges. Elle propose des articles sérigraphiés mais aussi des teintures végétales.</p>
+                <p>Confectionnés avec soin, à partir de beaux textiles anciens ou de toiles tissées dans les Vosges en pur lin ou pur coton. La sérigraphie se fait à la main au cadre plat avec des encres à l'eau respectueuses de l'environnement, dans notre atelier de Gérardmer.</p>
+                <p>La teinture végétale à base de plantes tels que l'indigo, la garance, l'avocat ou le noyer crée des couleurs subtiles pour des pièces uniques pleines de poésie. Les articles sont réalisés en petites quantités. L'histoire de nos articles est ainsi lisible au travers de leurs différences et des irrégularités qui révèlent le travail à la main et donnent un supplément d'âme.</p>
+                <p>Nous réalisons aussi des créations personnalisées sur commande.</p>
+              </div>              
         <footer class="footer">
             <div class="footer-content">
-                <div class="footer-section about">
+                <div class="footer-section-about">
                     <h2>À propos</h2>
                     <p>Découvrez notre entreprise et notre mission.</p>
-                    <a href="#" class="read-more">En savoir plus</a>
+                    <a href="a-propos.html" class="read-more">En savoir plus</a>
                 </div>
-                <div class="footer-section links">
+                <div class="footer-section">
                     <h2>Liens rapides</h2>
                     <ul>
                         <li><a href="index.html">Accueil</a></li>
@@ -47,11 +60,11 @@
                         <li><a href="atelier.html">Atelier</a></li>
                     </ul>
                 </div>
-                <div class="footer-section contact-form">
-                    <h2>Contactez-nous</h2>
+                <div class="footer-section">
+                    <h2>Contactez-nous ❤</h2>
                     <form>
-                        <input type="email" class="contact-input" placeholder="Votre email" />
-                        <textarea rows="2" class="contact-input" placeholder="Votre message"></textarea>
+                        <input type="email" class="contact-input-mail" placeholder="Votre email"><br>
+                        <textarea rows="2" class="contact-input-message" placeholder="Votre message"></textarea><br>
                         <button type="submit" class="contact-btn">Envoyer</button>
                     </form>
                 </div>
@@ -60,6 +73,5 @@
                 &copy; 2023 Tous droits réservés | Mentions légales
             </div>
         </footer>
-          
     </body>
 </html>
