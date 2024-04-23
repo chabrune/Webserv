@@ -315,7 +315,7 @@ button:hover, input[type="submit"]:hover {
 
 /* A PROPOS */
 .a-propos-container {
-    font-size: large;
+    font-size: larger;
     width: 60%;
     display: flex;
     align-items: center;
