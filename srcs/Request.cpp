@@ -118,6 +118,7 @@ void Request::tryAccess_Post(Server *server, Request *request)
     if (access(tester.c_str(), F_OK) != 0)
     {
         if (request->getContentType().find("multipart") != std::string::npos) {
+            std::cout << RED << "trouve po" << RESET << std::endl;
             g_error = NOTFOUND;
             throw accessError();
         } else {
@@ -231,6 +232,7 @@ void Request::tryAccess_Get(Server *server) {
 
 void Request::tryExecAccess(std::string path) {
     if (access(path.c_str(), F_OK) != 0) {
+        std::cout << RED << path.c_str() << RESET << std::endl;
         g_error = NOTFOUND;
         throw accessError();
     }

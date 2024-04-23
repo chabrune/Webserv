@@ -9,7 +9,7 @@ print("Content-Type: text/html\n")
 print("<!DOCTYPE html>")
 print("<html>")
 print("<head>")
-print("<title>Real-Time Clock</title>")
+print("<title>Result</title>")
 print("</head>")
 print("<body>")
 

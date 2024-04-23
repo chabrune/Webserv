@@ -62,14 +62,13 @@ void Post::treatBuffer(std::string & buffer, Request &request) {
         }
         if (this->server->isCgi(extension)) {
             try {
-                request.tryExecAccess(server->getRootFrom(request.getPathToFile()) + request.subLocation(server->getLocationFrom(request.getPathToFile())) + this->_filename);
+                request.tryExecAccess(server->getRootFrom(request.getPathToFile()) + request.subLocation(server->getLocationFrom(request.getPathToFile())));
             } catch (std::exception &e) {
                 return;
             }
             request.setFileName(this->_filename);
             request.setExtension(extension);
             content += '\n';
-            std::cout << "in" << std::endl;
             Cgi(*this, request, *this->server, content);
         } else {
             std::ofstream file(this->_filePath.c_str(), std::ios_base::out | std::ios_base::app);

@@ -95,9 +95,10 @@ server {
         index /fireworks.html
     }
 
-    location /autoindex/game {
+    location /autoindex/ali_site/game_farmer {
         allow GET
-        return 301 /autoindex/cgi/game_farmer/main.html
+        root ressources/ali_site/game_farmer
+        index /main.html
     }
 
     location /autoindex/dj_drogonj {
