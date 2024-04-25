@@ -105,7 +105,7 @@ void ServerConf::serv_client_max_body_size(std::string &line, size_t currentServ
 	char* endPtr = NULL;
 	errno = 0;
 	max_body_size = strtoul(smax_body_size.c_str(), &endPtr, 10);
-	if(*endPtr != '\0' || (max_body_size == ULONG_MAX && errno == ERANGE))
+	if(*endPtr != '\0' || (max_body_size == ULONG_MAX && errno == ERANGE) || smax_body_size.find("-") != std::string::npos)
 	{
 		throw std::invalid_argument("Invalid value for max_body_size.");
 	}

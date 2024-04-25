@@ -121,7 +121,7 @@ void AResponse::redirectWellSlashed(const std::string & uri) {
     std::string newuri = uri;
     this->_header = getCodeHeader(0, 0, uri);
     if (g_error == INVALIDSLASH) {
-        removeConsecutivesSlash(newuri);
+        newuri = removeConsecutivesSlash(newuri);
     } else {
         newuri += "/";
     }
